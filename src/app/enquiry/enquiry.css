@@ -1,0 +1,22 @@
+/* ============================================================
+   Enquiry Component — scoped styles only
+   Global table, card, badge, button styles come from styles.css
+   ============================================================ */
+
+/* Avatar pill in table */
+.avatar-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* View modal detail boxes */
+.detail-box {
+  border-radius: 10px;
+}
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

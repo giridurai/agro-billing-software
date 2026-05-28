@@ -1,0 +1,16 @@
+/* ============================================================
+   Item Master Component — scoped styles only
+   Global table, card, badge, button styles come from styles.css
+   ============================================================ */
+
+/* Item icon pill in table */
+.item-icon {
+  flex-shrink: 0;
+}
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

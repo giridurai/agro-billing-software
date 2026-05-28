@@ -1,0 +1,88 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #fdfcfb, #e2d1c3);
+  color: #333;
+}
+.sidebar {
+  width: 250px;
+  min-height: 100vh;
+  background: #343a40;
+  color: #fff;
+  padding-top: 20px;
+}
+.sidebar .nav-link {
+  color: #ddd;
+  transition: all 0.3s ease;
+}
+.sidebar .nav-link:hover {
+  background: #495057;
+  color: #fff;
+  border-radius: 6px;
+}
+.sidebar .menu-title {
+  font-weight: 500;
+}
+/* .menu-icon {
+  color: #6c63ff;
+} */
+.menu-arrow {
+  color: #aaa;
+}
+.content {
+  margin-left: 250px;
+  padding: 40px;
+}
+/* TOP style.css */
+/* Navbar container */
+/* Navbar container */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 218px;
+  right: 250px;
+  width: 88%;
+  color: #2c649b;
+  margin-bottom: 100px;
+  background-color: whitesmoke; /* Primary blue */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+/* Left and right nav sections */
+.nav-left,
+.nav-right {
+  list-style: none;
+  display: flex;
+  margin: 10px;
+  padding: 0;
+}
+
+/* Nav items */
+.dash {
+  margin-right: 1.5rem;
+}
+
+/* Links */
+.dash-link {
+  text-decoration: none;
+  color: #2c649b;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+
+.dash-link i {
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+/* Hover + Active states */
+.dash-link:hover,
+.dash-link.active {
+  color: #ffdd57; /* Highlight yellow */
+}

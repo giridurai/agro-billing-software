@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "contactName": "John Doe",
+    "contact": "9876543210",
+    "email": "john@example.com",
+    "designation": "Manager",
+    "department": "Sales",
+    "linkedCompany": "Tech Innovators Ltd."
+  },
+  {
+    "id": 2,
+    "contactName": "Jane Smith",
+    "contact": "9123456780",
+    "email": "jane@example.com",
+    "designation": "Admin",
+    "department": "HR",
+    "linkedCompany": "Creative Apps Inc."
+  }
+]

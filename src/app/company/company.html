@@ -1,0 +1,287 @@
+<div class="container-fluid py-4 px-3">
+  <!-- Company Table Card -->
+  <div class="crm-card">
+    <div class="crm-card-header">
+      <div class="row align-items-center g-3">
+        <div class="col-md-auto">
+          <h6 class="mb-0 fw-bold text-main">Organization Directory</h6>
+        </div>
+        <div class="col-md">
+          <div class="stylish-search float-end" style="max-width: 400px">
+            <i class="mdi mdi-magnify"></i>
+            <input
+              type="text"
+              class="form-control ps-5"
+              placeholder="Search by legal name or GSTIN..."
+              [(ngModel)]="searchText"
+              name="searchText"
+            />
+          </div>
+        </div>
+        <div class="col-md-auto">
+          <button
+            class="btn btn-primary d-flex align-items-center shadow-sm btn-sm fw-bold px-3 py-2"
+            (click)="openCompanyModal()"
+          >
+            <i class="mdi mdi-briefcase-plus me-2"></i> ADD COMPANY
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Company Name</th>
+              <th>Identification (PAN/GST)</th>
+              <th>Contact Details</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let company of companies; let i = index">
+              <td>
+                <div class="d-flex align-items-center">
+                  <div
+                    class="company-avatar me-3 bg-primary-subtle text-primary rounded d-flex align-items-center justify-content-center"
+                    style="width: 30px; height: 30px"
+                  >
+                    <i class="mdi mdi-office-building fs-6"></i>
+                  </div>
+                  <div>
+                    <div class="fw-semibold fs-7 text-main">{{ company.companyName }}</div>
+                    <span class="text-muted fs-8">ID: {{ company.id }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="fs-7 text-main">
+                  PAN: <span class="fw-medium">{{ company.pan }}</span>
+                </div>
+                <div class="fs-8 text-muted">GST: {{ company.gst }}</div>
+              </td>
+              <td>
+                <div class="fs-7 text-main fw-medium">{{ company.email }}</div>
+                <div class="fs-8 text-muted">{{ company.contactNumber }}</div>
+              </td>
+              <td>
+                <span class="badge-crm badge-crm-secondary">{{
+                  company.industryType || 'N/A'
+                }}</span>
+              </td>
+              <td>
+                <span
+                  class="badge-crm"
+                  [ngClass]="{
+                    'badge-crm-success': company.status === 'Active',
+                    'badge-crm-danger': company.status === 'Inactive',
+                    'badge-crm-warning': company.status === 'Pending',
+                  }"
+                  >{{ company.status }}</span
+                >
+              </td>
+              <td class="text-end pe-4">
+                <div class="dropdown">
+                  <button class="btn-action-dot no-caret" type="button" data-bs-toggle="dropdown">
+                    <i class="mdi mdi-dots-vertical"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                    <li>
+                      <a class="dropdown-item py-2" (click)="editCompany(company)">
+                        <i class="mdi mdi-pencil-outline me-2 text-warning"></i> Edit Details
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item py-2 text-danger" (click)="deleteCompany(company.id)">
+                        <i class="mdi mdi-delete-outline me-2"></i> Remove Company
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="companies.length === 0">
+              <td colspan="6" class="text-center py-5 text-muted">
+                <i class="mdi mdi-briefcase-variant-off-outline fs-1 d-block mb-2 op-3"></i>
+                No companies registered yet.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Company Modal Upgrade -->
+<div id="companyModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header border-bottom py-3">
+        <h5 class="modal-title fw-bold">
+          {{ selectedCompany ? 'Modify Company Profile' : 'New Company Registration' }}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeCompanyModal()"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form #companyForm="ngForm" (ngSubmit)="saveCompany(companyForm)">
+          <div class="row g-4">
+            <div class="col-md-12">
+              <label class="form-label fw-semibold text-muted fs-7"> Company name</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="companyData.companyName"
+                name="companyName"
+                placeholder="Enter Comapny name"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted fs-7">PAN Number</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="companyData.pan"
+                name="pan"
+                placeholder="ABCDE1234F"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted fs-7">GST Number</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="companyData.gst"
+                name="gst"
+                placeholder="22AAAAA0000A1Z5"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted fs-7">Contact Number</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="companyData.contactNumber"
+                name="contactNumber"
+                placeholder="+1 234 567 890"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted fs-7">Email Address</label>
+              <input
+                type="email"
+                class="form-control"
+                [(ngModel)]="companyData.email"
+                name="email"
+                placeholder="info@company.com"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted fs-7">Primary Contact Person</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="companyData.contactPerson"
+                name="contactPerson"
+                placeholder="Name of person in charge"
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted fs-7">Industry sector</label>
+              <select
+                class="form-select"
+                [(ngModel)]="companyData.industryType"
+                name="industryType"
+                required
+              >
+                <option value="">Select industry</option>
+                <option value="IT">IT</option>
+                <option value="Finance">Finance</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Retail">Retail</option>
+                <option value="Healthcare">Healthcare</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted fs-7">Billing Address</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="companyData.billingAddress"
+                name="billingAddress"
+                rows="2"
+                placeholder="Enter complete billing address"
+                required
+              ></textarea>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted fs-7">Shipping Address</label>
+              <textarea
+                class="form-control"
+                [(ngModel)]="companyData.shippingAddress"
+                name="shippingAddress"
+                rows="2"
+                placeholder="Enter complete shipping address"
+                required
+              ></textarea>
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label fw-semibold text-muted fs-7">Current Account Status</label>
+              <div class="d-flex gap-4">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="status"
+                    value="Active"
+                    [(ngModel)]="companyData.status"
+                  />
+                  <label class="form-check-label fs-7">Active</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="status"
+                    value="Inactive"
+                    [(ngModel)]="companyData.status"
+                  />
+                  <label class="form-check-label fs-7">Inactive</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="status"
+                    value="Pending"
+                    [(ngModel)]="companyData.status"
+                  />
+                  <label class="form-check-label fs-7">Pending</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
+            <button type="button" class="btn btn-light px-4" (click)="closeCompanyModal()">
+              Discard
+            </button>
+            <button type="submit" class="btn btn-primary px-5 shadow-sm">
+              {{ selectedCompany ? 'Apply Changes' : 'Register Organization' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

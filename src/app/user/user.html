@@ -1,0 +1,207 @@
+<div class="container-fluid py-4 px-3">
+  <!-- User Table -->
+  <div class="crm-card">
+    <div class="crm-card-header">
+      <div class="row align-items-center g-3">
+        <div class="col-md-auto">
+          <h6 class="mb-0 fw-bold text-main">Platform Access Control</h6>
+        </div>
+        <div class="col-md">
+          <div class="stylish-search float-end" style="max-width: 400px;">
+            <i class="mdi mdi-magnify"></i>
+            <input
+              type="text"
+              class="form-control ps-5"
+              placeholder="Search by name, email or role..."
+              [(ngModel)]="searchText"
+              name="searchText"
+            />
+          </div>
+        </div>
+        <div class="col-md-auto">
+          <button class="btn btn-primary d-flex align-items-center shadow-sm btn-sm fw-bold px-3 py-2" (click)="openUserModal()">
+            <i class="mdi mdi-account-plus me-2"></i> ADD NEW USER
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User Details</th>
+              <th>Joining Date</th>
+              <th>Contact</th>
+              <th>Role & Gender</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar-circle me-3 bg-primary text-white d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; border-radius: 50%; font-size: 0.65rem;">
+                    {{ user.firstName.charAt(0) }}{{ user.lastName.charAt(0) }}
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-semibold fs-7 text-main">{{ user.firstName }} {{ user.lastName }}</h6>
+                    <span class="text-muted fs-8">{{ user.email }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>{{ user.joiningDate }}</td>
+              <td class="fw-medium">{{ user.phoneNumber }}</td>
+              <td>
+                <span class="badge-crm badge-crm-info me-2">{{ user.role }}</span>
+                <span class="text-muted fs-8">{{ user.gender }}</span>
+              </td>
+              <td class="text-end">
+                <div class="dropdown">
+                  <button
+                    class="btn btn-sm btn-light border no-caret"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                  >
+                    <i class="mdi mdi-dots-vertical"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                    <li>
+                      <a class="dropdown-item py-2" (click)="editUser(user)">
+                        <i class="mdi mdi-pencil-outline me-2 text-warning"></i> Edit Profile
+                      </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <a class="dropdown-item py-2 text-danger" (click)="deleteUser(user.id)">
+                        <i class="mdi mdi-delete-outline me-2"></i> Delete
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="users.length === 0">
+              <td colspan="6" class="text-center py-5 text-muted">No users found.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit User Modal -->
+<div id="userModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header border-bottom py-3">
+        <h5 class="modal-title fw-bold">{{ selectedUser ? 'Edit User Credentials' : 'Create Platform User' }}</h5>
+        <button type="button" class="btn-close" (click)="closeUserModal()"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <form #userForm="ngForm" (ngSubmit)="saveUser(userForm)">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fs-7 fw-semibold text-muted">First Name</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="userData.firstName"
+                name="firstName"
+                required
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fs-7 fw-semibold text-muted">Last Name</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="userData.lastName"
+                name="lastName"
+                required
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fs-7 fw-semibold text-muted">Joining Date</label>
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="userData.joiningDate"
+                name="joiningDate"
+                required
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fs-7 fw-semibold text-muted">Email Address</label>
+              <input
+                type="email"
+                class="form-control"
+                [(ngModel)]="userData.email"
+                name="email"
+                required
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fs-7 fw-semibold text-muted">Phone Number</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="userData.phoneNumber"
+                name="phoneNumber"
+                required
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fs-7 fw-semibold text-muted">Gender</label>
+              <select class="form-select" [(ngModel)]="userData.gender" name="gender" required>
+                <option value="">Select Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fs-7 fw-semibold text-muted">System Role</label>
+              <select class="form-select" [(ngModel)]="userData.role" name="role" required>
+                <option value="">-- Select Role --</option>
+                <option value="Admin">Administrator</option>
+                <option value="Manager">Manager</option>
+                <option value="User">Standard User</option>
+                <option value="Guest">Guest Access</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fs-7 fw-semibold text-muted">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                [(ngModel)]="userData.password"
+                name="password"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-light" (click)="closeUserModal()">Discard</button>
+            <button type="button" class="btn btn-outline-warning" (click)="resetForm(userForm)">Reset</button>
+            <button type="submit" class="btn btn-primary px-4 fw-bold shadow-sm">
+              {{ selectedUser ? 'Update Profile' : 'Create User' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

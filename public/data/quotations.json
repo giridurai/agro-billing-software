@@ -1,0 +1,48 @@
+[
+  {
+    "id": 1,
+    "quotationNo": "QTN-1001",
+    "referenceNo": "REF-5001",
+    "quotationDate": "2025-12-01",
+    "expiryDate": "2025-12-29",
+    "contact": "John Doe",
+    "companyName": "Tech Innovators Ltd.",
+    "status": "Pending",
+    "amount": 10700,
+    "iteams": [
+      {
+        "name": "Product A",
+        "quantity": 2,
+        "rate": 5000,
+        "cgst": 5,
+        "sgst": 2,
+        "discount": 2,
+        "hsnCode": "847130",
+        "amount": 10700
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "quotationNo": "QTN-1002",
+    "quotationDate": "2025-12-05",
+    "referenceNo": "REF-5002",
+    "expiryDate": "2025-11-01",
+    "contact": "Jane Smith",
+    "companyName": "Creative Apps Inc.",
+    "status": "Approved",
+    "amount": 40800,
+    "iteams": [
+      {
+        "name": "Service A",
+        "quantity": 4,
+        "rate": 10000,
+        "cgst": 1,
+        "sgst": 1,
+        "hsnCode": "998232",
+        "discount": 3,
+        "amount": 40800
+      }
+    ]
+  }
+]

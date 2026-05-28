@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Granite Slab",
+    "description": "Premium quality granite",
+    "hsnCode": "68022310",
+    "rate": 1500,
+    "cgst": 9,
+    "sgst": 9,
+    "discount": 5
+  },
+  {
+    "id": 2,
+    "name": "Marble Tile",
+    "description": "Glossy marble tiles",
+    "hsnCode": "68029100",
+    "rate": 800,
+    "cgst": 6,
+    "sgst": 6,
+    "discount": 0
+  }
+]

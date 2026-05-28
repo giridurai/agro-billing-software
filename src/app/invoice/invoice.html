@@ -1,0 +1,599 @@
+<div class="container-fluid py-4 px-3">
+  <!-- Invoice Table Card -->
+  <div class="crm-card">
+    <div class="crm-card-header">
+      <div class="row align-items-center g-3 no-print">
+        <div class="col-md-auto">
+          <h6 class="mb-0 fw-bold text-main">Accounts Receivable History</h6>
+        </div>
+        <div class="col-md">
+          <div class="stylish-search float-end" style="max-width: 400px;">
+            <i class="mdi mdi-magnify"></i>
+            <input
+              type="text"
+              class="form-control ps-5"
+              placeholder="Search by invoice, order or customer..."
+              [(ngModel)]="searchText"
+              name="searchText"
+            />
+          </div>
+        </div>
+        <div class="col-md-auto">
+          <button class="btn btn-primary d-flex align-items-center shadow-sm btn-sm fw-bold px-3 py-2" (click)="openInvoiceModal()">
+            <i class="mdi mdi-cash-register me-2"></i> CREATE NEW INVOICE
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="crm-table">
+          <thead>
+            <tr>
+              <th>Invoice Details</th>
+              <th>Customer / GSTIN</th>
+              <th>Due Date</th>
+              <th>Amount Details</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let invoice of filteredInvoices">
+              <td>
+                <div class="fw-bold text-primary">#{{ invoice.invoiceNo }}</div>
+                <div class="text-muted fs-8">Order: {{ invoice.orderNo }}</div>
+              </td>
+              <td>
+                <h6 class="mb-0 fw-semibold fs-7 text-main">{{ invoice.customerName }}</h6>
+                <div class="text-muted fs-8">{{ invoice.customerGSTIN }}</div>
+              </td>
+              <td>
+                <div class="text-main fs-7">{{ invoice.dueDate }}</div>
+              </td>
+              <td>
+                <div class="fw-bold text-main">{{ invoice.amount | currency : 'INR' }}</div>
+                <div class="text-muted fs-8">
+                  Bal Due: {{ invoice.balanceDue | currency : 'INR' }}
+                </div>
+              </td>
+              <td>
+                <span
+                  class="badge-crm"
+                  [ngClass]="{
+                    'badge-crm-success': invoice.status === 'Paid',
+                    'badge-crm-warning': invoice.status === 'Pending',
+                    'badge-crm-danger': invoice.status === 'Overdue'
+                  }"
+                >
+                  {{ invoice.status }}
+                </span>
+              </td>
+              <td class="text-end">
+                <div class="dropdown">
+                  <button
+                    class="btn btn-sm btn-light border no-caret"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                  >
+                    <i class="mdi mdi-dots-vertical"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                    <li>
+                      <a class="dropdown-item py-2" (click)="viewInvoice(invoice)">
+                        <i class="mdi mdi-eye-outline me-2 text-primary"></i> View & Print
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item py-2" (click)="editInvoice(invoice)">
+                        <i class="mdi mdi-pencil-outline me-2 text-warning"></i> Edit Record
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item py-2 text-danger" (click)="deleteInvoice(invoice.id)">
+                        <i class="mdi mdi-delete-outline me-2"></i> Delete
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="filteredInvoices.length === 0">
+              <td colspan="6" class="text-center py-5 text-muted">
+                No invoices found matching your search.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main UI Form Modal -->
+<div id="invoiceModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-dark text-white py-3">
+        <h5 class="modal-title fw-bold">
+          <i class="mdi mdi-receipt me-2"></i>
+          {{ selectedInvoice ? 'Edit Tax Invoice Record' : 'Generate New Tax Invoice' }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="closeInvoiceModal()"
+        ></button>
+      </div>
+
+      <div class="modal-body p-4 bg-light">
+        <form #invoiceForm="ngForm" (ngSubmit)="saveInvoice(invoiceForm)">
+          <!-- Billing Details -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-3">
+              <label class="form-label fs-7 fw-semibold text-muted">Invoice No.</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="invoiceData.invoiceNo"
+                name="invoiceNo"
+                required
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fs-7 fw-semibold text-muted">Invoice Date</label>
+              <input
+                type="date"
+                class="form-control"
+                [(ngModel)]="invoiceData.dueDate"
+                name="dueDate"
+                required
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fs-7 fw-semibold text-muted">Order No.</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="invoiceData.orderNo"
+                name="orderNo"
+                required
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fs-7 fw-semibold text-muted">Vehicle No.</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="invoiceData.vehicleNo"
+                name="vehicleNo"
+                placeholder="Ex: TN-01-AB-1234"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fs-7 fw-semibold text-muted">Customer / Billing To</label>
+              <input
+                type="text"
+                class="form-control mb-2"
+                [(ngModel)]="invoiceData.customerName"
+                name="customerName"
+                placeholder="Client Name"
+                required
+              />
+              <textarea
+                class="form-control"
+                [(ngModel)]="invoiceData.billingAddress"
+                name="billingAddress"
+                rows="2"
+                placeholder="Full Billing Address"
+              ></textarea>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fs-7 fw-semibold text-muted">Customer GSTIN</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="invoiceData.customerGSTIN"
+                name="customerGSTIN"
+                placeholder="22AAAAA0000A1Z5"
+              />
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fs-7 fw-semibold text-muted">Reverse Charge (Y/N)</label>
+              <select
+                class="form-select"
+                [(ngModel)]="invoiceData.reverseCharge"
+                name="reverseCharge"
+              >
+                <option value="N">No</option>
+                <option value="Y">Yes</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Product Table -->
+          <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white fw-bold">Line Items (Taxable Goods)</div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                  <thead class="bg-light fs-8 text-uppercase">
+                    <tr>
+                      <th class="ps-3">Description</th>
+                      <th class="text-center" style="width: 100px">HSN</th>
+                      <th class="text-center" style="width: 80px">Qty</th>
+                      <th class="text-center" style="width: 100px">Rate</th>
+                      <th class="text-center" style="width: 80px">Disc</th>
+                      <th class="text-center" style="width: 100px">Taxable</th>
+                      <th class="text-end pe-3">Subtotal</th>
+                      <th class="text-center">#</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of invoiceData.items; let i = index">
+                      <td class="ps-3">
+                        <select
+                          class="form-select fs-7"
+                          [(ngModel)]="item.name"
+                          name="itemName{{ i }}"
+                          (change)="onItemNameChange(item)"
+                          required
+                        >
+                          <option value="">Select Product...</option>
+                          <option *ngFor="let it of items" [value]="it.name">{{ it.name }}</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          class="form-control fs-7 text-center"
+                          [(ngModel)]="item.hsnCode"
+                          name="itemHSN{{ i }}"
+                          readonly
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="form-control fs-7 text-center px-1"
+                          [(ngModel)]="item.quantity"
+                          name="itemQty{{ i }}"
+                          (ngModelChange)="recalculateItem(item)"
+                          required
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="form-control fs-7 text-center px-1"
+                          [(ngModel)]="item.rate"
+                          name="itemRate{{ i }}"
+                          (ngModelChange)="recalculateItem(item)"
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="form-control fs-7 text-center px-1"
+                          [(ngModel)]="item.discount"
+                          name="itemDisc{{ i }}"
+                          (ngModelChange)="recalculateItem(item)"
+                        />
+                      </td>
+                      <td class="text-center fw-bold fs-7">
+                        {{ item.taxableValue | currency: 'INR' : 'symbol-narrow' : '1.2-2' }}
+                      </td>
+                      <td class="text-end pe-3 fw-bold">
+                        {{ item.amount | currency: 'INR' : 'symbol-narrow' : '1.2-2' }}
+                      </td>
+                      <td class="text-center">
+                        <button
+                          type="button"
+                          class="btn btn-link text-danger p-0"
+                          (click)="removeItem(i)"
+                        >
+                          <i class="mdi mdi-close-circle fs-5"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer bg-white">
+              <button type="button" class="btn btn-sm btn-outline-primary" (click)="addItem()">
+                <i class="mdi mdi-plus me-1"></i> Add Product Row
+              </button>
+            </div>
+          </div>
+
+          <!-- Bottom Summary Section -->
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label class="form-label fs-7 fw-semibold text-muted">Terms & Conditions</label>
+              <textarea
+                class="form-control fs-7"
+                [(ngModel)]="invoiceData.termsConditions"
+                name="termsConditions"
+                rows="4"
+              ></textarea>
+            </div>
+            <div class="col-md-6">
+              <div class="card border-0 bg-white shadow-sm p-3">
+                <div class="d-flex justify-content-between mb-2 fs-7">
+                  <span class="text-muted">Total Before Tax:</span>
+                  <span class="fw-bold">{{ getTotalBeforeTax() | currency: 'INR' }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2 fs-7">
+                  <span class="text-muted text-uppercase">CGST Total:</span>
+                  <span class="text-primary">+ {{ getTotalCGST() | currency: 'INR' }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3 fs-7">
+                  <span class="text-muted text-uppercase">SGST Total:</span>
+                  <span class="text-primary">+ {{ getTotalSGST() | currency: 'INR' }}</span>
+                </div>
+                <hr class="mt-0" />
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <label class="fs-8 text-muted fw-bold">Forwarding Chrg</label>
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      [(ngModel)]="invoiceData.forwardingCharges"
+                      name="forwarding"
+                      (ngModelChange)="recalculateTotals()"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label class="fs-8 text-muted fw-bold">Packing Chrg</label>
+                    <input
+                      type="number"
+                      class="form-control form-control-sm"
+                      [(ngModel)]="invoiceData.packingCharges"
+                      name="packing"
+                      (ngModelChange)="recalculateTotals()"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="d-flex justify-content-between align-items-center p-3 bg-primary rounded text-white shadow-sm"
+                >
+                  <h6 class="mb-0 fw-bold">GRAND TOTAL (INR)</h6>
+                  <h5 class="mb-0 fw-extrabold">{{ invoiceData.amount | currency: 'INR' }}</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Action Footer -->
+          <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
+            <button type="button" class="btn btn-light px-4" (click)="closeInvoiceModal()">
+              Discard
+            </button>
+            <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">
+              {{ selectedInvoice ? 'Save Changes' : 'Confirm & Generate' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================= -->
+<!-- VIEW & PRINT POPUP (Professional Card Layout)           -->
+<!-- ======================================================= -->
+<div id="viewInvoiceModal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+      <div class="modal-header bg-white border-bottom py-3 no-print">
+        <h6 class="modal-title fw-bold text-main d-flex align-items-center">
+          <span class="p-2 bg-primary-subtle rounded-circle me-3">
+            <i class="mdi mdi-file-document-outline text-primary"></i>
+          </span>
+          Sales Invoice Document Preview
+        </h6>
+        <button type="button" class="btn-close" (click)="closeInvoiceModal()"></button>
+      </div>
+      <div class="modal-body p-5 bg-light" style="background-image: radial-gradient(#d1d9e6 1px, transparent 1px); background-size: 20px 20px;">
+        <!-- Start of Physical Invoice Replica -->
+        <div id="printSection" class="invoice-print-area mx-auto shadow" style="width: 210mm; min-height: 297mm; padding: 0.5rem;">
+          
+          <!-- Header Area -->
+          <div class="print-header clearfix">
+            <div class="print-logo-box">
+              <div style="width: 50px; height: 50px; border: 2px solid #0a58ca; padding: 2px; text-align: center; color: #0a58ca; font-weight: 900; font-size: 24px; display: flex; align-items: center; justify-content: center;">
+                RS
+              </div>
+              <div style="font-size: 8px; color: #b00; font-style: italic; font-weight: bold; margin-top: 2px; line-height: 1;">
+                Exclusive Granite Show Room
+              </div>
+            </div>
+            
+            <div class="print-company-center">
+              <div class="header-text">ROCK STONES</div>
+              <div class="company-info">NO.32/3, P.H. ROAD, SIVABOOTHAM, VANAGARAM, CHENNAI - 600 095.</div>
+              <div class="gst-text">GSTIN : 33TNSPS5270N1ZN</div>
+            </div>
+            
+            <div class="print-contact-right">
+              <div>Tell : 98404-51450</div>
+              <div>Cell : 96400-91450</div>
+              <div>E-mail : rockstonesgranite@gmail.com</div>
+              <div>Web : www.rockstonegranites.com</div>
+            </div>
+          </div>
+
+          <div class="print-title-box">TAX INVOICE</div>
+
+          <!-- Info Grid Section -->
+          <div class="invoice-grid">
+            <div class="grid-col-left">
+              <div class="grid-row">
+                <div class="label-cell">Invoice No. :</div>
+                <div class="value-cell fw-bold">{{ selectedInvoice?.invoiceNo }}</div>
+              </div>
+              <div class="grid-row">
+                <div class="label-cell">Invoice Date :</div>
+                <div class="value-cell">{{ selectedInvoice?.dueDate | date: 'dd-MM-yyyy' }}</div>
+              </div>
+              <div class="grid-row">
+                <div class="label-cell">Reverse Charges (Y/N) :</div>
+                <div class="value-cell">{{ selectedInvoice?.reverseCharge || 'N' }}</div>
+              </div>
+              <div class="grid-row">
+                <div class="label-cell">State :</div>
+                <div class="value-cell">Tamil Nadu</div>
+              </div>
+              <div class="grid-row">
+                <div class="label-cell">State Code :</div>
+                <div class="value-cell">33</div>
+              </div>
+            </div>
+            
+            <div class="grid-col-right" style="display: flex; flex-direction: column;">
+              <div style="flex: 1; padding: 5px; border-bottom: 2px solid #0a58ca;">
+                <div style="font-weight: bold; color: #0a58ca; font-size: 11px; margin-bottom: 4px;">To</div>
+                <div style="padding-left: 10px;">
+                  <div class="fw-bold fs-7">{{ selectedInvoice?.customerName }}</div>
+                  <div class="fs-8 mt-1" style="white-space: pre-line;">{{ selectedInvoice?.billingAddress }}</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; padding: 4px 8px;">
+                <div style="font-weight: bold; color: #0a58ca; font-size: 11px; width: 60px;">GSTIN</div>
+                <div class="fw-bold">{{ selectedInvoice?.customerGSTIN }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Items Table -->
+          <table class="invoice-table">
+            <thead>
+              <tr>
+                <th style="width: 45px">S.No.</th>
+                <th>Product Description</th>
+                <th style="width: 70px">HSN Code</th>
+                <th style="width: 45px">Qty</th>
+                <th style="width: 80px">Rate</th>
+                <th style="width: 100px">Amount</th>
+                <th style="width: 70px">Discount</th>
+                <th style="width: 110px">Taxable Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of selectedInvoice?.items; let idx = index">
+                <td class="text-center">{{ idx + 1 }}</td>
+                <td class="fw-bold">{{ item.name }}</td>
+                <td class="text-center">{{ item.hsnCode }}</td>
+                <td class="text-center">{{ item.quantity }}</td>
+                <td class="text-end">{{ item.rate | number: '1.2-2' }}</td>
+                <td class="text-end">{{ item.quantity * item.rate | number: '1.2-2' }}</td>
+                <td class="text-end">{{ (item.discount || 0) | number: '1.2-2' }}</td>
+                <td class="text-end fw-bold">{{ item.taxableValue | number: '1.2-2' }}</td>
+              </tr>
+              <!-- Fill-up A4 Space -->
+              <tr *ngFor="let empty of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]" style="height: 24px;">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="5" class="text-end" style="color: #0a58ca;">Total</td>
+                <td class="text-end">{{ getTotalAmountBeforeDiscount() | number: '1.2-2' }}</td>
+                <td class="text-end">{{ getTotalDiscount() | number: '1.2-2' }}</td>
+                <td class="text-end fw-bold">{{ getTotalBeforeTax() | number: '1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Footer Information Grid -->
+          <div class="row g-0 border-start border-end" style="border-left: 2px solid #0a58ca; border-right: 2px solid #0a58ca;">
+            <div class="col-7 border-end" style="border-right: 2px solid #0a58ca;">
+              <div class="p-2 border-bottom" style="border-bottom: 1px solid #0a58ca; min-height: 100px;">
+                <div style="font-weight: bold; color: #0a58ca; font-size: 10px; text-transform: uppercase;">Total Invoice Amount in words</div>
+                <div class="mt-2 fw-bold fst-italic text-capitalize" style="font-size: 11px;">
+                  Rupees {{ selectedInvoice?.amount | rupeeToWords }} Only.
+                </div>
+              </div>
+              <div class="p-2 border-bottom" style="border-bottom: 1px solid #0a58ca; min-height: 80px;">
+                <div style="font-weight: bold; color: #0a58ca; font-size: 10px;">Terms & Conditions :</div>
+                <div class="fs-8 mt-1 lh-1">{{ selectedInvoice?.termsConditions }}</div>
+              </div>
+              <div class="p-2">
+                <span style="font-weight: bold; color: #0a58ca; font-size: 10px;">Vehicle No. : </span>
+                <span class="fw-bold fs-7 ms-1">{{ selectedInvoice?.vehicleNo }}</span>
+              </div>
+            </div>
+            
+            <div class="col-5">
+              <div class="footer-row">
+                <div class="footer-label">Forwarding & Regn. Charges</div>
+                <div class="footer-value">{{ (selectedInvoice?.forwardingCharges || 0) | number: '1.2-2' }}</div>
+              </div>
+              <div class="footer-row">
+                <div class="footer-label">Total Amount before Tax</div>
+                <div class="footer-value fw-bold">{{ getTotalBeforeTax() | number: '1.2-2' }}</div>
+              </div>
+              <div class="footer-row">
+                <div class="footer-label">Add : CGST</div>
+                <div class="footer-value">{{ getTotalCGST() | number: '1.2-2' }}</div>
+              </div>
+              <div class="footer-row">
+                <div class="footer-label">Add : SGST</div>
+                <div class="footer-value">{{ getTotalSGST() | number: '1.2-2' }}</div>
+              </div>
+              <div class="footer-row">
+                <div class="footer-label">Packing Charges</div>
+                <div class="footer-value">{{ (selectedInvoice?.packingCharges || 0) | number: '1.2-2' }}</div>
+              </div>
+              <div class="footer-row">
+                <div class="footer-label">Ins. Charges</div>
+                <div class="footer-value">{{ (selectedInvoice?.insuranceCharges || 0) | number: '1.2-2' }}</div>
+              </div>
+              <div class="footer-row" style="background: #fdf2f2; border-top: 2px solid #0a58ca;">
+                <div class="footer-label" style="font-size: 12px;">TOTAL AMOUNT AFTER TAX</div>
+                <div class="footer-value fw-bold fs-6 text-danger">{{ selectedInvoice?.amount | number: '1.2-2' }}</div>
+              </div>
+              <div class="footer-row border-bottom-0">
+                <div class="footer-label">GST on Reverse Charge</div>
+                <div class="footer-value">{{ (selectedInvoice?.gstReverseCharge || 0) | number: '1.2-2' }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Declaration Section -->
+          <div class="row g-0 border" style="border-top: 2px solid #0a58ca; border: 2px solid #0a58ca; border-top: 0;">
+            <div class="col-12 p-3 text-end" style="position: relative; min-height: 140px;">
+              <div class="text-center small" style="font-size: 10px; width: 100%; margin-bottom: 15px;">
+                Certified that the particulars given above are true and correct
+              </div>
+              
+              <div class="mt-2 pe-4">
+                <span class="fw-bold" style="font-size: 12px; color: #000;">For</span>
+                <span class="ms-1 fw-extrabold" style="font-size: 18px; color: #b00; letter-spacing: 0.5px;">ROCK STONES</span>
+              </div>
+              
+              <div style="position: absolute; bottom: 15px; right: 25px; width: 220px; text-align: center;">
+                <div style="border-top: 1.5px solid #0a58ca; margin-bottom: 3px;"></div>
+                <span class="fw-bold" style="font-size: 11px; color: #000;">Authorised Signatory</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End of Physical Invoice Replica -->
+      </div>
+      
+      <div class="modal-footer bg-white border-top no-print">
+        <button type="button" class="btn btn-secondary px-4 shadow-sm" (click)="closeInvoiceModal()">Close Preview</button>
+        <button type="button" class="btn btn-primary px-4 shadow-sm" (click)="printInvoice()">
+          <i class="mdi mdi-printer me-2"></i> Print Document
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

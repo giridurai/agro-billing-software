@@ -1,0 +1,319 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "firstName": "Arun",
+      "lastName": "Rao",
+      "joiningDate": "2025-01-10",
+      "email": "arun.rao@example.com",
+      "phoneNumber": "9876543210",
+      "gender": "Male",
+      "role": "Manager",
+      "password": "password123"
+    },
+    {
+      "id": 2,
+      "firstName": "Priya",
+      "lastName": "Sharma",
+      "joiningDate": "2025-02-15",
+      "email": "priya.sharma@example.com",
+      "phoneNumber": "9123456780",
+      "gender": "Female",
+      "role": "user",
+      "password": "securepass"
+    },
+    {
+      "firstName": "Giri",
+      "lastName": "d",
+      "joiningDate": "2026-05-08",
+      "email": "xxx",
+      "phoneNumber": "+91 8220294262",
+      "gender": "Male",
+      "role": "Manager",
+      "password": "1234",
+      "id": 3
+    }
+  ],
+  "invoices": [
+    {
+      "id": 1,
+      "invoiceNo": "INV-1001",
+      "orderNo": "ORD-5001",
+      "customerName": "ABC Traders",
+      "status": "Paid",
+      "dueDate": "2025-12-01",
+      "amount": 5330.1,
+      "balanceDue": 5330.1,
+      "items": [
+        {
+          "name": "Granite Slab",
+          "quantity": 2,
+          "rate": 1500,
+          "cgst": 9,
+          "sgst": 9,
+          "discount": 5,
+          "hsnCode": "68022310",
+          "amount": 3534.1000000000004,
+          "taxableValue": 2995
+        },
+        {
+          "name": "Marble Tile",
+          "quantity": 1,
+          "rate": 800,
+          "cgst": 6,
+          "sgst": 6,
+          "hsnCode": "68029100",
+          "discount": 0,
+          "taxableValue": 800,
+          "amount": 896
+        },
+        {
+          "name": "Marble Tile",
+          "quantity": 1,
+          "rate": 800,
+          "cgst": 6,
+          "sgst": 6,
+          "hsnCode": "68029100",
+          "discount": 0,
+          "taxableValue": 800,
+          "amount": 896
+        }
+      ],
+      "forwardingCharges": 3,
+      "termsConditions": "cvx cv",
+      "reverseCharge": "Y",
+      "packingCharges": 1,
+      "billingAddress": "palliplayam",
+      "customerGSTIN": "54544554"
+    },
+    {
+      "id": 2,
+      "invoiceNo": "INV-1002",
+      "orderNo": "ORD-5002",
+      "customerName": "XYZ Enterprises",
+      "status": "Pending",
+      "dueDate": "2025-12-05",
+      "amount": 40000,
+      "balanceDue": 15000,
+      "items": [
+        {
+          "name": "Service A",
+          "quantity": 4,
+          "rate": 10000,
+          "cgst": 9,
+          "sgst": 9,
+          "hsnCode": "998312",
+          "discount": 3,
+          "amount": 47200
+        }
+      ]
+    }
+  ],
+  "companies": [
+    {
+      "id": 1,
+      "companyName": "Tech Solutions Pvt Ltd",
+      "pan": "ABCDE1234F",
+      "gst": "27ABCDE1234F1Z5",
+      "contactNumber": "9876543210",
+      "email": "info@techsolutions.com",
+      "contactPerson": "Ramesh Kumar",
+      "status": "Active",
+      "industryType": "IT",
+      "shippingAddress": "456, Tech Park, Silicon City",
+      "billingAddress": "456, Tech Park, Silicon City"
+    },
+    {
+      "id": 2,
+      "companyName": "Innovatech Systems",
+      "pan": "PQRSX5678Y",
+      "gst": "29PQRSX5678Y1Z9",
+      "contactNumber": "9123456780",
+      "email": "contact@innovatech.com",
+      "contactPerson": "Priya Sharma",
+      "status": "Inactive",
+      "industryType": "Finance",
+      "shippingAddress": "123, Market Street, Cityville",
+      "billingAddress": "123, Market Street, Cityville"
+    }
+  ],
+  "contacts": [
+    {
+      "id": 1,
+      "contactName": "John Doe",
+      "contact": "9876543210",
+      "email": "john@example.com",
+      "designation": "Manager",
+      "department": "Sales",
+      "linkedCompany": "Tech Innovators Ltd."
+    },
+    {
+      "id": 2,
+      "contactName": "Jane Smith",
+      "contact": "9123456780",
+      "email": "jane@example.com",
+      "designation": "Admin",
+      "department": "HR",
+      "linkedCompany": "Creative Apps Inc."
+    },
+    {
+      "contactName": "xxx",
+      "contact": "xx",
+      "email": "xxx",
+      "designation": "xx",
+      "department": "xxx",
+      "linkedCompany": "xxx",
+      "id": 3
+    }
+  ],
+  "items": [
+    {
+      "id": 1,
+      "name": "Granite Slab",
+      "description": "Premium quality granite",
+      "hsnCode": "68022310",
+      "rate": 1500,
+      "cgst": 9,
+      "sgst": 9,
+      "discount": 5
+    },
+    {
+      "id": 2,
+      "name": "Marble Tile",
+      "description": "Glossy marble tiles",
+      "hsnCode": "68029100",
+      "rate": 800,
+      "cgst": 5,
+      "sgst": null,
+      "discount": 0
+    },
+    {
+      "name": "demoo",
+      "description": "sdsd",
+      "hsnCode": "232",
+      "rate": 10000,
+      "cgst": 2,
+      "sgst": 2,
+      "discount": 100,
+      "id": 3
+    },
+    {
+      "name": "glass",
+      "description": "iteams",
+      "hsnCode": "2323",
+      "rate": 20000,
+      "cgst": 1,
+      "sgst": 1,
+      "discount": null,
+      "id": 4
+    },
+    {
+      "name": "Glass",
+      "description": "",
+      "hsnCode": "8383",
+      "rate": 5000,
+      "cgst": 1,
+      "sgst": 1,
+      "discount": 10,
+      "id": 5
+    },
+    {
+      "name": "Fire",
+      "description": "",
+      "hsnCode": "232",
+      "rate": 10000,
+      "cgst": 5,
+      "sgst": 0,
+      "discount": 0,
+      "id": 6
+    }
+  ],
+  "quotations": [
+    {
+      "id": 1,
+      "quotationNo": "QTN-1001",
+      "referenceNo": "REF-5001",
+      "quotationDate": "2025-12-01",
+      "expiryDate": "2025-12-29",
+      "contact": "John Doe",
+      "companyName": "Tech Innovators Ltd.",
+      "status": "Pending",
+      "amount": 10700,
+      "iteams": [
+        {
+          "name": "Product A",
+          "quantity": 2,
+          "rate": 5000,
+          "cgst": 5,
+          "sgst": 2,
+          "discount": 2,
+          "hsnCode": "847130",
+          "amount": 10700
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "quotationNo": "QTN-1002",
+      "quotationDate": "2025-12-05",
+      "referenceNo": "REF-5002",
+      "expiryDate": "2025-11-01",
+      "contact": "Jane Smith",
+      "companyName": "Creative Apps Inc.",
+      "status": "Approved",
+      "amount": 40800,
+      "iteams": [
+        {
+          "name": "Service A",
+          "quantity": 4,
+          "rate": 10000,
+          "cgst": 1,
+          "sgst": 1,
+          "hsnCode": "998232",
+          "discount": 3,
+          "amount": 40800
+        }
+      ]
+    },
+    {
+      "quotationNo": "2323",
+      "referenceNo": "22",
+      "companyName": "giri",
+      "contact": "233223",
+      "quotationDate": "2026-04-10",
+      "expiryDate": "2026-04-02",
+      "termsconditions": "",
+      "lineitems": [],
+      "status": "Approved",
+      "amount": 840,
+      "iteams": [
+        {
+          "name": "Marble Tile",
+          "quantity": 1,
+          "rate": 800,
+          "cgst": 5,
+          "sgst": null,
+          "hsnCode": "68029100",
+          "discount": 0,
+          "amount": 840
+        }
+      ],
+      "id": 3
+    }
+  ],
+  "enquiries": [
+    {
+      "enquiryNo": "ENQ-1001",
+      "enquiryDate": "2025-12-01",
+      "companyName": "Tech Innovators Ltd.",
+      "mobileNumber": "9876543210",
+      "source": "Web",
+      "type": "New",
+      "assignedTo": "John Doe",
+      "actionType": "Call",
+      "priority": "High",
+      "status": "Open",
+      "id": 1
+    }
+  ]
+}

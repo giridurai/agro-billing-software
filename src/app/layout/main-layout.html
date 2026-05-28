@@ -1,0 +1,241 @@
+<div class="main-content-layout">
+  <!-- Top Navbar -->
+  <nav class="navbar fixed-top d-flex align-items-center justify-content-between">
+    <div class="nav-left h-100 d-flex align-items-center">
+      <div class="sidebar-brand">
+        <h3 class="logo-text mb-0 d-flex align-items-center">
+          PUVILINK<span class="text-accent ms-1" style="font-size: 0.7em;">CRM</span>
+        </h3>
+      </div>
+      <div class="d-flex align-items-center border-start ps-4 ms-2" style="height: 40px;">
+        <h4 class="page-title mb-0 fw-bold">{{ currentPageTitle }}</h4>
+      </div>
+    </div>
+
+    <div class="nav-right pe-4 h-100 d-flex align-items-center gap-3">
+      <!-- Global Search -->
+      <div class="stylish-search d-none d-md-flex me-2">
+        <i class="mdi mdi-magnify"></i>
+        <input type="text" class="form-control" placeholder="Search CRM...">
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="d-flex align-items-center gap-1 border-end pe-3 me-1 h-50">
+        <!-- Notifications Dropdown -->
+        <div class="dropdown">
+          <a class="dash-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+            title="Notifications" (click)="notificationService.markAllAsRead()">
+            <i class="mdi mdi-bell-outline"></i>
+            <span *ngIf="notificationService.getUnreadCount() > 0" class="position-absolute top-25 start-75 translate-middle badge rounded-pill bg-danger shadow-sm"
+              style="padding: 3px 5px; font-size: 0.55rem;">{{ notificationService.getUnreadCount() }}</span>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end p-0 border-0 shadow-lg"
+            style="width: 320px; border-radius: 12px; overflow: hidden; margin-top: 10px;">
+            <div class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+              <h6 class="mb-0 fw-bold fs-7">Activity Log</h6>
+              <span class="badge bg-primary rounded-pill fs-8">{{ (notifications$ | async)?.length || 0 }} Total</span>
+            </div>
+            <div class="list-group list-group-flush" style="max-height: 350px; overflow-y: auto;">
+              <!-- Dynamic Notifications -->
+              <ng-container *ngIf="(notifications$ | async) as notifications; else loading">
+                <div *ngIf="notifications.length === 0" class="p-5 text-center">
+                   <i class="mdi mdi-bell-off-outline fs-1 text-muted opacity-25"></i>
+                   <p class="mb-0 fs-8 text-muted mt-2">No recent activity found.</p>
+                </div>
+                <a *ngFor="let note of notifications" href="#" class="list-group-item list-group-item-action p-3 border-bottom-0" [class.bg-light]="!note.read">
+                  <div class="d-flex w-100 justify-content-between align-items-center mb-1">
+                    <h6 class="mb-0 fs-7 fw-bold text-dark">{{ note.title }}</h6>
+                    <small class="text-muted" style="font-size: 0.6rem;">{{ note.time | date:'shortTime' }}</small>
+                  </div>
+                  <p class="mb-0 fs-8 text-muted">{{ note.message }}</p>
+                </a>
+              </ng-container>
+              <ng-template #loading>
+                <div class="p-4 text-center">
+                  <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                </div>
+              </ng-template>
+            </div>
+            <div class="p-2 border-top text-center bg-white d-flex justify-content-between px-3">
+              <a (click)="notificationService.clearAll()" class="text-muted fs-8 text-decoration-none cursor-pointer" role="button">Clear All</a>
+              <a href="#" class="text-primary fs-8 fw-bold text-decoration-none">View All</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Theme Mode Dropdown -->
+        <div class="dropdown">
+          <a class="dash-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+            title="Color Mode">
+            <i class="mdi mdi-theme-light-dark"></i>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end shadow-lg p-3"
+            style="width: 280px; border-radius: 12px; margin-top: 10px;">
+            <h6 class="dropdown-header text-uppercase fs-8 fw-bold text-muted p-0 mb-3" style="letter-spacing: 0.05em;">
+              Color Mode</h6>
+
+            <div class="theme-option p-2 rounded-3 border mb-2" [class.active]="themeService.getTheme() === 'light'"
+              (click)="themeService.setTheme('light')" style="cursor: pointer; transition: all 0.2s;"
+              [style.border-color]="themeService.getTheme() === 'light' ? '#2563eb' : ''"
+              [style.background]="themeService.getTheme() === 'light' ? '#eff6ff' : ''">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                  <div
+                    class="icon-circle bg-white shadow-sm rounded-circle d-flex align-items-center justify-content-center"
+                    style="width: 36px; height: 36px;">
+                    <i class="mdi mdi-white-balance-sunny text-primary fs-5"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-bold fs-8" [class.text-dark]="themeService.getTheme() === 'light'">Light theme
+                    </h6>
+                    <p class="mb-0 text-muted" style="font-size: 0.65rem;">Set light theme or reset to default</p>
+                  </div>
+                </div>
+                <div class="radio-indicator rounded-circle border d-flex align-items-center justify-content-center"
+                  style="width: 18px; height: 18px;"
+                  [style.border-color]="themeService.getTheme() === 'light' ? '#2563eb' : ''">
+                  <div *ngIf="themeService.getTheme() === 'light'" class="rounded-circle bg-primary"
+                    style="width: 10px; height: 10px;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="theme-option p-2 rounded-3 border" [class.active]="themeService.getTheme() === 'dark'"
+              (click)="themeService.setTheme('dark')" style="cursor: pointer; transition: all 0.2s;"
+              [style.border-color]="themeService.getTheme() === 'dark' ? '#2563eb' : ''"
+              [style.background]="themeService.getTheme() === 'dark' ? '#1e293b' : ''">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="icon-circle rounded-circle d-flex align-items-center justify-content-center"
+                    [style.background]="themeService.getTheme() === 'dark' ? '#334155' : '#f8f9fa'"
+                    style="width: 36px; height: 36px;">
+                    <i class="mdi mdi-weather-night fs-5" [class.text-primary]="themeService.getTheme() === 'dark'"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0 fw-bold fs-8" [class.text-white]="themeService.getTheme() === 'dark'">Dark theme
+                    </h6>
+                    <p class="mb-0 text-muted" style="font-size: 0.65rem;">Switch to dark theme</p>
+                  </div>
+                </div>
+                <div class="radio-indicator rounded-circle border d-flex align-items-center justify-content-center"
+                  style="width: 18px; height: 18px;"
+                  [style.border-color]="themeService.getTheme() === 'dark' ? '#2563eb' : ''">
+                  <div *ngIf="themeService.getTheme() === 'dark'" class="rounded-circle bg-primary"
+                    style="width: 10px; height: 10px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Dropdown -->
+        <div class="dropdown">
+          <a class="dash-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Settings">
+            <i class="mdi mdi-cog-outline"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end shadow-lg"
+            style="margin-top: 10px; border-radius: 12px; min-width: 220px; padding: 10px;">
+            <li>
+              <h6 class="dropdown-header text-uppercase fs-8 fw-bold text-muted" style="letter-spacing: 0.05em;">
+                Configuration</h6>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+                <i class="mdi mdi-office-building-outline text-muted fs-6"></i>
+                <span>Company Settings</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+                <i class="mdi mdi-account-group-outline text-muted fs-6"></i>
+                <span>User Management</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider my-2">
+            </li>
+            <li>
+              <h6 class="dropdown-header text-uppercase fs-8 fw-bold text-muted" style="letter-spacing: 0.05em;">
+                Preferences</h6>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+                <i class="mdi mdi-palette-outline text-muted fs-6"></i>
+                <span>Theme & Appearance</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+                <i class="mdi mdi-shield-check-outline text-muted fs-6"></i>
+                <span>Security Settings</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider my-2">
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-primary fw-bold" routerLink="/settings">
+                <i class="mdi mdi-cogs text-primary fs-6"></i>
+                <span>All Settings</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- User Profile Dropdown -->
+      <div class="dropdown ms-2">
+        <div class="d-flex align-items-center gap-3" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+          style="cursor: pointer;">
+          <div class="text-end d-none d-lg-block">
+            <p class="mb-0 fs-8 fw-bold text-main">Administrator</p>
+            <p class="mb-0 text-muted" style="font-size: 0.65rem; letter-spacing: 0.02em;">admin@ripo.com</p>
+          </div>
+          <div class="dash-link bg-primary-subtle text-primary border-0 rounded-circle">
+            <i class="mdi mdi-account fs-5"></i>
+          </div>
+        </div>
+        <ul class="dropdown-menu dropdown-menu-end shadow-lg p-2"
+          style="margin-top: 15px; border-radius: 12px; min-width: 200px;">
+          <li>
+            <h6 class="dropdown-header text-uppercase fs-8 fw-bold text-muted" style="letter-spacing: 0.05em;">User
+              Account</h6>
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center gap-2 py-2" routerLink="/profile">
+              <i class="mdi mdi-account-circle-outline text-muted fs-6"></i>
+              <span>My Profile</span>
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+              <i class="mdi mdi-lock-reset text-muted fs-6"></i>
+              <span>Reset Password</span>
+            </a>
+          </li>
+          <li>
+            <hr class="dropdown-divider my-2">
+          </li>
+          <li>
+            <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger" (click)="logout()" role="button">
+              <i class="mdi mdi-logout-variant fs-6"></i>
+              <span class="fw-bold">Log Out</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="d-flex">
+    <!-- Sidebar -->
+    <app-sidebar />
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="content-container">
+        <router-outlet />
+      </div>
+    </main>
+  </div>
+</div>

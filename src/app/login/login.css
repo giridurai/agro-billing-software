@@ -1,0 +1,235 @@
+/* MNC Corporate Login Styles */
+.login-page {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: #fff;
+}
+
+.login-split {
+  display: flex;
+  height: 100%;
+}
+
+/* Branding Panel (Left) */
+.brand-panel {
+  flex: 1.2;
+  background: linear-gradient(rgba(11, 44, 91, 0.85), rgba(11, 44, 91, 0.85)),
+    url('/mnc_login_side_image_1777282364987.png') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem;
+  color: #fff;
+}
+
+.brand-content {
+  max-width: 500px;
+}
+
+.badge-dot {
+  width: 10px;
+  height: 10px;
+  background: #3b82f6;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #3b82f6;
+}
+
+/* Form Panel (Right) */
+.form-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  background: #f8fafc;
+  position: relative;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  padding: 3rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.input-group-custom {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-group-custom i {
+  position: absolute;
+  left: 1.25rem;
+  color: #94a3b8;
+  font-size: 1.25rem;
+  transition: color 0.3s;
+}
+
+.input-group-custom .form-control {
+  padding-left: 3.5rem;
+  height: 55px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  color: #1e293b;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.input-group-custom .form-control:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  background: #fff;
+}
+
+.input-group-custom .form-control:focus+i {
+  color: #3b82f6;
+}
+
+.btn-toggle-pass {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.btn-toggle-pass:hover {
+  color: #3b82f6;
+}
+
+.input-group-custom.is-invalid .form-control {
+  border-color: #ef4444;
+}
+
+.input-group-custom.is-invalid i {
+  color: #ef4444 !important;
+}
+
+.btn-primary {
+  height: 55px;
+  background: #1e293b;
+  /* Corporate Dark */
+  border: none;
+  border-radius: 10px;
+  letter-spacing: 0.1em;
+  font-size: 0.85rem;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  background: #0f172a;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.form-footer {
+  position: absolute;
+  bottom: 2rem;
+  text-align: center;
+}
+
+@media (max-width: 992px) {
+  .brand-panel {
+    display: none;
+  }
+}
+
+.fs-8 {
+  font-size: 0.75rem;
+}
+
+.fs-7 {
+  font-size: 0.85rem;
+}
+
+/* Entrance Animations */
+.brand-content {
+  animation: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.login-box {
+  animation: fadeInBlur 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-stagger-1 {
+  animation-delay: 0.1s;
+}
+
+.animate-stagger-2 {
+  animation-delay: 0.2s;
+}
+
+.animate-stagger-3 {
+  animation-delay: 0.3s;
+}
+
+.animate-stagger-4 {
+  animation-delay: 0.4s;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInBlur {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Hover & Focus Interactions */
+.input-group-custom .form-control:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.badge-dot {
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+  }
+}

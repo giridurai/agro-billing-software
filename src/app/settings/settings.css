@@ -1,0 +1,53 @@
+.settings-container {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.setting-card {
+  border-radius: 16px !important;
+  background: var(--color-surface);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  border: 1px solid transparent !important;
+}
+
+.setting-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08) !important;
+  border-color: #e2e8f0 !important;
+}
+
+.icon-box {
+  transition: all 0.3s ease;
+}
+
+.setting-card:hover .icon-box {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.configure-link {
+  transition: all 0.2s;
+  opacity: 0.8;
+}
+
+.setting-card:hover .configure-link {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Fallback colors for MNC style premium look */
+.bg-primary-subtle { background-color: #eff6ff !important; }
+.bg-success-subtle { background-color: #f0fdf4 !important; }
+.bg-warning-subtle { background-color: #fffbeb !important; }
+.bg-info-subtle { background-color: #f0f9ff !important; }
+.bg-danger-subtle { background-color: #fef2f2 !important; }
+
+.text-primary { color: #2563eb !important; }
+.text-success { color: #16a34a !important; }
+.text-warning { color: #d97706 !important; }
+.text-info { color: #0284c7 !important; }
+.text-danger { color: #dc2626 !important; }

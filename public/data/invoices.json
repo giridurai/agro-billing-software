@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "invoiceNo": "INV-1001",
+    "orderNo": "ORD-5001",
+    "customerName": "ABC Traders",
+    "status": "Paid",
+    "dueDate": "2025-12-01",
+    "amount": 25000,
+    "balanceDue": 0,
+    "items": [
+      {
+        "name": "Product A",
+        "quantity": 2,
+        "rate": 5000,
+        "cgst": 5,
+        "sgst": 5,
+        "discount": 2,
+        "hsnCode": "847130",
+        "amount": 11000
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "invoiceNo": "INV-1002",
+    "orderNo": "ORD-5002",
+    "customerName": "XYZ Enterprises",
+    "status": "Pending",
+    "dueDate": "2025-12-05",
+    "amount": 40000,
+    "balanceDue": 15000,
+    "items": [
+      {
+        "name": "Service A",
+        "quantity": 4,
+        "rate": 10000,
+        "cgst": 9,
+        "sgst": 9,
+        "hsnCode": "998312",
+        "discount": 3,
+        "amount": 47200
+      }
+    ]
+  }
+]

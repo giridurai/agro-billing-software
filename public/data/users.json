@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "firstName": "Arun",
+    "lastName": "Rao",
+    "joiningDate": "2025-01-10",
+    "email": "arun.rao@example.com",
+    "phoneNumber": "9876543210",
+    "gender": "Male",
+    "role": "admin",
+    "password": "password123"
+  },
+  {
+    "id": 2,
+    "firstName": "Priya",
+    "lastName": "Sharma",
+    "joiningDate": "2025-02-15",
+    "email": "priya.sharma@example.com",
+    "phoneNumber": "9123456780",
+    "gender": "Female",
+    "role": "user",
+    "password": "securepass"
+  }
+]

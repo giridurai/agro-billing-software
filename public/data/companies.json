@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1,
+    "companyName": "Tech Solutions Pvt Ltd",
+    "pan": "ABCDE1234F",
+    "gst": "27ABCDE1234F1Z5",
+    "contactNumber": "9876543210",
+    "email": "info@techsolutions.com",
+    "contactPerson": "Ramesh Kumar",
+    "status": "Active",
+    "industryType": "IT",
+    "shippingAddress": "456, Tech Park, Silicon City",
+    "billingAddress": "456, Tech Park, Silicon City"
+  },
+  {
+    "id": 2,
+    "companyName": "Innovatech Systems",
+    "pan": "PQRSX5678Y",
+    "gst": "29PQRSX5678Y1Z9",
+    "contactNumber": "9123456780",
+    "email": "contact@innovatech.com",
+    "contactPerson": "Priya Sharma",
+    "status": "Inactive",
+    "industryType": "Finance",
+    "shippingAddress": "123, Market Street, Cityville",
+    "billingAddress": "123, Market Street, Cityville"
+  }
+]

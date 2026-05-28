@@ -1,0 +1,261 @@
+<div class="hp-wrapper">
+
+  <!-- ═══ HERO BANNER ═══ -->
+  <div class="hp-hero">
+    <div class="hp-hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="hp-hero-content">
+      <div class="hp-hero-left">
+        <div class="hp-greeting-badge anim-fade-up" style="animation-delay:0.05s">
+          <span class="pulse-dot"></span> Live Dashboard
+        </div>
+        <h1 class="hp-hero-title anim-fade-up" style="animation-delay:0.12s">
+          Welcome back,<br><span class="hp-hero-name">Administrator</span>
+        </h1>
+        <p class="hp-hero-sub anim-fade-up" style="animation-delay:0.2s">
+          Your business is accelerating! Growth is currently <strong>12% higher</strong> than target this month.
+        </p>
+        <div class="hp-hero-actions anim-fade-up" style="animation-delay:0.28s">
+          <button class="hp-btn-solid" routerLink="/enquiry">
+            <i class="mdi mdi-plus-circle-outline me-2"></i> New Lead
+          </button>
+          <button class="hp-btn-ghost">
+            <i class="mdi mdi-download-outline me-2"></i> Export Report
+          </button>
+        </div>
+      </div>
+      <div class="hp-hero-right anim-fade-up" style="animation-delay:0.18s">
+        <div class="hp-hero-badge-group">
+          <div class="hp-mini-badge green">
+            <i class="mdi mdi-trending-up"></i> <span>+24.8% Revenue</span>
+          </div>
+          <div class="hp-mini-badge blue">
+            <i class="mdi mdi-shield-check-outline"></i> <span>System Secure</span>
+          </div>
+          <div class="hp-mini-badge amber">
+            <i class="mdi mdi-clock-fast"></i> <span>Real-Time Sync</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ STAT CARDS ═══ -->
+  <div class="hp-stats-row">
+
+    <div class="hp-stat-card anim-fade-up" style="animation-delay:0.1s" routerLink="/contact">
+      <div class="hp-stat-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
+        <i class="mdi mdi-account-group-outline"></i>
+      </div>
+      <div class="hp-stat-body">
+        <span class="hp-stat-label">Total Contacts</span>
+        <h2 class="hp-stat-value" id="contact-count">0</h2>
+        <div class="hp-stat-trend up"><i class="mdi mdi-trending-up me-1"></i>Live Sync</div>
+      </div>
+      <div class="hp-stat-bg-icon"><i class="mdi mdi-account-multiple"></i></div>
+    </div>
+
+    <div class="hp-stat-card anim-fade-up" style="animation-delay:0.18s" routerLink="/company">
+      <div class="hp-stat-icon" style="background:linear-gradient(135deg,#10b981,#34d399)">
+        <i class="mdi mdi-office-building-outline"></i>
+      </div>
+      <div class="hp-stat-body">
+        <span class="hp-stat-label">Active Companies</span>
+        <h2 class="hp-stat-value" id="company-count">0</h2>
+        <div class="hp-stat-trend up"><i class="mdi mdi-trending-up me-1"></i>Active</div>
+      </div>
+      <div class="hp-stat-bg-icon"><i class="mdi mdi-domain"></i></div>
+    </div>
+
+    <div class="hp-stat-card anim-fade-up" style="animation-delay:0.26s" routerLink="/enquiry">
+      <div class="hp-stat-icon" style="background:linear-gradient(135deg,#f59e0b,#fbbf24)">
+        <i class="mdi mdi-email-open-outline"></i>
+      </div>
+      <div class="hp-stat-body">
+        <span class="hp-stat-label">Pending Enquiries</span>
+        <h2 class="hp-stat-value" id="enquiry-count">0</h2>
+        <div class="hp-stat-trend down"><i class="mdi mdi-trending-down me-1"></i>Tracking</div>
+      </div>
+      <div class="hp-stat-bg-icon"><i class="mdi mdi-email-multiple-outline"></i></div>
+    </div>
+
+    <div class="hp-stat-card anim-fade-up" style="animation-delay:0.34s" routerLink="/invoice">
+      <div class="hp-stat-icon" style="background:linear-gradient(135deg,#0a58ca,#3b82f6)">
+        <i class="mdi mdi-currency-inr"></i>
+      </div>
+      <div class="hp-stat-body">
+        <span class="hp-stat-label">Monthly Revenue</span>
+        <h2 class="hp-stat-value" id="revenue-count">₹0</h2>
+        <div class="hp-stat-trend up"><i class="mdi mdi-trending-up me-1"></i>Total</div>
+      </div>
+      <div class="hp-stat-bg-icon"><i class="mdi mdi-chart-bar"></i></div>
+    </div>
+
+  </div>
+
+  <!-- ═══ MAIN CONTENT GRID ═══ -->
+  <div class="hp-grid">
+
+    <!-- LEFT: Chart + Activity -->
+    <div class="hp-panel anim-fade-up" style="animation-delay:0.2s">
+      <div class="hp-panel-header">
+        <div>
+          <h3 class="hp-panel-title">Growth Analytics</h3>
+          <p class="hp-panel-sub">Live revenue tracking & forecasting</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="hp-growth-chip"><i class="mdi mdi-arrow-top-right me-1"></i>+24.8%</span>
+          <select class="form-select form-select-sm border-0 bg-light rounded-pill"
+            style="width:110px;font-size:0.78rem">
+            <option>Monthly</option>
+            <option>Quarterly</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SVG Chart -->
+      <div class="hp-chart-wrap">
+        <svg viewBox="0 0 800 240" class="w-100" style="overflow:visible">
+          <defs>
+            <linearGradient id="hpGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0a58ca" stop-opacity="0.18" />
+              <stop offset="100%" stop-color="#0a58ca" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="60" x2="800" y2="60" stroke="#f1f5f9" stroke-width="1" />
+          <line x1="0" y1="120" x2="800" y2="120" stroke="#f1f5f9" stroke-width="1" />
+          <line x1="0" y1="180" x2="800" y2="180" stroke="#f1f5f9" stroke-width="1" />
+          <path d="M0,200 C80,180 130,195 200,155 S310,70 400,100 S520,40 600,55 S720,20 800,30 L800,240 L0,240Z"
+            fill="url(#hpGrad)" />
+          <path class="hp-chart-path" d="M0,200 C80,180 130,195 200,155 S310,70 400,100 S520,40 600,55 S720,20 800,30"
+            fill="none" stroke="#0a58ca" stroke-width="3" stroke-linecap="round" />
+          <circle cx="200" cy="155" r="5" fill="#0a58ca" />
+          <circle cx="400" cy="100" r="5" fill="#0a58ca" />
+          <circle cx="600" cy="55" r="7" fill="#10b981" />
+          <circle cx="800" cy="30" r="7" fill="#10b981" class="hp-blink" />
+        </svg>
+        <div class="hp-chart-labels">
+          <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="hp-section-title mt-4">
+        <h3 class="hp-panel-title">Recent Activity</h3>
+        <a href="#" class="hp-link-btn">View All</a>
+      </div>
+      <div class="hp-activity-list">
+        <div class="hp-activity-item anim-fade-up" style="animation-delay:0.3s">
+          <div class="hp-avatar" style="background:#ede9fe;color:#6366f1">JD</div>
+          <div class="hp-activity-text">
+            <p><strong>John Doe</strong> added a new enquiry for <strong>TechCorp Solutions</strong></p>
+            <span><i class="mdi mdi-clock-outline me-1"></i>2 hours ago</span>
+          </div>
+        </div>
+        <div class="hp-activity-item anim-fade-up" style="animation-delay:0.38s">
+          <div class="hp-avatar" style="background:#dcfce7;color:#10b981">AS</div>
+          <div class="hp-activity-text">
+            <p><strong>Alice Smith</strong> closed a deal with <strong>Global Industries</strong></p>
+            <span><i class="mdi mdi-clock-outline me-1"></i>5 hours ago</span>
+          </div>
+        </div>
+        <div class="hp-activity-item anim-fade-up" style="animation-delay:0.46s">
+          <div class="hp-avatar" style="background:#fef9c3;color:#eab308">RK</div>
+          <div class="hp-activity-text">
+            <p><strong>Robert King</strong> updated the invoice for <strong>Quantum Soft</strong></p>
+            <span><i class="mdi mdi-clock-outline me-1"></i>Yesterday 4:30 PM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Quick Actions + KPIs -->
+    <div class="hp-side-col">
+
+      <!-- Quick Actions -->
+      <div class="hp-panel anim-fade-up" style="animation-delay:0.25s">
+        <div class="hp-panel-header">
+          <h3 class="hp-panel-title">Quick Actions</h3>
+        </div>
+        <div class="d-grid gap-2 mt-1">
+          <button class="hp-action-btn primary" routerLink="/quotation">
+            <span class="d-flex align-items-center gap-2">
+              <i class="mdi mdi-file-document-edit-outline"></i> Create Quotation
+            </span>
+            <i class="mdi mdi-chevron-right"></i>
+          </button>
+          <button class="hp-action-btn outline-primary" routerLink="/enquiry">
+            <span class="d-flex align-items-center gap-2">
+              <i class="mdi mdi-calendar-plus"></i> New Enquiry
+            </span>
+            <i class="mdi mdi-chevron-right"></i>
+          </button>
+          <button class="hp-action-btn outline-secondary" routerLink="/invoice">
+            <span class="d-flex align-items-center gap-2">
+              <i class="mdi mdi-receipt-outline"></i> Generate Invoice
+            </span>
+            <i class="mdi mdi-chevron-right"></i>
+          </button>
+          <button class="hp-action-btn outline-secondary" routerLink="/contact">
+            <span class="d-flex align-items-center gap-2">
+              <i class="mdi mdi-account-plus-outline"></i> Add Contact
+            </span>
+            <i class="mdi mdi-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Task Progress -->
+      <div class="hp-panel anim-fade-up" style="animation-delay:0.32s">
+        <div class="hp-panel-header">
+          <h3 class="hp-panel-title">Task Overview</h3>
+        </div>
+        <div class="hp-progress-list">
+          <div class="hp-progress-item">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="fs-7 fw-medium">Lead Conversion</span>
+              <span class="fs-8 text-muted fw-bold">75%</span>
+            </div>
+            <div class="hp-progress-track">
+              <div class="hp-progress-bar" style="width:75%;background:linear-gradient(90deg,#6366f1,#8b5cf6)"></div>
+            </div>
+          </div>
+          <div class="hp-progress-item">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="fs-7 fw-medium">Invoice Processing</span>
+              <span class="fs-8 text-muted fw-bold">40%</span>
+            </div>
+            <div class="hp-progress-track">
+              <div class="hp-progress-bar" style="width:40%;background:linear-gradient(90deg,#10b981,#34d399)"></div>
+            </div>
+          </div>
+          <div class="hp-progress-item">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="fs-7 fw-medium">Client Feedback</span>
+              <span class="fs-8 text-muted fw-bold">90%</span>
+            </div>
+            <div class="hp-progress-track">
+              <div class="hp-progress-bar" style="width:90%;background:linear-gradient(90deg,#f59e0b,#fbbf24)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Score Card -->
+      <div class="hp-score-card anim-fade-up" style="animation-delay:0.4s">
+        <div class="hp-score-ring">
+          <span class="hp-score-val">92%</span>
+          <div class="hp-ring-pulse"></div>
+        </div>
+        <h5 class="hp-score-title">Business Growth Score</h5>
+        <p class="hp-score-sub">Excellent! You're in the <strong>top 5%</strong> of companies in your sector this month.
+        </p>
+        <button class="hp-btn-solid-sm">View Analytics</button>
+      </div>
+
+    </div>
+  </div>
+</div>
