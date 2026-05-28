@@ -119,4 +119,61 @@ export interface Item {
   sgst: number;
   hsnCode: string;
   discount: number;
+  category?: string;
+  unit?: string;
+  stockQuantity?: number;
 }
+
+export interface Supplier {
+  id: number;
+  supplierName: string;
+  contactNumber: string;
+  address: string;
+  gstNumber: string;
+}
+
+export interface PurchaseInvoiceItem {
+  name: string;
+  quantity: number;
+  rate: number;
+  cgst: number;
+  sgst: number;
+  amount: number;
+}
+
+export interface PurchaseInvoice {
+  id: number;
+  invoiceNo: string;
+  supplierName: string;
+  invoiceDate: string;
+  dueDate: string;
+  amount: number;
+  status: 'Paid' | 'Pending' | 'Overdue';
+  items: PurchaseInvoiceItem[];
+}
+
+export interface ReturnRecord {
+  id: number;
+  returnNumber: string;
+  product: string;
+  quantity: number;
+  reason: string;
+  date: string;
+}
+
+export interface StockRecord {
+  id: number;
+  product: string;
+  quantity: number;
+  date: string;
+  type: 'Inward' | 'Outward';
+  notes?: string;
+}
+
+export interface Warehouse {
+  id: number;
+  warehouseName: string;
+  location: string;
+  capacity: number;
+}
+

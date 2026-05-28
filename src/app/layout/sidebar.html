@@ -2,7 +2,7 @@
 <nav class="sidebar fixed-top-side transition-all">
   <div class="nav-container pt-3">
     <ul class="nav flex-column mb-auto">
-      <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-3 opacity-50">
+      <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-2 opacity-50">
         Dashboard
       </div>
 
@@ -13,56 +13,97 @@
         </a>
       </li>
 
-      <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-3 opacity-50">
-        Sales Pipeline
+      <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-2 opacity-50">
+        Masters
       </div>
 
       <li class="nav-item">
-        <a class="nav-link" routerLink="/enquiry" routerLinkActive="active">
-          <i class="mdi mdi-comment-search-outline menu-icon"></i>
-          <span>Enquiry Tracking</span>
+        <a class="nav-link" routerLink="/iteam" routerLinkActive="active">
+          <i class="mdi mdi-sprout menu-icon"></i>
+          <span>Products</span>
         </a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" routerLink="/company" routerLinkActive="active">
+          <i class="mdi mdi-account-group-outline menu-icon"></i>
+          <span>Customers</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/suppliers" routerLinkActive="active">
+          <i class="mdi mdi-truck-delivery menu-icon"></i>
+          <span>Suppliers</span>
+        </a>
+      </li>
+
+      <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-2 opacity-50">
+        Transactions
+      </div>
+
+      <li class="nav-item">
         <a class="nav-link" routerLink="/quotation" routerLinkActive="active">
           <i class="mdi mdi-file-document-edit-outline menu-icon"></i>
-          <span>Quotation Master</span>
+          <span>Quotations</span>
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="/invoice" routerLinkActive="active">
           <i class="mdi mdi-cash-register menu-icon"></i>
-          <span>Billing & Invoices</span>
+          <span>Sales Invoice</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/purchase-invoice" routerLinkActive="active">
+          <i class="mdi mdi-briefcase-download menu-icon"></i>
+          <span>Purchase Invoice</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/returns" routerLinkActive="active">
+          <i class="mdi mdi-keyboard-return menu-icon"></i>
+          <span>Returns</span>
         </a>
       </li>
 
-      <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-3 opacity-50">
-        Master Data
+      <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-2 opacity-50">
+        Inventory
       </div>
 
       <li class="nav-item">
-        <a class="nav-link" routerLink="/company" routerLinkActive="active">
-          <i class="mdi mdi-office-building-outline menu-icon"></i>
-          <span>Company</span>
+        <a class="nav-link" routerLink="/stock-inward" routerLinkActive="active">
+          <i class="mdi mdi-arrow-down-bold-circle-outline menu-icon"></i>
+          <span>Stock Inward</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/iteam" routerLinkActive="active">
-          <i class="mdi mdi-barcode-scan menu-icon"></i>
-          <span>Item Master</span>
+        <a class="nav-link" routerLink="/stock-outward" routerLinkActive="active">
+          <i class="mdi mdi-arrow-up-bold-circle-outline menu-icon"></i>
+          <span>Stock Outward</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/contact" routerLinkActive="active">
-          <i class="mdi mdi-account-details-outline menu-icon"></i>
-          <span>Personal Contacts</span>
+        <a class="nav-link" routerLink="/warehouse" routerLinkActive="active">
+          <i class="mdi mdi-warehouse menu-icon"></i>
+          <span>Warehouse</span>
         </a>
       </li>
 
-      <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-3 opacity-50">
-        Administration
+      <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-2 opacity-50">
+        Reports & Settings
       </div>
 
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/reports" routerLinkActive="active">
+          <i class="mdi mdi-chart-bar-stacked menu-icon"></i>
+          <span>Reports</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/settings" routerLinkActive="active">
+          <i class="mdi mdi-cog-outline menu-icon"></i>
+          <span>Settings</span>
+        </a>
+      </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="/User" routerLinkActive="active">
           <i class="mdi mdi-shield-account-outline menu-icon"></i>
@@ -73,6 +114,6 @@
   </div>
 
   <div class="sidebar-footer p-3 border-top border-light opacity-50 mt-auto">
-    <p class="mb-0 fs-8 text-white px-3">Puvilink CRM</p>
+    <p class="mb-0 fs-8 text-white px-3">Puvilink Agro</p>
   </div>
 </nav>

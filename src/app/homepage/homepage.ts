@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../services/api.service';
+import { Invoice } from '../models';
 
 @Component({
   selector: 'app-homepage',
@@ -11,10 +12,11 @@ import { ApiService } from '../services/api.service';
   styleUrl: './homepage.css',
 })
 export class Homepage implements OnInit {
-  contactCount: number = 0;
-  companyCount: number = 0;
-  enquiryCount: number = 0;
-  revenue: number = 0;
+  salesTotal: number = 0;
+  purchaseTotal: number = 0;
+  customerCount: number = 0;
+  productCount: number = 0;
+  recentSales: Invoice[] = [];
 
   constructor(private apiService: ApiService) {}
 
@@ -23,25 +25,29 @@ export class Homepage implements OnInit {
   }
 
   loadStats() {
-    // Fetch live counts from ApiService
-    this.apiService.getContacts().subscribe(data => {
-      this.contactCount = data.length;
-      this.runCounterAnimation('contact-count', this.contactCount);
-    });
-
-    this.apiService.getCompanies().subscribe(data => {
-      this.companyCount = data.length;
-      this.runCounterAnimation('company-count', this.companyCount);
-    });
-
-    this.apiService.getQuotations().subscribe(data => {
-      this.enquiryCount = data.length;
-      this.runCounterAnimation('enquiry-count', this.enquiryCount);
-    });
-
+    // 1. Total Sales
     this.apiService.getInvoices().subscribe(data => {
-      this.revenue = data.reduce((acc, inv) => acc + (Number(inv.amount) || 0), 0);
-      this.runCounterAnimation('revenue-count', this.revenue, true);
+      this.salesTotal = data.reduce((acc, inv) => acc + (Number(inv.amount) || 0), 0);
+      this.recentSales = data.slice(-4).reverse();
+      this.runCounterAnimation('sales-count', this.salesTotal, true);
+    });
+
+    // 2. Total Purchase
+    this.apiService.getPurchaseInvoices().subscribe(data => {
+      this.purchaseTotal = data.reduce((acc, inv) => acc + (Number(inv.amount) || 0), 0);
+      this.runCounterAnimation('purchase-count', this.purchaseTotal, true);
+    });
+
+    // 3. Customers Count
+    this.apiService.getCompanies().subscribe(data => {
+      this.customerCount = data.length;
+      this.runCounterAnimation('customer-count', this.customerCount);
+    });
+
+    // 4. Products Count
+    this.apiService.getItems().subscribe(data => {
+      this.productCount = data.length;
+      this.runCounterAnimation('product-count', this.productCount);
     });
   }
 
@@ -50,14 +56,12 @@ export class Homepage implements OnInit {
     if (!el) return;
 
     let current = 0;
-    const duration = 2000; // 2 seconds for a premium feel
+    const duration = 1500;
     const start = performance.now();
 
     const animate = (currentTime: number) => {
       const elapsed = currentTime - start;
       const progress = Math.min(elapsed / duration, 1);
-      
-      // Smooth Easing (Out-Expo)
       const easedProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
       current = easedProgress * target;
       

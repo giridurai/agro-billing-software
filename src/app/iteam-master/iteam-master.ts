@@ -22,6 +22,9 @@ export class IteamMaster implements OnInit {
   itemData: Item = this.resetItemData();
   searchText: string = '';
 
+  categories: string[] = ['Fertilizers', 'Seeds', 'Pesticides', 'Bio-Organics', 'Tools', 'Irrigation'];
+  units: string[] = ['Bag (50kg)', 'Bag (25kg)', 'Bag (40kg)', 'Bottle (1L)', 'Bottle (500ml)', 'Canister (5L)', 'Pcs', 'Kg', 'Litre'];
+
   constructor(
     private apiService: ApiService,
     private notificationService: NotificationService
@@ -45,9 +48,12 @@ export class IteamMaster implements OnInit {
       description: '',
       hsnCode: '',
       rate: 0,
-      cgst: 0,
-      sgst: 0,
+      cgst: 5,
+      sgst: 5,
       discount: 0,
+      category: 'Fertilizers',
+      unit: 'Bag (50kg)',
+      stockQuantity: 100
     };
   }
 
@@ -59,7 +65,7 @@ export class IteamMaster implements OnInit {
       popupWin!.document.write(`
       <html>
         <head>
-          <title>Item Details</title>
+          <title>Product Details</title>
           <style>
             body { font-family: Arial, sans-serif; margin: 20px; }
             h5 { margin-bottom: 15px; }
@@ -97,33 +103,31 @@ export class IteamMaster implements OnInit {
   saveItem(form: any): void {
     if (form.valid) {
       if (this.selectedItem) {
-        // Update on server
         this.apiService.updateItem(this.itemData).subscribe({
             next: () => {
                 this.loadItems();
                 this.notificationService.addNotification(
-                  'Catalog Updated', 
-                  `Item "${this.itemData.name}" has been modified in the master catalog.`,
+                  'Product Catalog Updated', 
+                  `Product "${this.itemData.name}" has been modified in the catalog.`,
                   'system'
                 );
-                Swal.fire('Updated!', 'Inventory item modified.', 'success');
+                Swal.fire('Updated!', 'Product details modified.', 'success');
                 this.closeItemModal();
             },
             error: () => Swal.fire('Error', 'Update failed', 'error')
         });
       } else {
-        // Add on server
         const newItem = { ...this.itemData };
         delete (newItem as any).id;
         this.apiService.addItem(newItem).subscribe({
             next: () => {
                 this.loadItems();
                 this.notificationService.addNotification(
-                  'New Item Added', 
-                  `"${this.itemData.name}" added to the product catalog.`,
+                  'New Product Added', 
+                  `Product "${this.itemData.name}" added to the catalog.`,
                   'system'
                 );
-                Swal.fire('Added!', 'Item added to catalog.', 'success');
+                Swal.fire('Added!', 'Product added to catalog.', 'success');
                 this.closeItemModal();
             },
             error: () => Swal.fire('Error', 'Addition failed', 'error')
@@ -141,7 +145,7 @@ export class IteamMaster implements OnInit {
 
   deleteItem(id: number): void {
     Swal.fire({
-        title: 'Remove this item?',
+        title: 'Remove this product?',
         icon: 'warning',
         showCancelButton: true
     }).then((result) => {
@@ -150,11 +154,11 @@ export class IteamMaster implements OnInit {
                 next: () => {
                     this.loadItems();
                     this.notificationService.addNotification(
-                      'Item Purged', 
+                      'Product Removed', 
                       'A product has been removed from the catalog.',
                       'system'
                     );
-                    Swal.fire('Removed!', 'Item purged from catalog.', 'success');
+                    Swal.fire('Removed!', 'Product removed from catalog.', 'success');
                 },
                 error: () => Swal.fire('Error', 'Deletion failed', 'error')
             });

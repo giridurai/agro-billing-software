@@ -1,10 +1,10 @@
 <div class="container-fluid py-4 px-3">
-  <!-- Company Table Card -->
+  <!-- Customers Table Card -->
   <div class="crm-card">
     <div class="crm-card-header">
       <div class="row align-items-center g-3">
         <div class="col-md-auto">
-          <h6 class="mb-0 fw-bold text-main">Organization Directory</h6>
+          <h6 class="mb-0 fw-bold text-main">Customers Directory</h6>
         </div>
         <div class="col-md">
           <div class="stylish-search float-end" style="max-width: 400px">
@@ -12,7 +12,7 @@
             <input
               type="text"
               class="form-control ps-5"
-              placeholder="Search by legal name or GSTIN..."
+              placeholder="Search by customer name or GSTIN..."
               [(ngModel)]="searchText"
               name="searchText"
             />
@@ -23,7 +23,7 @@
             class="btn btn-primary d-flex align-items-center shadow-sm btn-sm fw-bold px-3 py-2"
             (click)="openCompanyModal()"
           >
-            <i class="mdi mdi-briefcase-plus me-2"></i> ADD COMPANY
+            <i class="mdi mdi-account-plus me-2"></i> ADD CUSTOMER
           </button>
         </div>
       </div>
@@ -33,10 +33,10 @@
         <table class="crm-table">
           <thead>
             <tr>
-              <th>Company Name</th>
-              <th>Identification (PAN/GST)</th>
+              <th>Customer Name</th>
+              <th>GSTIN / PAN</th>
               <th>Contact Details</th>
-              <th>Type</th>
+              <th>Sector / Type</th>
               <th>Status</th>
               <th class="text-end">Actions</th>
             </tr>
@@ -46,30 +46,30 @@
               <td>
                 <div class="d-flex align-items-center">
                   <div
-                    class="company-avatar me-3 bg-primary-subtle text-primary rounded d-flex align-items-center justify-content-center"
-                    style="width: 30px; height: 30px"
+                    class="company-avatar me-3 bg-success-subtle text-success rounded d-flex align-items-center justify-content-center"
+                    style="width: 32px; height: 32px"
                   >
-                    <i class="mdi mdi-office-building fs-6"></i>
+                    <i class="mdi mdi-account-box fs-6"></i>
                   </div>
                   <div>
                     <div class="fw-semibold fs-7 text-main">{{ company.companyName }}</div>
-                    <span class="text-muted fs-8">ID: {{ company.id }}</span>
+                    <span class="text-muted fs-8">ID: {{ company.id }} | Person: {{ company.contactPerson || 'N/A' }}</span>
                   </div>
                 </div>
               </td>
               <td>
                 <div class="fs-7 text-main">
-                  PAN: <span class="fw-medium">{{ company.pan }}</span>
+                  GSTIN: <span class="fw-semibold">{{ company.gst || 'N/A' }}</span>
                 </div>
-                <div class="fs-8 text-muted">GST: {{ company.gst }}</div>
+                <div class="fs-8 text-muted">PAN: {{ company.pan || 'N/A' }}</div>
               </td>
               <td>
-                <div class="fs-7 text-main fw-medium">{{ company.email }}</div>
-                <div class="fs-8 text-muted">{{ company.contactNumber }}</div>
+                <div class="fs-7 text-main fw-medium">{{ company.contactNumber }}</div>
+                <div class="fs-8 text-muted">{{ company.email }}</div>
               </td>
               <td>
                 <span class="badge-crm badge-crm-secondary">{{
-                  company.industryType || 'N/A'
+                  company.industryType || 'Agriculture'
                 }}</span>
               </td>
               <td>
@@ -80,7 +80,7 @@
                     'badge-crm-danger': company.status === 'Inactive',
                     'badge-crm-warning': company.status === 'Pending',
                   }"
-                  >{{ company.status }}</span
+                  >{{ company.status || 'Active' }}</span
                 >
               </td>
               <td class="text-end pe-4">
@@ -91,12 +91,12 @@
                   <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                     <li>
                       <a class="dropdown-item py-2" (click)="editCompany(company)">
-                        <i class="mdi mdi-pencil-outline me-2 text-warning"></i> Edit Details
+                        <i class="mdi mdi-pencil-outline me-2 text-warning"></i> Edit Customer
                       </a>
                     </li>
                     <li>
                       <a class="dropdown-item py-2 text-danger" (click)="deleteCompany(company.id)">
-                        <i class="mdi mdi-delete-outline me-2"></i> Remove Company
+                        <i class="mdi mdi-delete-outline me-2"></i> Remove Customer
                       </a>
                     </li>
                   </ul>
@@ -105,8 +105,8 @@
             </tr>
             <tr *ngIf="companies.length === 0">
               <td colspan="6" class="text-center py-5 text-muted">
-                <i class="mdi mdi-briefcase-variant-off-outline fs-1 d-block mb-2 op-3"></i>
-                No companies registered yet.
+                <i class="mdi mdi-account-off-outline fs-1 d-block mb-2 opacity-25"></i>
+                No customers registered yet.
               </td>
             </tr>
           </tbody>
@@ -116,13 +116,14 @@
   </div>
 </div>
 
-<!-- Add/Edit Company Modal Upgrade -->
+<!-- Add/Edit Customer Modal -->
 <div id="companyModal" class="modal fade" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content border-0 shadow">
       <div class="modal-header border-bottom py-3">
         <h5 class="modal-title fw-bold">
-          {{ selectedCompany ? 'Modify Company Profile' : 'New Company Registration' }}
+          <i class="mdi mdi-account-circle me-2 text-success"></i>
+          {{ selectedCompany ? 'Modify Customer Profile' : 'New Customer Registration' }}
         </h5>
         <button type="button" class="btn-close" (click)="closeCompanyModal()"></button>
       </div>
@@ -130,14 +131,24 @@
         <form #companyForm="ngForm" (ngSubmit)="saveCompany(companyForm)">
           <div class="row g-4">
             <div class="col-md-12">
-              <label class="form-label fw-semibold text-muted fs-7"> Company name</label>
+              <label class="form-label fw-semibold text-muted fs-7">Customer Name (Individual/Cooperative)</label>
               <input
                 type="text"
                 class="form-control"
                 [(ngModel)]="companyData.companyName"
                 name="companyName"
-                placeholder="Enter Comapny name"
+                placeholder="Enter Customer Name"
                 required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted fs-7">GST Number (GSTIN)</label>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="companyData.gst"
+                name="gst"
+                placeholder="Ex: 29AAAFA1234Z1Z5"
               />
             </div>
             <div class="col-md-6">
@@ -147,28 +158,17 @@
                 class="form-control"
                 [(ngModel)]="companyData.pan"
                 name="pan"
-                placeholder="ABCDE1234F"
-                required
+                placeholder="Ex: AAAFA1234Z"
               />
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">GST Number</label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="companyData.gst"
-                name="gst"
-                placeholder="22AAAAA0000A1Z5"
-              />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">Contact Number</label>
+              <label class="form-label fw-semibold text-muted fs-7">Mobile / Contact Number</label>
               <input
                 type="text"
                 class="form-control"
                 [(ngModel)]="companyData.contactNumber"
                 name="contactNumber"
-                placeholder="+1 234 567 890"
+                placeholder="Enter 10-digit Mobile Number"
                 required
               />
             </div>
@@ -179,35 +179,33 @@
                 class="form-control"
                 [(ngModel)]="companyData.email"
                 name="email"
-                placeholder="info@company.com"
-                required
+                placeholder="customer@domain.com"
               />
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">Primary Contact Person</label>
+              <label class="form-label fw-semibold text-muted fs-7">Primary Contact Person (if Coop/Retailer)</label>
               <input
                 type="text"
                 class="form-control"
                 [(ngModel)]="companyData.contactPerson"
                 name="contactPerson"
-                placeholder="Name of person in charge"
+                placeholder="Name of Contact Person"
               />
             </div>
 
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">Industry sector</label>
+              <label class="form-label fw-semibold text-muted fs-7">Customer Category</label>
               <select
                 class="form-select"
                 [(ngModel)]="companyData.industryType"
                 name="industryType"
                 required
               >
-                <option value="">Select industry</option>
-                <option value="IT">IT</option>
-                <option value="Finance">Finance</option>
-                <option value="Manufacturing">Manufacturing</option>
-                <option value="Retail">Retail</option>
-                <option value="Healthcare">Healthcare</option>
+                <option value="Farmer">Farmer</option>
+                <option value="Cooperative">Cooperative Society</option>
+                <option value="Retailer">Agro Retailer</option>
+                <option value="Corporate Farm">Corporate Farm</option>
+                <option value="Wholesaler">Wholesaler</option>
               </select>
             </div>
 
@@ -224,7 +222,7 @@
             </div>
 
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">Shipping Address</label>
+              <label class="form-label fw-semibold text-muted fs-7">Shipping / Delivery Address</label>
               <textarea
                 class="form-control"
                 [(ngModel)]="companyData.shippingAddress"
@@ -236,7 +234,7 @@
             </div>
 
             <div class="col-md-12">
-              <label class="form-label fw-semibold text-muted fs-7">Current Account Status</label>
+              <label class="form-label fw-semibold text-muted fs-7">Customer Status</label>
               <div class="d-flex gap-4">
                 <div class="form-check">
                   <input
@@ -258,16 +256,6 @@
                   />
                   <label class="form-check-label fs-7">Inactive</label>
                 </div>
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    name="status"
-                    value="Pending"
-                    [(ngModel)]="companyData.status"
-                  />
-                  <label class="form-check-label fs-7">Pending</label>
-                </div>
               </div>
             </div>
           </div>
@@ -277,7 +265,7 @@
               Discard
             </button>
             <button type="submit" class="btn btn-primary px-5 shadow-sm">
-              {{ selectedCompany ? 'Apply Changes' : 'Register Organization' }}
+              {{ selectedCompany ? 'Apply Changes' : 'Register Customer' }}
             </button>
           </div>
         </form>

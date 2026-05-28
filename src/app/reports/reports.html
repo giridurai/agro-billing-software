@@ -1,0 +1,263 @@
+<div class="container-fluid py-4 px-3">
+  <!-- Filters Bar Card -->
+  <div class="card border-0 shadow-sm mb-4 rounded-4">
+    <div class="card-body p-3">
+      <div class="row align-items-center g-3">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-muted fs-8 mb-1">Start Date</label>
+          <input type="date" class="form-control form-control-sm" [(ngModel)]="startDate" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-muted fs-8 mb-1">End Date</label>
+          <input type="date" class="form-control form-control-sm" [(ngModel)]="endDate" />
+        </div>
+        <div class="col-md-3" *ngIf="activeTab === 'sales' || activeTab === 'purchase'">
+          <label class="form-label fw-semibold text-muted fs-8 mb-1">Payment Status</label>
+          <select class="form-select form-select-sm" [(ngModel)]="filterStatus">
+            <option value="">All Statuses</option>
+            <option value="Paid">Paid</option>
+            <option value="Unpaid">Unpaid/Pending</option>
+          </select>
+        </div>
+        <div class="col-md-3" *ngIf="activeTab === 'inventory'">
+          <label class="form-label fw-semibold text-muted fs-8 mb-1">Product Category</label>
+          <select class="form-select form-select-sm" [(ngModel)]="filterCategory">
+            <option value="">All Categories</option>
+            <option value="Fertilizers">Fertilizers</option>
+            <option value="Seeds">Seeds</option>
+            <option value="Pesticides">Pesticides</option>
+          </select>
+        </div>
+        <div class="col text-end pt-3">
+          <button class="btn btn-outline-secondary btn-sm rounded-pill px-3 me-2" (click)="loadData()">
+            <i class="mdi mdi-refresh me-1"></i> Refresh
+          </button>
+          <button class="btn btn-primary btn-sm rounded-pill px-3" (click)="printReport()">
+            <i class="mdi mdi-printer me-1"></i> Export / Print
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="nav nav-pills gap-2 mb-4">
+    <button class="btn btn-sm px-4 py-2 rounded-pill fw-bold border-0" 
+            [class.btn-primary]="activeTab === 'sales'" 
+            [class.btn-light]="activeTab !== 'sales'" 
+            (click)="setTab('sales')">
+      <i class="mdi mdi-cash-register me-1"></i> Sales Report
+    </button>
+    <button class="btn btn-sm px-4 py-2 rounded-pill fw-bold border-0" 
+            [class.btn-primary]="activeTab === 'purchase'" 
+            [class.btn-light]="activeTab !== 'purchase'" 
+            (click)="setTab('purchase')">
+      <i class="mdi mdi-cart-arrow-down me-1"></i> Purchase Report
+    </button>
+    <button class="btn btn-sm px-4 py-2 rounded-pill fw-bold border-0" 
+            [class.btn-primary]="activeTab === 'inventory'" 
+            [class.btn-light]="activeTab !== 'inventory'" 
+            (click)="setTab('inventory')">
+      <i class="mdi mdi-database me-1"></i> Inventory Report
+    </button>
+    <button class="btn btn-sm px-4 py-2 rounded-pill fw-bold border-0" 
+            [class.btn-primary]="activeTab === 'audit'" 
+            [class.btn-light]="activeTab !== 'audit'" 
+            (click)="setTab('audit')">
+      <i class="mdi mdi-history me-1"></i> Stock Audit Logs
+    </button>
+  </div>
+
+  <!-- Sales Report View -->
+  <div *ngIf="activeTab === 'sales'">
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-primary text-white">
+          <span class="fs-8 fw-semibold opacity-75">Total Sales (Filtered)</span>
+          <h3 class="fw-bold mt-1 mb-0">{{ totalSalesAmount | currency : 'INR' }}</h3>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-success text-white">
+          <span class="fs-8 fw-semibold opacity-75">Invoices Count</span>
+          <h3 class="fw-bold mt-1 mb-0">{{ filteredSales.length }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="crm-card">
+      <div class="crm-card-header fw-bold text-main">Sales Transactions Summary</div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="crm-table">
+            <thead>
+              <tr>
+                <th>Invoice Number</th>
+                <th>Customer</th>
+                <th>Due / Delivery Date</th>
+                <th>Billing Value</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of filteredSales">
+                <td><span class="fw-semibold text-main">{{ s.invoiceNo }}</span></td>
+                <td>{{ s.customerName }}</td>
+                <td>{{ s.dueDate }}</td>
+                <td><span class="fw-bold text-success">{{ s.amount | currency : 'INR' }}</span></td>
+                <td>
+                  <span class="badge-crm" [class.badge-crm-success]="s.status === 'Paid'" [class.badge-crm-warning]="s.status !== 'Paid'">
+                    {{ s.status }}
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="filteredSales.length === 0">
+                <td colspan="5" class="text-center py-4 text-muted">No sales transactions match date range.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Purchase Report View -->
+  <div *ngIf="activeTab === 'purchase'">
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-warning text-dark">
+          <span class="fs-8 fw-semibold opacity-75">Total Purchases (Filtered)</span>
+          <h3 class="fw-bold mt-1 mb-0">{{ totalPurchasesAmount | currency : 'INR' }}</h3>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-light text-dark border">
+          <span class="fs-8 fw-semibold opacity-75">Purchase Orders</span>
+          <h3 class="fw-bold mt-1 mb-0">{{ filteredPurchases.length }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="crm-card">
+      <div class="crm-card-header fw-bold text-main">Purchase Transactions Summary</div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="crm-table">
+            <thead>
+              <tr>
+                <th>Invoice Number</th>
+                <th>Supplier</th>
+                <th>Invoice Date</th>
+                <th>Grand Total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of filteredPurchases">
+                <td><span class="fw-semibold text-main">{{ p.invoiceNo }}</span></td>
+                <td>{{ p.supplierName }}</td>
+                <td>{{ p.invoiceDate }}</td>
+                <td><span class="fw-bold text-main">{{ p.amount | currency : 'INR' }}</span></td>
+                <td>
+                  <span class="badge-crm" [class.badge-crm-success]="p.status === 'Paid'" [class.badge-crm-warning]="p.status !== 'Paid'">
+                    {{ p.status }}
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="filteredPurchases.length === 0">
+                <td colspan="5" class="text-center py-4 text-muted">No purchase transactions found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inventory Report View -->
+  <div *ngIf="activeTab === 'inventory'">
+    <div class="crm-card">
+      <div class="crm-card-header fw-bold text-main">Current Stock Quantities</div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="crm-table">
+            <thead>
+              <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Base Rate (₹)</th>
+                <th>Current Stock</th>
+                <th>Stock Valuation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of filteredInventory">
+                <td>
+                  <span class="fw-semibold text-main">{{ item.name }}</span>
+                  <span class="text-muted d-block fs-8">Code: {{ item.hsnCode }}</span>
+                </td>
+                <td><span class="badge-crm badge-crm-secondary">{{ item.category || 'Fertilizers' }}</span></td>
+                <td>{{ item.rate | currency : 'INR' }}</td>
+                <td>
+                  <span class="badge-crm" 
+                        [class.badge-crm-success]="(item.stockQuantity || 0) > 50" 
+                        [class.badge-crm-warning]="(item.stockQuantity || 0) <= 50 && (item.stockQuantity || 0) > 10" 
+                        [class.badge-crm-danger]="(item.stockQuantity || 0) <= 10">
+                    {{ item.stockQuantity || 0 }} {{ item.unit || 'Bag' }}
+                  </span>
+                </td>
+                <td class="fw-bold text-main">
+                  {{ ((item.stockQuantity || 0) * item.rate) | currency : 'INR' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stock Audit Logs View -->
+  <div *ngIf="activeTab === 'audit'">
+    <div class="crm-card">
+      <div class="crm-card-header fw-bold text-main">Inward / Outward Stock Audits</div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="crm-table">
+            <thead>
+              <tr>
+                <th>Log ID</th>
+                <th>Date</th>
+                <th>Product</th>
+                <th>Flow Type</th>
+                <th>Qty</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let audit of filteredAudit">
+                <td><span class="text-muted fs-8">#AUD-{{ audit.id }}</span></td>
+                <td>{{ audit.date }}</td>
+                <td class="fw-semibold text-main">{{ audit.product }}</td>
+                <td>
+                  <span class="badge-crm" [class.badge-crm-success]="audit.type === 'Inward'" [class.badge-crm-danger]="audit.type === 'Outward'">
+                    {{ audit.type }}
+                  </span>
+                </td>
+                <td>
+                  <span class="fw-bold" [class.text-success]="audit.type === 'Inward'" [class.text-danger]="audit.type === 'Outward'">
+                    {{ audit.type === 'Inward' ? '+' : '-' }}{{ audit.quantity }}
+                  </span>
+                </td>
+                <td><span class="text-muted fs-8">{{ audit.notes || 'N/A' }}</span></td>
+              </tr>
+              <tr *ngIf="filteredAudit.length === 0">
+                <td colspan="6" class="text-center py-4 text-muted">No stock logs matched.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

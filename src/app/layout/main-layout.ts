@@ -31,13 +31,19 @@ export class MainLayoutComponent {
 
   updatePageTitle() {
     const url = this.router.url;
-    if (url.includes('homepage')) this.currentPageTitle = 'Home';
-    else if (url.includes('enquiry')) this.currentPageTitle = 'Enquiry';
-    else if (url.includes('quotation')) this.currentPageTitle = 'Quotation';
-    else if (url.includes('invoice')) this.currentPageTitle = 'Invoice';
-    else if (url.includes('company')) this.currentPageTitle = 'Company';
-    else if (url.includes('iteam')) this.currentPageTitle = 'Item Master';
-    else if (url.includes('contact')) this.currentPageTitle = 'Contact';
+    if (url.includes('homepage')) this.currentPageTitle = 'Agro Dashboard';
+    else if (url.includes('quotation')) this.currentPageTitle = 'Quotations';
+    else if (url.includes('invoice')) this.currentPageTitle = 'Sales Invoices';
+    else if (url.includes('company')) this.currentPageTitle = 'Customers';
+    else if (url.includes('iteam')) this.currentPageTitle = 'Products Master';
+    else if (url.includes('suppliers')) this.currentPageTitle = 'Suppliers';
+    else if (url.includes('purchase-invoice')) this.currentPageTitle = 'Purchase Invoices';
+    else if (url.includes('returns')) this.currentPageTitle = 'Returns';
+    else if (url.includes('stock-inward')) this.currentPageTitle = 'Stock Inward';
+    else if (url.includes('stock-outward')) this.currentPageTitle = 'Stock Outward';
+    else if (url.includes('warehouse')) this.currentPageTitle = 'Warehouse Registry';
+    else if (url.includes('reports')) this.currentPageTitle = 'Agro Reports';
+    else if (url.includes('settings')) this.currentPageTitle = 'System Settings';
     else if (url.includes('User')) this.currentPageTitle = 'User Management';
     else this.currentPageTitle = 'Dashboard';
   }

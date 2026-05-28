@@ -1,22 +1,22 @@
 <div class="container-fluid py-4 px-3">
-  <!-- Item Master Table Card -->
+  <!-- Product Master Table Card -->
   <div class="crm-card">
     <div class="crm-card-header">
       <div class="row align-items-center g-3">
         <div class="col-md-auto">
-          <h6 class="mb-0 fw-bold text-main">Product & Technical Library</h6>
+          <h6 class="mb-0 fw-bold text-main">Agro Products Catalog</h6>
         </div>
         <div class="col-md">
           <div class="stylish-search float-end" style="max-width: 400px;">
             <i class="mdi mdi-magnify"></i>
-            <input type="text" class="form-control ps-5" placeholder="Search catalog by name or HSN..."
+            <input type="text" class="form-control ps-5" placeholder="Search products by name or code..."
               [(ngModel)]="searchText" name="searchText" />
           </div>
         </div>
         <div class="col-md-auto">
           <button class="btn btn-primary d-flex align-items-center shadow-sm btn-sm fw-bold px-3 py-2"
             (click)="openItemModal()">
-            <i class="mdi mdi-cube-send me-2"></i> NEW CATALOG ITEM
+            <i class="mdi mdi-plus-box me-2"></i> ADD NEW PRODUCT
           </button>
         </div>
       </div>
@@ -26,11 +26,13 @@
         <table class="crm-table">
           <thead>
             <tr>
-              <th>Item Name & Desc</th>
-              <th>HSN Code</th>
-              <th>Base Rate</th>
-              <th>Tax Info</th>
-              <th>Default Disc.</th>
+              <th>Product Name</th>
+              <th>Code / HSN</th>
+              <th>Category</th>
+              <th>Unit</th>
+              <th>Price</th>
+              <th>Stock Qty</th>
+              <th>GST Info</th>
               <th class="text-end">Actions</th>
             </tr>
           </thead>
@@ -39,14 +41,13 @@
               <td>
                 <div class="d-flex align-items-center">
                   <div
-                    class="item-icon me-3 bg-info-subtle text-info rounded d-flex align-items-center justify-content-center"
-                    style="width: 30px; height: 30px;">
-                    <i class="mdi mdi-package-variant-closed fs-6"></i>
+                    class="item-icon me-3 bg-success-subtle text-success rounded d-flex align-items-center justify-content-center"
+                    style="width: 32px; height: 32px;">
+                    <i class="mdi mdi-sprout fs-6"></i>
                   </div>
                   <div>
                     <h6 class="mb-0 fw-semibold fs-7">{{ item.name }}</h6>
-                    <span class="text-muted fs-8">{{ item.description | slice:0:40 }}{{ (item.description || '').length
-                      > 40 ? '...' : '' }}</span>
+                    <span class="text-muted fs-8">{{ item.description | slice:0:50 }}{{ (item.description || '').length > 50 ? '...' : '' }}</span>
                   </div>
                 </div>
               </td>
@@ -54,16 +55,24 @@
                 <span class="badge-crm badge-crm-secondary">{{ item.hsnCode }}</span>
               </td>
               <td>
+                <span class="badge-crm badge-crm-info">{{ item.category || 'Fertilizers' }}</span>
+              </td>
+              <td>
+                <span class="text-muted fs-7">{{ item.unit || 'Bag' }}</span>
+              </td>
+              <td>
                 <div class="fw-bold fs-7 text-main">{{ item.rate | currency : 'INR' }}</div>
               </td>
               <td>
-                <div class="d-flex gap-1">
-                  <span class="badge-crm badge-crm-info">C: {{ item.cgst }}%</span>
-                  <span class="badge-crm badge-crm-info">S: {{ item.sgst }}%</span>
-                </div>
+                <span class="badge-crm" [class.badge-crm-success]="(item.stockQuantity || 0) > 50" [class.badge-crm-warning]="(item.stockQuantity || 0) <= 50 && (item.stockQuantity || 0) > 10" [class.badge-crm-danger]="(item.stockQuantity || 0) <= 10">
+                  {{ item.stockQuantity || 0 }}
+                </span>
               </td>
               <td>
-                <span class="text-muted fs-7">{{ item.discount }}%</span>
+                <div class="d-flex gap-1">
+                  <span class="badge-crm badge-crm-secondary">C: {{ item.cgst }}%</span>
+                  <span class="badge-crm badge-crm-secondary">S: {{ item.sgst }}%</span>
+                </div>
               </td>
               <td class="text-end pe-4">
                 <div class="dropdown">
@@ -73,17 +82,17 @@
                   <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                     <li>
                       <a class="dropdown-item py-2" (click)="viewItem(item)">
-                        <i class="mdi mdi-eye-outline me-2 text-primary"></i> Preview
+                        <i class="mdi mdi-eye-outline me-2 text-primary"></i> View Details
                       </a>
                     </li>
                     <li>
                       <a class="dropdown-item py-2" (click)="editItem(item)">
-                        <i class="mdi mdi-pencil-outline me-2 text-warning"></i> Edit
+                        <i class="mdi mdi-pencil-outline me-2 text-warning"></i> Edit Product
                       </a>
                     </li>
                     <li>
                       <a class="dropdown-item py-2 text-danger" (click)="deleteItem(item.id)">
-                        <i class="mdi mdi-delete-outline me-2"></i> Delete
+                        <i class="mdi mdi-delete-outline me-2"></i> Delete Product
                       </a>
                     </li>
                   </ul>
@@ -91,9 +100,9 @@
               </td>
             </tr>
             <tr *ngIf="items.length === 0">
-              <td colspan="6" class="text-center py-5 text-muted">
-                <i class="mdi mdi-layers-off-outline fs-1 d-block mb-2 op-3"></i>
-                Your item catalog is currently empty.
+              <td colspan="8" class="text-center py-5 text-muted">
+                <i class="mdi mdi-layers-off-outline fs-1 d-block mb-2 opacity-25"></i>
+                No products found in catalog.
               </td>
             </tr>
           </tbody>
@@ -103,14 +112,14 @@
   </div>
 </div>
 
-<!-- Item Modal Upgrade -->
+<!-- Product Add/Edit Modal -->
 <div id="itemModal" class="modal fade" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content border-0 shadow">
       <div class="modal-header border-bottom py-3">
         <h5 class="modal-title fw-bold">
-          <i class="mdi mdi-cube-outline me-2 text-primary"></i>
-          {{ selectedItem ? 'Update Master records' : 'Register New Catalog Item' }}
+          <i class="mdi mdi-sprout me-2 text-success"></i>
+          {{ selectedItem ? 'Modify Product Details' : 'Register New Agro Product' }}
         </h5>
         <button type="button" class="btn-close" (click)="closeItemModal()"></button>
       </div>
@@ -118,42 +127,62 @@
         <form #itemForm="ngForm" (ngSubmit)="saveItem(itemForm)">
           <div class="row g-4">
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">Item Name / Identifier</label>
+              <label class="form-label fw-semibold text-muted fs-7">Product Name</label>
               <input type="text" class="form-control" [(ngModel)]="itemData.name" name="name"
-                placeholder="Ex: Black Galaxy Granite 20mm" required />
+                placeholder="Ex: Neem-based Organic Fertilizer" required />
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">HSN Classification Code</label>
+              <label class="form-label fw-semibold text-muted fs-7">Product Code / HSN Code</label>
               <input type="text" class="form-control" [(ngModel)]="itemData.hsnCode" name="hsnCode"
-                placeholder="Ex: 6802" />
+                placeholder="Ex: 3101" required />
             </div>
-            <div class="col-12">
-              <label class="form-label fw-semibold text-muted fs-7">Detailed Description</label>
-              <textarea class="form-control" [(ngModel)]="itemData.description" name="description" rows="2"
-                placeholder="Full material specifications..."></textarea>
+            
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted fs-7">Category</label>
+              <select class="form-select" [(ngModel)]="itemData.category" name="category" required>
+                <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+              </select>
             </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold text-muted fs-7">Base Rate (₹)</label>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold text-muted fs-7">Unit of Measure</label>
+              <select class="form-select" [(ngModel)]="itemData.unit" name="unit" required>
+                <option *ngFor="let u of units" [value]="u">{{ u }}</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label fw-semibold text-muted fs-7">Price per Unit (₹)</label>
               <input type="number" class="form-control" [(ngModel)]="itemData.rate" name="rate" required />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
+              <label class="form-label fw-semibold text-muted fs-7">Stock Quantity Available</label>
+              <input type="number" class="form-control" [(ngModel)]="itemData.stockQuantity" name="stockQuantity" required />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold text-muted fs-7">Discount (%)</label>
+              <input type="number" class="form-control" [(ngModel)]="itemData.discount" name="discount" />
+            </div>
+
+            <div class="col-md-6">
               <label class="form-label fw-semibold text-muted fs-7">CGST (%)</label>
               <input type="number" class="form-control" [(ngModel)]="itemData.cgst" name="cgst" />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
               <label class="form-label fw-semibold text-muted fs-7">SGST (%)</label>
               <input type="number" class="form-control" [(ngModel)]="itemData.sgst" name="sgst" />
             </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold text-muted fs-7">Default Disc (%)</label>
-              <input type="number" class="form-control" [(ngModel)]="itemData.discount" name="discount" />
+
+            <div class="col-12">
+              <label class="form-label fw-semibold text-muted fs-7">Product Description</label>
+              <textarea class="form-control" [(ngModel)]="itemData.description" name="description" rows="2"
+                placeholder="Ex: High grade organic nitrogen content..."></textarea>
             </div>
           </div>
 
           <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
             <button type="button" class="btn btn-light px-4" (click)="closeItemModal()">Discard</button>
             <button type="submit" class="btn btn-primary px-5 shadow-sm">
-              {{ selectedItem ? 'Apply Master Changes' : 'Commit to Catalog' }}
+              {{ selectedItem ? 'Apply Product Changes' : 'Add to Catalog' }}
             </button>
           </div>
         </form>
@@ -162,30 +191,29 @@
   </div>
 </div>
 
-<!-- View Item Detail Modal Upgrade -->
+<!-- View Product Detail Modal -->
 <div id="viewItemModal" class="modal fade" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow">
       <div class="modal-header bg-primary text-white py-3">
-        <h5 class="modal-title fw-bold"><i class="mdi mdi-magnify me-2"></i> Catalog Overview</h5>
+        <h5 class="modal-title fw-bold"><i class="mdi mdi-sprout me-2"></i> Product Details</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body p-4 bg-light">
         <div id="printItemSection" class="card border-0 shadow-sm p-4 rounded-3 bg-white">
           <div class="d-flex align-items-center mb-4">
-            <div class="p-3 bg-primary-subtle text-primary rounded-circle me-3">
-              <i class="mdi mdi-package-variant fs-3"></i>
+            <div class="p-3 bg-success-subtle text-success rounded-circle me-3">
+              <i class="mdi mdi-sprout fs-3"></i>
             </div>
             <div>
               <h4 class="fw-bold text-main mb-0">{{ selectedItem?.name }}</h4>
-              <p class="text-muted fs-8 mb-0">INTERNAL ID: #{{ selectedItem?.id }}</p>
+              <p class="text-muted fs-8 mb-0">PRODUCT ID: #{{ selectedItem?.id }}</p>
             </div>
           </div>
 
           <div class="p-3 bg-light rounded-3 mb-4">
-            <label class="text-muted fs-8 fw-bold text-uppercase mb-1 d-block">Specification</label>
-            <p class="text-main fs-7 mb-0">{{ selectedItem?.description || 'No additional specifications provided.' }}
-            </p>
+            <label class="text-muted fs-8 fw-bold text-uppercase mb-1 d-block">Description</label>
+            <p class="text-main fs-7 mb-0">{{ selectedItem?.description || 'No additional specifications provided.' }}</p>
           </div>
 
           <div class="row g-3">
@@ -197,8 +225,20 @@
             </div>
             <div class="col-6">
               <div class="p-3 border rounded-3 bg-white">
-                <label class="text-muted fs-8 fw-bold text-uppercase mb-1">Tax Code</label>
-                <h5 class="fw-bold text-main mb-0">HSN: {{ selectedItem?.hsnCode || 'N/A' }}</h5>
+                <label class="text-muted fs-8 fw-bold text-uppercase mb-1">HSN Code</label>
+                <h5 class="fw-bold text-main mb-0">{{ selectedItem?.hsnCode || 'N/A' }}</h5>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 border rounded-3 bg-white">
+                <label class="text-muted fs-8 fw-bold text-uppercase mb-1">Category</label>
+                <h5 class="fw-bold text-main mb-0 fs-7">{{ selectedItem?.category || 'Fertilizers' }}</h5>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="p-3 border rounded-3 bg-white">
+                <label class="text-muted fs-8 fw-bold text-uppercase mb-1">Current Stock</label>
+                <h5 class="fw-bold text-main mb-0 fs-7">{{ selectedItem?.stockQuantity || 0 }} {{ selectedItem?.unit }}</h5>
               </div>
             </div>
             <div class="col-4">
@@ -215,7 +255,7 @@
             </div>
             <div class="col-4">
               <div class="p-2 border rounded-3 text-center bg-white">
-                <label class="text-muted fs-8 d-block mb-1">Disc.</label>
+                <label class="text-muted fs-8 d-block mb-1">Discount</label>
                 <span class="fw-bold">{{ selectedItem?.discount }}%</span>
               </div>
             </div>
@@ -225,7 +265,7 @@
       <div class="modal-footer bg-white border-top py-3">
         <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Close</button>
         <button type="button" class="btn btn-success px-4" (click)="printItem()">
-          <i class="mdi mdi-printer me-2"></i> Export Data
+          <i class="mdi mdi-printer me-2"></i> Print Label
         </button>
       </div>
     </div>
