@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../services/api.service';
-import { Invoice, PurchaseInvoice, Item, StockRecord } from '../models';
+import { Invoice, Company, StockRecord } from '../models';
 
 @Component({
   selector: 'app-reports',
@@ -11,25 +11,22 @@ import { Invoice, PurchaseInvoice, Item, StockRecord } from '../models';
   templateUrl: './reports.html',
 })
 export class ReportsComponent implements OnInit {
-  activeTab: 'sales' | 'purchase' | 'inventory' | 'audit' = 'sales';
+  activeTab: 'sales' | 'gstr1' | 'receivables' | 'stockLedger' = 'sales';
 
-  // Raw data arrays
   salesInvoices: Invoice[] = [];
-  purchaseInvoices: PurchaseInvoice[] = [];
-  products: Item[] = [];
+  customers: Company[] = [];
   stockRecords: StockRecord[] = [];
 
-  // Filter Models
+  // Filters
   startDate: string = '';
   endDate: string = '';
-  filterCategory: string = '';
-  filterStatus: string = '';
+  searchText: string = '';
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit() {
     this.loadData();
-    // Default: current month filters
+    // Default current month filters
     const today = new Date();
     const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
     this.startDate = firstDay.toISOString().split('T')[0];
@@ -38,46 +35,85 @@ export class ReportsComponent implements OnInit {
 
   loadData() {
     this.apiService.getInvoices().subscribe(data => this.salesInvoices = data);
-    this.apiService.getPurchaseInvoices().subscribe(data => this.purchaseInvoices = data);
-    this.apiService.getItems().subscribe(data => this.products = data);
+    this.apiService.getCompanies().subscribe(data => this.customers = data);
     this.apiService.getStockRecords().subscribe(data => this.stockRecords = data);
   }
 
-  setTab(tab: 'sales' | 'purchase' | 'inventory' | 'audit') {
+  setTab(tab: 'sales' | 'gstr1' | 'receivables' | 'stockLedger') {
     this.activeTab = tab;
-    // reset other filters except date
-    this.filterCategory = '';
-    this.filterStatus = '';
+    this.searchText = '';
   }
 
-  // Filtered Lists
-  get filteredSales() {
+  // 1. Sales Report: Filtered Invoices
+  get filteredSalesReport() {
     return this.salesInvoices.filter(inv => {
-      // Due Date or mock transaction date (since we don't have a transactionDate, we check dueDate alignment or let it match)
       const dateMatch = this.checkDateRange(inv.dueDate);
-      const statusMatch = this.filterStatus ? inv.status === this.filterStatus : true;
-      return dateMatch && statusMatch;
+      const textMatch = this.searchText
+        ? inv.invoiceNo.toLowerCase().includes(this.searchText.toLowerCase()) ||
+          inv.customerName.toLowerCase().includes(this.searchText.toLowerCase())
+        : true;
+      return dateMatch && textMatch;
     });
   }
 
-  get filteredPurchases() {
-    return this.purchaseInvoices.filter(inv => {
-      const dateMatch = this.checkDateRange(inv.invoiceDate);
-      const statusMatch = this.filterStatus ? inv.status === this.filterStatus : true;
-      return dateMatch && statusMatch;
+  // Computations for Sales Report
+  getSalesTaxableValue(inv: Invoice): number {
+    return inv.items.reduce((sum, item) => {
+      const base = item.quantity * item.rate;
+      const discount = item.discount ? base * (item.discount / 100) : 0;
+      return sum + (base - discount);
+    }, 0);
+  }
+
+  getSalesGST(inv: Invoice): number {
+    return inv.amount - this.getSalesTaxableValue(inv);
+  }
+
+  // 2. GSTR-1 Flattened Line Items
+  get gstr1Items() {
+    const list: any[] = [];
+    this.salesInvoices.forEach(inv => {
+      if (!this.checkDateRange(inv.dueDate)) return;
+      if (this.searchText && !inv.customerName.toLowerCase().includes(this.searchText.toLowerCase()) && !inv.invoiceNo.toLowerCase().includes(this.searchText.toLowerCase())) {
+        return;
+      }
+      inv.items.forEach(item => {
+        const base = item.quantity * item.rate;
+        const discount = item.discount ? base * (item.discount / 100) : 0;
+        const taxable = base - discount;
+        const cgstAmt = taxable * (item.cgst / 100);
+        const sgstAmt = taxable * (item.sgst / 100);
+        list.push({
+          gstin: inv.customerGSTIN || 'Not Applicable',
+          details: `${inv.invoiceNo} / ${inv.dueDate}`,
+          productName: item.name,
+          taxableBase: taxable,
+          gstRate: item.cgst + item.sgst,
+          cgst: cgstAmt,
+          sgst: sgstAmt
+        });
+      });
+    });
+    return list;
+  }
+
+  // 3. Outstanding Receivables
+  get outstandingReceivables() {
+    return this.customers.filter(c => {
+      const textMatch = this.searchText
+        ? c.companyName.toLowerCase().includes(this.searchText.toLowerCase()) ||
+          c.contactNumber.includes(this.searchText)
+        : true;
+      return (c.creditBalance || 0) >= 0 && textMatch;
     });
   }
 
-  get filteredInventory() {
-    return this.products.filter(p => {
-      return this.filterCategory ? p.category === this.filterCategory : true;
-    });
-  }
-
-  get filteredAudit() {
+  // 4. Stock Movement Ledger
+  get stockMovementLedger() {
     return this.stockRecords.filter(rec => {
       const dateMatch = this.checkDateRange(rec.date);
-      return dateMatch;
+      const textMatch = this.searchText ? rec.product.toLowerCase().includes(this.searchText.toLowerCase()) : true;
+      return dateMatch && textMatch;
     });
   }
 
@@ -86,15 +122,6 @@ export class ReportsComponent implements OnInit {
     if (this.startDate && dateStr < this.startDate) return false;
     if (this.endDate && dateStr > this.endDate) return false;
     return true;
-  }
-
-  // Summary Computations
-  get totalSalesAmount() {
-    return this.filteredSales.reduce((sum, inv) => sum + inv.amount, 0);
-  }
-
-  get totalPurchasesAmount() {
-    return this.filteredPurchases.reduce((sum, inv) => sum + inv.amount, 0);
   }
 
   printReport() {

@@ -13,7 +13,7 @@ import { Invoice } from '../models';
 })
 export class Homepage implements OnInit {
   salesTotal: number = 0;
-  purchaseTotal: number = 0;
+  outstandingTotal: number = 0;
   customerCount: number = 0;
   productCount: number = 0;
   recentSales: Invoice[] = [];
@@ -25,26 +25,22 @@ export class Homepage implements OnInit {
   }
 
   loadStats() {
-    // 1. Total Sales
+    // 1. Today's Sales
     this.apiService.getInvoices().subscribe(data => {
       this.salesTotal = data.reduce((acc, inv) => acc + (Number(inv.amount) || 0), 0);
-      this.recentSales = data.slice(-4).reverse();
-      this.runCounterAnimation('sales-count', this.salesTotal, true);
+      this.recentSales = data.slice(-5).reverse();
+      this.runCounterAnimation('today-sales-count', this.salesTotal, true);
     });
 
-    // 2. Total Purchase
-    this.apiService.getPurchaseInvoices().subscribe(data => {
-      this.purchaseTotal = data.reduce((acc, inv) => acc + (Number(inv.amount) || 0), 0);
-      this.runCounterAnimation('purchase-count', this.purchaseTotal, true);
-    });
-
-    // 3. Customers Count
+    // 2. Outstanding Receivables
     this.apiService.getCompanies().subscribe(data => {
       this.customerCount = data.length;
+      this.outstandingTotal = data.reduce((acc, company) => acc + (Number(company.creditBalance) || 0), 0);
+      this.runCounterAnimation('outstanding-count', this.outstandingTotal, true);
       this.runCounterAnimation('customer-count', this.customerCount);
     });
 
-    // 4. Products Count
+    // 3. Active Products Count
     this.apiService.getItems().subscribe(data => {
       this.productCount = data.length;
       this.runCounterAnimation('product-count', this.productCount);

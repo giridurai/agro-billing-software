@@ -38,27 +38,31 @@ export class UserComponent implements OnInit {
     });
   }
 
-  get filteredUsers() {
-    return this.users.filter(
-      (user) =>
-        user.firstName.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        user.lastName.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        user.email.toLowerCase().includes(this.searchText.toLowerCase())
-    );
-  }
-
-  private getEmptyUser(): User {
+  getEmptyUser(): User {
     return {
       id: 0,
       firstName: '',
       lastName: '',
-      joiningDate: '',
+      joiningDate: '2026-05-28',
       email: '',
       phoneNumber: '',
-      gender: '',
-      role: '',
+      gender: 'Male',
+      role: 'Admin',
       password: '',
+      username: '',
+      status: 'Active',
+      isOwner: false
     };
+  }
+
+  getRoleBadgeClass(role: string): string {
+    switch (role) {
+      case 'Admin': return 'bg-admin-role';
+      case 'Sales Executive': return 'bg-sales-role';
+      case 'Billing': return 'bg-billing-role';
+      case 'Auditor': return 'bg-auditor-role';
+      default: return 'bg-light text-dark';
+    }
   }
 
   openUserModal() {
@@ -81,45 +85,55 @@ export class UserComponent implements OnInit {
     }
   }
 
+  closeUserModal() {
+    const modalEl = document.getElementById('userModal');
+    if (modalEl) {
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      if (modal) modal.hide();
+    }
+    this.selectedUser = null;
+  }
+
   saveUser(form: NgForm) {
     if (form.valid) {
       if (this.selectedUser) {
         // Update existing user on server
         this.apiService.updateUser(this.userData).subscribe({
-            next: () => {
-                this.loadUsers();
-                this.notificationService.addNotification(
-                  'User Updated', 
-                  `Account for ${this.userData.firstName} has been updated.`,
-                  'user'
-                );
-                Swal.fire('Updated!', `${this.userData.firstName} has been updated.`, 'success');
-                this.closeUserModal();
-            },
-            error: () => Swal.fire('Error', 'Update failed', 'error')
+          next: () => {
+            this.loadUsers();
+            this.notificationService.addNotification(
+              'User Updated', 
+              `Account for ${this.userData.firstName} has been updated.`,
+              'user'
+            );
+            Swal.fire('Updated!', `${this.userData.firstName} has been updated.`, 'success');
+            this.closeUserModal();
+          },
+          error: () => Swal.fire('Error', 'Update failed', 'error')
         });
       } else {
         // Add new user on server
         const newUser = { ...this.userData };
+        newUser.email = newUser.username + '@puvilink.com'; // Generate email from username
         delete (newUser as any).id; // Let server assign ID
         this.apiService.addUser(newUser).subscribe({
-            next: () => {
-                this.loadUsers();
-                this.notificationService.addNotification(
-                  'New User Created', 
-                  `${this.userData.firstName} ${this.userData.lastName} joined as ${this.userData.role}.`,
-                  'user'
-                );
-                Swal.fire('Added!', `${this.userData.firstName} has been added.`, 'success');
-                this.closeUserModal();
-            },
-            error: () => Swal.fire('Error', 'Addition failed', 'error')
+          next: () => {
+            this.loadUsers();
+            this.notificationService.addNotification(
+              'New User Created', 
+              `${this.userData.firstName} joined as ${this.userData.role}.`,
+              'user'
+            );
+            Swal.fire('Added!', `${this.userData.firstName} has been added.`, 'success');
+            this.closeUserModal();
+          },
+          error: () => Swal.fire('Error', 'Addition failed', 'error')
         });
       }
     }
   }
 
-  resetForm(form: NgForm) {
+  clearForm(form: NgForm) {
     form.resetForm();
     this.userData = this.getEmptyUser();
   }
@@ -134,25 +148,18 @@ export class UserComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.apiService.deleteUser(id).subscribe({
-            next: () => {
-                this.loadUsers();
-                this.notificationService.addNotification(
-                  'User Account Deleted', 
-                  'A team member account has been deactivated and removed.',
-                  'user'
-                );
-                Swal.fire('Deleted!', 'User has been removed.', 'success');
-            },
-            error: () => Swal.fire('Error', 'Deletion failed', 'error')
+          next: () => {
+            this.loadUsers();
+            this.notificationService.addNotification(
+              'User Account Deleted', 
+              'A team member account has been deactivated and removed.',
+              'user'
+            );
+            Swal.fire('Deleted!', 'User has been removed.', 'success');
+          },
+          error: () => Swal.fire('Error', 'Deletion failed', 'error')
         });
       }
     });
-  }
-
-  closeUserModal() {
-    const modalEl = document.getElementById('userModal');
-    const modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) modal.hide();
-    this.selectedUser = null;
   }
 }

@@ -7,8 +7,6 @@ import { Company } from '../models';
 import { ApiService } from '../services/api.service';
 import { NotificationService } from '../services/notification.service';
 
-declare var bootstrap: any;
-
 @Component({
   selector: 'app-company',
   standalone: true,
@@ -20,6 +18,7 @@ export class CompanyComponent implements OnInit {
   companies: Company[] = [];
   selectedCompany: Company | null = null;
   searchText: string = '';
+  showForm: boolean = false;
   companyData: Company = this.resetCompany();
 
   constructor(
@@ -42,58 +41,61 @@ export class CompanyComponent implements OnInit {
     return this.companies.filter(
       (company) =>
         company.companyName.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        company.contactPerson.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        company.email.toLowerCase().includes(this.searchText.toLowerCase())
+        (company.contactNumber && company.contactNumber.includes(this.searchText)) ||
+        (company.aadhaar && company.aadhaar.includes(this.searchText))
     );
   }
 
-  openCompanyModal() {
-    this.selectedCompany = null;
-    this.companyData = this.resetCompany();
-    const modalEl = document.getElementById('companyModal');
-    if (modalEl) new bootstrap.Modal(modalEl).show();
+  openAddForm() {
+    this.clearForm();
+    this.showForm = true;
   }
 
   editCompany(company: Company) {
     this.selectedCompany = company;
     this.companyData = { ...company };
-    const modalEl = document.getElementById('companyModal');
-    if (modalEl) new bootstrap.Modal(modalEl).show();
+    this.showForm = true;
   }
 
-  closeCompanyModal() {
-    const modalEl = document.getElementById('companyModal');
-    if (modalEl) bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+  clearForm() {
+    this.selectedCompany = null;
+    this.companyData = this.resetCompany();
+    this.showForm = false;
   }
 
   saveCompany(form: any) {
     if (form.valid) {
       if (this.selectedCompany) {
-        // Update on server
+        // Update
         this.apiService.updateCompany(this.companyData).subscribe({
-            next: () => {
-                this.loadCompanies();
-                Swal.fire('Updated!', `${this.companyData.companyName} updated.`, 'success');
-                this.closeCompanyModal();
-            },
-            error: () => Swal.fire('Error', 'Update failed', 'error')
+          next: () => {
+            this.loadCompanies();
+            this.notificationService.addNotification(
+              'Customer Updated', 
+              `Records for customer ${this.companyData.companyName} have been updated.`,
+              'company'
+            );
+            Swal.fire('Updated!', `Customer record for ${this.companyData.companyName} updated.`, 'success');
+            this.clearForm();
+          },
+          error: () => Swal.fire('Error', 'Update failed', 'error')
         });
       } else {
-        // Add on server
+        // Create
         const newCompany = { ...this.companyData };
         delete (newCompany as any).id;
         this.apiService.addCompany(newCompany).subscribe({
-            next: () => {
-                this.loadCompanies();
-                this.notificationService.addNotification(
-                  'Company Created', 
-                  `${this.companyData.companyName} has been added to the system.`,
-                  'company'
-                );
-                Swal.fire('Added!', `${this.companyData.companyName} added.`, 'success');
-                this.closeCompanyModal();
-            },
-            error: () => Swal.fire('Error', 'Addition failed', 'error')
+          next: () => {
+            this.loadCompanies();
+            this.notificationService.addNotification(
+              'Customer Registered', 
+              `New customer ${this.companyData.companyName} added to registry.`,
+              'company'
+            );
+            Swal.fire('Added!', `Customer ${this.companyData.companyName} successfully added.`, 'success');
+            this.clearForm();
+          },
+          error: () => Swal.fire('Error', 'Addition failed', 'error')
         });
       }
     }
@@ -102,22 +104,22 @@ export class CompanyComponent implements OnInit {
   deleteCompany(id: number) {
     Swal.fire({
       title: 'Are you sure?',
-      text: 'Deletion is permanent!',
+      text: 'Remove this customer record from the master database?',
       icon: 'warning',
       showCancelButton: true
     }).then((result) => {
       if (result.isConfirmed) {
         this.apiService.deleteCompany(id).subscribe({
-            next: () => {
-                this.loadCompanies();
-                this.notificationService.addNotification(
-                  'Company Removed', 
-                  'A company record has been deleted from the database.',
-                  'company'
-                );
-                Swal.fire('Deleted!', 'Company removed.', 'success');
-            },
-            error: () => Swal.fire('Error', 'Deletion failed', 'error')
+          next: () => {
+            this.loadCompanies();
+            this.notificationService.addNotification(
+              'Customer Removed', 
+              'A customer record was deleted from the master database.',
+              'company'
+            );
+            Swal.fire('Deleted!', 'Customer record removed.', 'success');
+          },
+          error: () => Swal.fire('Error', 'Deletion failed', 'error')
         });
       }
     });
@@ -132,6 +134,13 @@ export class CompanyComponent implements OnInit {
       contactNumber: '',
       email: '',
       contactPerson: '',
+      aadhaar: '',
+      creditBalance: 0,
+      maxCreditLimit: 25000,
+      status: 'Active',
+      industryType: 'Farmer',
+      billingAddress: '',
+      shippingAddress: ''
     };
   }
 }

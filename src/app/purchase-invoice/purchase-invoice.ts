@@ -20,8 +20,17 @@ export class PurchaseInvoiceComponent implements OnInit {
   products: Item[] = [];
   searchText: string = '';
   selectedInvoice: PurchaseInvoice | null = null;
+  showForm: boolean = false;
 
   invoiceData: PurchaseInvoice = this.resetInvoice();
+
+  // Local Form Controls for Picture Inward Log
+  selectedItemName: string = '';
+  selectedItemBatch: string = '';
+  selectedItemCost: number = 0;
+  selectedItemQty: number = 10;
+  selectedItemMfg: string = '';
+  selectedItemExpiry: string = '';
 
   constructor(
     private apiService: ApiService,
@@ -49,11 +58,31 @@ export class PurchaseInvoiceComponent implements OnInit {
     );
   }
 
+  onProductChange() {
+    const prod = this.products.find(p => p.name === this.selectedItemName);
+    if (prod) {
+      this.selectedItemCost = Math.round(prod.rate * 0.75); // ~75% of sell rate
+      this.selectedItemQty = 10;
+      this.selectedItemBatch = 'BATCH-' + Math.floor(1000 + Math.random() * 9000);
+      this.selectedItemMfg = new Date().toISOString().split('T')[0];
+      this.selectedItemExpiry = new Date(Date.now() + 365 * 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    } else {
+      this.selectedItemCost = 0;
+      this.selectedItemQty = 10;
+      this.selectedItemBatch = '';
+      this.selectedItemMfg = '';
+      this.selectedItemExpiry = '';
+    }
+  }
+
   openInvoiceModal() {
     this.selectedInvoice = null;
     this.invoiceData = this.resetInvoice();
-    const modalEl = document.getElementById('purchaseInvoiceModal');
-    if (modalEl) new bootstrap.Modal(modalEl).show();
+    this.selectedItemName = '';
+    this.selectedItemCost = 0;
+    this.selectedItemQty = 10;
+    this.selectedItemBatch = '';
+    this.showForm = true;
   }
 
   viewInvoice(invoice: PurchaseInvoice) {
@@ -63,19 +92,52 @@ export class PurchaseInvoiceComponent implements OnInit {
   }
 
   closeInvoiceModal() {
-    const modalEl = document.getElementById('purchaseInvoiceModal');
-    if (modalEl) bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+    this.showForm = false;
   }
 
-  addItem() {
-    this.invoiceData.items.push({
-      name: '',
-      quantity: 1,
-      rate: 0,
-      cgst: 9,
-      sgst: 9,
-      amount: 0
-    });
+  addFormLine() {
+    if (!this.selectedItemName) {
+      Swal.fire('Selection Required', 'Please select a catalog item first.', 'warning');
+      return;
+    }
+    const prod = this.products.find(p => p.name === this.selectedItemName);
+    if (!prod) return;
+
+    const baseCost = this.selectedItemQty * this.selectedItemCost;
+    const cgstVal = prod.cgst || 0;
+    const sgstVal = prod.sgst || 0;
+    const tax = (baseCost * (cgstVal + sgstVal)) / 100;
+    const totalAmount = baseCost + tax;
+
+    const existing = this.invoiceData.items.find(
+      (it: any) => it.name === this.selectedItemName && it.batchNo === this.selectedItemBatch
+    );
+    if (existing) {
+      existing.quantity += this.selectedItemQty;
+      const newBase = existing.quantity * existing.rate;
+      existing.amount = newBase + (newBase * (existing.cgst + existing.sgst) / 100);
+    } else {
+      this.invoiceData.items.push({
+        name: prod.name,
+        quantity: this.selectedItemQty,
+        rate: this.selectedItemCost,
+        cgst: cgstVal,
+        sgst: sgstVal,
+        amount: totalAmount,
+        batchNo: this.selectedItemBatch,
+        expiryDate: this.selectedItemExpiry,
+        mfgDate: this.selectedItemMfg
+      } as any);
+    }
+
+    // Reset inputs
+    this.selectedItemName = '';
+    this.selectedItemCost = 0;
+    this.selectedItemQty = 10;
+    this.selectedItemBatch = '';
+    this.selectedItemMfg = '';
+    this.selectedItemExpiry = '';
+    this.calculateTotal();
   }
 
   removeItem(index: number) {
@@ -83,30 +145,57 @@ export class PurchaseInvoiceComponent implements OnInit {
     this.calculateTotal();
   }
 
-  onProductChange(item: any) {
-    const prod = this.products.find(p => p.name === item.name);
-    if (prod) {
-      item.rate = prod.rate;
-      item.cgst = prod.cgst;
-      item.sgst = prod.sgst;
-      this.calculateItemAmount(item);
-    }
-  }
-
-  calculateItemAmount(item: any) {
-    const base = item.quantity * item.rate;
-    const tax = (base * (item.cgst + item.sgst)) / 100;
-    item.amount = base + tax;
-    this.calculateTotal();
-  }
-
   calculateTotal() {
     this.invoiceData.amount = this.invoiceData.items.reduce((sum, item) => sum + item.amount, 0);
   }
 
+  getFormSubtotal(): number {
+    return this.invoiceData.items.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
+  }
+
+  getFormTax(): number {
+    return this.invoiceData.items.reduce(
+      (sum, item) => sum + (item.quantity * item.rate * (item.cgst + item.sgst) / 100),
+      0
+    );
+  }
+
+  getFormTotal(): number {
+    return this.invoiceData.amount;
+  }
+
+  getItemTax(item: any): number {
+    return (item.quantity * item.rate * (item.cgst + item.sgst)) / 100;
+  }
+
   saveInvoice(form: any) {
-    if (form.valid && this.invoiceData.items.length > 0) {
-      this.calculateTotal();
+    if (!this.invoiceData.supplierName) {
+      Swal.fire('Validation Error', 'Please select a Supplier Vendor.', 'error');
+      return;
+    }
+    if (this.invoiceData.items.length === 0) {
+      Swal.fire('Validation Error', 'Please add at least one catalog item.', 'error');
+      return;
+    }
+
+    this.calculateTotal();
+    this.invoiceData.status = 'Paid'; // Default status is Paid (Consigned Inward)
+
+    if (this.selectedInvoice) {
+      this.apiService.updatePurchaseInvoice(this.invoiceData).subscribe({
+        next: () => {
+          this.loadInvoices();
+          this.notificationService.addNotification(
+            'Purchase Invoice Updated',
+            `Purchase Invoice #${this.invoiceData.invoiceNo} has been revised.`,
+            'system'
+          );
+          Swal.fire('Updated!', 'Wholesale bill updated successfully.', 'success');
+          this.showForm = false;
+        },
+        error: () => Swal.fire('Error', 'Update failed', 'error')
+      });
+    } else {
       const newInvoice = { ...this.invoiceData };
       delete (newInvoice as any).id;
 
@@ -118,13 +207,11 @@ export class PurchaseInvoiceComponent implements OnInit {
             `Purchase invoice ${newInvoice.invoiceNo} registered from ${newInvoice.supplierName}.`,
             'system'
           );
-          Swal.fire('Saved!', `Purchase Invoice ${newInvoice.invoiceNo} added.`, 'success');
-          this.closeInvoiceModal();
+          Swal.fire('Saved!', `Inward bill ${newInvoice.invoiceNo} logged.`, 'success');
+          this.showForm = false;
         },
         error: () => Swal.fire('Error', 'Save failed', 'error')
       });
-    } else if (this.invoiceData.items.length === 0) {
-      Swal.fire('Warning', 'Add at least one line item', 'warning');
     }
   }
 
@@ -146,6 +233,16 @@ export class PurchaseInvoiceComponent implements OnInit {
     });
   }
 
+  resetTerminal() {
+    this.invoiceData = this.resetInvoice();
+    this.selectedItemName = '';
+    this.selectedItemCost = 0;
+    this.selectedItemQty = 10;
+    this.selectedItemBatch = '';
+    this.selectedItemMfg = '';
+    this.selectedItemExpiry = '';
+  }
+
   private resetInvoice(): PurchaseInvoice {
     return {
       id: 0,
@@ -154,7 +251,7 @@ export class PurchaseInvoiceComponent implements OnInit {
       invoiceDate: new Date().toISOString().split('T')[0],
       dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       amount: 0,
-      status: 'Pending',
+      status: 'Paid',
       items: []
     };
   }

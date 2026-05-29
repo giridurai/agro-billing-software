@@ -1,14 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-import { Iteams } from '../iteams';
-import { Invoice, InvoiceItem, Item } from '../models';
-import { ApiService } from '../services/api.service';
-
 import Swal from 'sweetalert2';
-import { RupeeToWordsPipe } from '../pipes/rupee-to-words-pipe';
+
+import { Invoice, InvoiceItem, Item, Company } from '../models';
+import { ApiService } from '../services/api.service';
 import { NotificationService } from '../services/notification.service';
+import { RupeeToWordsPipe } from '../pipes/rupee-to-words-pipe';
 
 declare var bootstrap: any;
 
@@ -17,109 +15,203 @@ declare var bootstrap: any;
   standalone: true,
   imports: [CommonModule, FormsModule, RupeeToWordsPipe],
   templateUrl: './invoice.html',
-  styleUrls: ['./invoice.css'],
+  styleUrl: './invoice.css',
 })
 export class InvoiceComponent implements OnInit {
-  items: Item[] = []; // dropdown options from Item Master
   invoices: Invoice[] = [];
-  selectedInvoice: Invoice | null = null;
-  invoiceData: Invoice = this.getEmptyInvoice();
+  items: Item[] = [];
+  customers: Company[] = [];
   searchText: string = '';
+  selectedInvoice: Invoice | null = null;
+  invoiceData: Invoice = this.getBlankInvoice();
+
+  // Terminal entry helpers
+  showTerminal: boolean = false;
+  selectedCustomerId: number = 0;
+  selectedProductId: number = 0;
+  paymentMethod: string = 'Cash Sale';
+  tempBatch: string = '';
+  tempPrice: number = 0;
+  tempQty: number = 1;
 
   constructor(
-    private itemService: Iteams, 
     private apiService: ApiService,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.apiService.getItems().subscribe(data => this.items = data);
     this.loadInvoices();
+    this.loadCatalogItems();
+    this.loadCustomers();
   }
 
   loadInvoices() {
     this.apiService.getInvoices().subscribe({
       next: (data) => (this.invoices = data),
-      error: (err) => console.error('Failed to load invoices:', err)
+      error: (err) => console.error('Failed to load invoices:', err),
     });
   }
 
-  onItemNameChange(item: InvoiceItem) {
-    const master = this.items.find(i => i.name === item.name);
-    if (master) {
-      item.rate = master.rate;
-      item.cgst = master.cgst;
-      item.sgst = master.sgst;
-      item.hsnCode = master.hsnCode;
-      item.discount = master.discount;
-      this.recalculateItem(item);
-    } else {
-      item.rate = 0;
-      item.cgst = 0;
-      item.sgst = 0;
-      item.amount = 0;
-      item.hsnCode = '';
-      item.discount = 0;
+  loadCatalogItems() {
+    this.apiService.getItems().subscribe({
+      next: (data) => (this.items = data),
+      error: (err) => console.error('Failed to load catalog items:', err),
+    });
+  }
+
+  loadCustomers() {
+    this.apiService.getCompanies().subscribe({
+      next: (data) => (this.customers = data),
+      error: (err) => console.error('Failed to load customers:', err),
+    });
+  }
+
+  generateInvoiceNo(): string {
+    const data = localStorage.getItem('system_settings');
+    if (data) {
+      try {
+        const settings = JSON.parse(data);
+        const prefix = settings.invoicePrefix || 'INV-26-';
+        const nextIndex = settings.invoiceNextIndex || (this.invoices.length + 1);
+        return `${prefix}${nextIndex}`;
+      } catch (e) { }
     }
+    const yearSuffix = new Date().getFullYear().toString().slice(-2);
+    const nextSeq = this.invoices.length + 1;
+    const seqStr = nextSeq.toString().padStart(4, '0');
+    return `INV-${yearSuffix}-${seqStr}`;
   }
 
-  viewInvoice(invoice: any) {
-    this.selectedInvoice = invoice;
-    const modalEl = document.getElementById('viewInvoiceModal');
-    if (modalEl) {
-      const modal = new bootstrap.Modal(modalEl);
-      modal.show();
-    }
-  }
-
-  get filteredInvoices() {
-    const q = this.searchText.toLowerCase();
-    return this.invoices.filter(
-      (inv) =>
-        inv.invoiceNo.toLowerCase().includes(q) ||
-        inv.orderNo.toLowerCase().includes(q) ||
-        inv.customerName.toLowerCase().includes(q) ||
-        inv.status.toLowerCase().includes(q)
-    );
-  }
-
-  private getEmptyInvoice(): Invoice {
+  getBlankInvoice(): Invoice {
     return {
       id: 0,
-      invoiceNo: '',
+      invoiceNo: 'INV-NEW',
       orderNo: '',
       customerName: '',
       customerGSTIN: '',
       billingAddress: '',
       reverseCharge: 'N',
-      state: 'Tamil Nadu',
-      stateCode: '33',
-      status: 'Pending',
+      status: 'Paid',
       dueDate: new Date().toISOString().split('T')[0],
       amount: 0,
       balanceDue: 0,
+      vehicleNo: '',
       forwardingCharges: 0,
       packingCharges: 0,
       insuranceCharges: 0,
-      gstReverseCharge: 0,
-      termsConditions: '1. Goods once sold will not be taken back.\n2. Subject to Chennai Jurisdiction.',
-      vehicleNo: '',
       items: [],
     };
   }
 
-  addItem() {
-    this.invoiceData.items.push({
-      name: '',
-      quantity: 1,
-      rate: 0,
-      cgst: 0,
-      sgst: 0,
-      hsnCode: '',
-      discount: 0,
-      taxableValue: 0,
-      amount: 0,
-    });
+  get filteredInvoices() {
+    return this.invoices.filter(
+      (inv) =>
+        inv.invoiceNo.toLowerCase().includes(this.searchText.toLowerCase()) ||
+        inv.customerName.toLowerCase().includes(this.searchText.toLowerCase()) ||
+        (inv.orderNo || '').toLowerCase().includes(this.searchText.toLowerCase())
+    );
+  }
+
+  // ─── Terminal Actions ───────────────────────────────
+  openTerminal() {
+    this.showTerminal = true;
+    this.selectedInvoice = null;
+    this.invoiceData = this.getBlankInvoice();
+    this.invoiceData.invoiceNo = this.generateInvoiceNo();
+    this.invoiceData.dueDate = new Date().toISOString().split('T')[0];
+    this.selectedCustomerId = 0;
+    this.selectedProductId = 0;
+    this.paymentMethod = 'Cash Sale';
+    this.tempBatch = '';
+    this.tempPrice = 0;
+    this.tempQty = 1;
+  }
+
+  closeTerminal() {
+    this.showTerminal = false;
+    this.selectedInvoice = null;
+  }
+
+  onCustomerChange() {
+    const cust = this.customers.find((c) => c.id === +this.selectedCustomerId);
+    if (cust) {
+      this.invoiceData.customerName = cust.companyName;
+      this.invoiceData.customerGSTIN = cust.gst || '';
+      this.invoiceData.billingAddress = cust.billingAddress || '';
+    } else {
+      this.invoiceData.customerName = '';
+      this.invoiceData.customerGSTIN = '';
+      this.invoiceData.billingAddress = '';
+    }
+  }
+
+  getCustomerLabel(): string {
+    const cust = this.customers.find((c) => c.id === +this.selectedCustomerId);
+    if (!cust) return '';
+    const credit = (cust.creditBalance || 0) > 0 ? 'Credit' : 'Cash';
+    return `${cust.companyName} (${credit} outstanding)`;
+  }
+
+  onProductChange() {
+    const matched = this.items.find((it) => it.id === +this.selectedProductId);
+    if (matched) {
+      this.tempPrice = matched.rate || 0;
+      this.tempBatch = this.getProductBatch(matched);
+    } else {
+      this.tempPrice = 0;
+      this.tempBatch = '';
+    }
+  }
+
+  getProductBatch(item: Item): string {
+    const batchMap: Record<number, string> = {
+      1: 'UR-2026A',
+      2: 'DP-8812',
+      3: 'MN-9922',
+      4: 'NM-002',
+      5: 'SW-404',
+    };
+    return batchMap[item.id] || 'BATCH-2026';
+  }
+
+  addLineItem() {
+    const matched = this.items.find((it) => it.id === +this.selectedProductId);
+    if (!matched) {
+      Swal.fire('Select Product', 'Please choose a product first.', 'warning');
+      return;
+    }
+    if (this.tempQty <= 0) {
+      Swal.fire('Invalid Qty', 'Quantity must be at least 1.', 'warning');
+      return;
+    }
+
+    const baseVal = this.tempQty * this.tempPrice;
+    const discountVal = (baseVal * (matched.discount || 0)) / 100;
+    const taxableVal = baseVal - discountVal;
+    const cgstVal = (taxableVal * (matched.cgst || 0)) / 100;
+    const sgstVal = (taxableVal * (matched.sgst || 0)) / 100;
+    const totalAmt = taxableVal + cgstVal + sgstVal;
+
+    const lineItem: InvoiceItem = {
+      name: matched.name,
+      quantity: this.tempQty,
+      rate: this.tempPrice,
+      cgst: matched.cgst || 0,
+      sgst: matched.sgst || 0,
+      discount: matched.discount || 0,
+      taxableValue: taxableVal,
+      amount: totalAmt,
+      hsnCode: matched.hsnCode || '',
+    };
+
+    this.invoiceData.items.push(lineItem);
+    this.recalculateTotals();
+
+    // Reset product selectors
+    this.selectedProductId = 0;
+    this.tempBatch = '';
+    this.tempPrice = 0;
+    this.tempQty = 1;
   }
 
   removeItem(index: number) {
@@ -127,153 +219,247 @@ export class InvoiceComponent implements OnInit {
     this.recalculateTotals();
   }
 
-  recalculateItem(item: InvoiceItem) {
-    const base = item.quantity * item.rate;
-    const discount = item.discount || 0;
-    item.taxableValue = base - discount;
-    const cgstAmount = (item.taxableValue * item.cgst) / 100;
-    const sgstAmount = (item.taxableValue * item.sgst) / 100;
-    item.amount = item.taxableValue + cgstAmount + sgstAmount;
-    this.recalculateTotals();
-  }
-
   recalculateTotals() {
-    const itemsTotal = this.invoiceData.items.reduce((sum, it) => sum + (it.amount || 0), 0);
-    const extraCharges = (this.invoiceData.forwardingCharges || 0) + 
-                         (this.invoiceData.packingCharges || 0) + 
-                         (this.invoiceData.insuranceCharges || 0);
-    this.invoiceData.amount = itemsTotal + extraCharges;
-    this.invoiceData.balanceDue = this.invoiceData.amount;
+    let subtotal = 0;
+    this.invoiceData.items.forEach((item) => {
+      subtotal += item.amount || 0;
+    });
+    this.invoiceData.amount = subtotal;
+    this.invoiceData.balanceDue =
+      this.invoiceData.status === 'Paid' ? 0 : this.invoiceData.amount;
   }
 
-  openInvoiceModal() {
-    this.selectedInvoice = null;
-    this.invoiceData = this.getEmptyInvoice();
-    const modalEl = document.getElementById('invoiceModal');
-    if (modalEl) {
-      const modal = new bootstrap.Modal(modalEl);
-      modal.show();
+  getSubtotalBase(): number {
+    return this.invoiceData.items.reduce(
+      (acc, item) => acc + (item.taxableValue || 0),
+      0
+    );
+  }
+
+  getCGSTTotal(): number {
+    return this.invoiceData.items.reduce(
+      (acc, item) =>
+        acc + ((item.taxableValue || 0) * (item.cgst || 0)) / 100,
+      0
+    );
+  }
+
+  getSGSTTotal(): number {
+    return this.invoiceData.items.reduce(
+      (acc, item) =>
+        acc + ((item.taxableValue || 0) * (item.sgst || 0)) / 100,
+      0
+    );
+  }
+
+  resetTerminal() {
+    this.invoiceData = this.getBlankInvoice();
+    this.invoiceData.invoiceNo = this.generateInvoiceNo();
+    this.invoiceData.dueDate = new Date().toISOString().split('T')[0];
+    this.selectedCustomerId = 0;
+    this.selectedProductId = 0;
+    this.paymentMethod = 'Cash Sale';
+    this.tempBatch = '';
+    this.tempPrice = 0;
+    this.tempQty = 1;
+  }
+
+  saveAndPrintInvoice() {
+    if (!this.invoiceData.customerName) {
+      Swal.fire('Error', 'Please select a Farmer / Dealer Customer.', 'error');
+      return;
     }
+    if (this.invoiceData.items.length === 0) {
+      Swal.fire('Error', 'Please add at least one product line item.', 'error');
+      return;
+    }
+
+    this.invoiceData.status = this.paymentMethod === 'Cash Sale' ? 'Paid' : 'Pending';
+    this.recalculateTotals();
+
+    const newInvoice = { ...this.invoiceData };
+    delete (newInvoice as any).id;
+
+    this.apiService.addInvoice(newInvoice).subscribe({
+      next: (saved) => {
+        const data = localStorage.getItem('system_settings');
+        if (data) {
+          try {
+            const settings = JSON.parse(data);
+            if (settings.invoiceNextIndex) {
+              settings.invoiceNextIndex = +settings.invoiceNextIndex + 1;
+              localStorage.setItem('system_settings', JSON.stringify(settings));
+            }
+          } catch (e) { }
+        }
+        this.loadInvoices();
+        this.notificationService.addNotification(
+          'New Invoice Created',
+          `Tax invoice #${this.invoiceData.invoiceNo} successfully registered.`,
+          'system'
+        );
+        Swal.fire({
+          title: 'Invoice Saved!',
+          text: `Invoice #${this.invoiceData.invoiceNo} created successfully.`,
+          icon: 'success',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        this.resetTerminal();
+      },
+      error: () => Swal.fire('Error', 'Failed to save invoice.', 'error'),
+    });
   }
 
-  editInvoice(invoice: Invoice) {
+  // ─── Registry Actions ──────────────────────────────
+  editInvoiceFromRegistry(invoice: Invoice) {
+    this.showTerminal = true;
     this.selectedInvoice = invoice;
     this.invoiceData = JSON.parse(JSON.stringify(invoice));
-    const modalEl = document.getElementById('invoiceModal');
-    if (modalEl) {
-      const modal = new bootstrap.Modal(modalEl);
-      modal.show();
-    }
-  }
-
-  saveInvoice(form: any) {
-    if (form.valid) {
-      this.recalculateTotals();
-      if (this.selectedInvoice) {
-        this.apiService.updateInvoice(this.invoiceData).subscribe({
-            next: () => {
-                this.loadInvoices();
-                this.notificationService.addNotification(
-                  'Invoice Updated', 
-                  `Invoice #${this.invoiceData.invoiceNo} has been revised.`,
-                  'invoice'
-                );
-                Swal.fire('Updated!', 'Invoice modified.', 'success');
-                this.closeInvoiceModal();
-            },
-            error: () => Swal.fire('Error', 'Update failed', 'error')
-        });
-      } else {
-        const newInvoice = { ...this.invoiceData };
-        delete (newInvoice as any).id;
-        this.apiService.addInvoice(newInvoice).subscribe({
-            next: () => {
-                this.loadInvoices();
-                this.notificationService.addNotification(
-                  'New Invoice Generated', 
-                  `Invoice #${this.invoiceData.invoiceNo} for ${this.invoiceData.customerName} created.`,
-                  'invoice'
-                );
-                Swal.fire('Added!', 'New invoice generated.', 'success');
-                this.closeInvoiceModal();
-            },
-            error: () => Swal.fire('Error', 'Addition failed', 'error')
-        });
-      }
-    }
+    const foundCust = this.customers.find(
+      (c) => c.companyName === invoice.customerName
+    );
+    this.selectedCustomerId = foundCust ? foundCust.id : 0;
+    this.paymentMethod = invoice.status === 'Paid' ? 'Cash Sale' : 'Credit';
   }
 
   deleteInvoice(id: number) {
     Swal.fire({
-      title: 'Remove this invoice?',
+      title: 'Delete Invoice?',
+      text: 'Are you sure you want to delete this invoice?',
       icon: 'warning',
-      showCancelButton: true
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete',
     }).then((result) => {
       if (result.isConfirmed) {
         this.apiService.deleteInvoice(id).subscribe({
-            next: () => {
-                this.loadInvoices();
-                this.notificationService.addNotification(
-                  'Invoice Deleted', 
-                  'An invoice record has been removed from the system.',
-                  'invoice'
-                );
-                Swal.fire('Deleted!', 'Invoice removed.', 'success');
-            },
-            error: () => Swal.fire('Error', 'Deletion failed', 'error')
+          next: () => {
+            this.loadInvoices();
+            this.notificationService.addNotification(
+              'Invoice Removed',
+              'A sales invoice has been deleted.',
+              'system'
+            );
+            Swal.fire('Deleted!', 'Invoice has been removed.', 'success');
+          },
+          error: () => Swal.fire('Error', 'Deletion failed.', 'error'),
         });
       }
     });
   }
 
-  closeInvoiceModal() {
-    ['invoiceModal', 'viewInvoiceModal'].forEach(id => {
-      const modalEl = document.getElementById(id);
-      if (modalEl) {
-        const modal = bootstrap.Modal.getInstance(modalEl);
-        if (modal) modal.hide();
-      }
-    });
+  viewInvoice(invoice: Invoice) {
+    this.selectedInvoice = invoice;
+    const modal = document.getElementById('viewInvoiceModal');
+    if (modal) {
+      bootstrap.Modal.getOrCreateInstance(modal).show();
+    }
   }
 
-  printInvoice() {
-    window.print();
+  closeViewModal() {
+    const modal = document.getElementById('viewInvoiceModal');
+    if (modal) {
+      bootstrap.Modal.getOrCreateInstance(modal).hide();
+    }
   }
 
-  getItemAmount(item: InvoiceItem): number {
-    return item.amount || 0;
-  }
-
+  // ─── Print Preview Helpers ─────────────────────────
   getTotalAmountBeforeDiscount(): number {
-    if (!this.selectedInvoice?.items) return 0;
-    return this.selectedInvoice.items.reduce((sum, item) => sum + (item.quantity * item.rate), 0);
+    const data = this.selectedInvoice || this.invoiceData;
+    return (data.items || []).reduce(
+      (acc, item) => acc + (item.quantity || 0) * (item.rate || 0),
+      0
+    );
   }
 
   getTotalDiscount(): number {
-    if (!this.selectedInvoice?.items) return 0;
-    return this.selectedInvoice.items.reduce((sum, item) => sum + (item.discount || 0), 0);
+    const data = this.selectedInvoice || this.invoiceData;
+    return (data.items || []).reduce((acc, item) => {
+      const baseVal = (item.quantity || 0) * (item.rate || 0);
+      return acc + (baseVal * (item.discount || 0)) / 100;
+    }, 0);
   }
 
   getTotalBeforeTax(): number {
-    if (!this.selectedInvoice?.items) return 0;
-    return this.selectedInvoice.items.reduce((sum, item) => sum + (item.taxableValue || 0), 0);
+    const data = this.selectedInvoice || this.invoiceData;
+    return (data.items || []).reduce(
+      (acc, item) => acc + (item.taxableValue || 0),
+      0
+    );
   }
 
   getTotalCGST(): number {
-    if (!this.selectedInvoice?.items) return 0;
-    return this.selectedInvoice.items.reduce((sum, item) => sum + ((item.taxableValue || 0) * item.cgst / 100), 0);
+    const data = this.selectedInvoice || this.invoiceData;
+    return (data.items || []).reduce(
+      (acc, item) =>
+        acc + ((item.taxableValue || 0) * (item.cgst || 0)) / 100,
+      0
+    );
   }
 
   getTotalSGST(): number {
-    if (!this.selectedInvoice?.items) return 0;
-    return this.selectedInvoice.items.reduce((sum, item) => sum + ((item.taxableValue || 0) * item.sgst / 100), 0);
+    const data = this.selectedInvoice || this.invoiceData;
+    return (data.items || []).reduce(
+      (acc, item) =>
+        acc + ((item.taxableValue || 0) * (item.sgst || 0)) / 100,
+      0
+    );
   }
 
-  getGrandTotal(): number {
-    const subtotal = this.getTotalBeforeTax() + this.getTotalCGST() + this.getTotalSGST();
-    const extra = (this.selectedInvoice?.forwardingCharges || 0) + 
-                    (this.selectedInvoice?.packingCharges || 0) + 
-                    (this.selectedInvoice?.insuranceCharges || 0);
-    return subtotal + extra;
+  printInvoice() {
+    const printContents = document.getElementById('printSection')?.innerHTML;
+    if (printContents) {
+      const popupWin = window.open('', '_blank', 'width=900,height=990');
+      popupWin!.document.open();
+      popupWin!.document.write(`
+        <html>
+          <head>
+            <title>Tax Invoice - Puvilink AGRO</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 20px; background: #fff; }
+              .invoice-print-area { width: 100%; margin: 0 auto; background: #fff; }
+              .clearfix::after { content: ""; clear: both; display: table; }
+              .print-header { border-bottom: 2px solid #059669; padding-bottom: 15px; margin-bottom: 15px; }
+              .print-logo-box { float: left; width: 20%; }
+              .print-company-center { float: left; width: 50%; text-align: center; }
+              .print-contact-right { float: right; width: 30%; text-align: right; font-size: 11px; color: #374151; line-height: 1.4; }
+              .print-title-box { background: #059669; color: #fff; font-size: 16px; font-weight: bold; text-align: center; padding: 5px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+              .invoice-grid { border: 2px solid #059669; margin-bottom: 15px; display: table; width: 100%; }
+              .grid-col-left { display: table-cell; width: 50%; border-right: 2px solid #059669; vertical-align: top; }
+              .grid-col-right { display: table-cell; width: 50%; vertical-align: top; }
+              .grid-row { border-bottom: 1px solid #059669; display: flex; padding: 4px 8px; font-size: 11px; }
+              .grid-row:last-child { border-bottom: 0; }
+              .label-cell { width: 120px; font-weight: bold; color: #374151; }
+              .value-cell { flex-grow: 1; }
+              .invoice-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+              .invoice-table th, .invoice-table td { border: 1px solid #059669; padding: 6px 8px; font-size: 11px; }
+              .invoice-table th { background: #f3f4f6; font-weight: bold; text-align: center; color: #059669; }
+              .invoice-table td.text-end { text-align: right; }
+              .invoice-table td.text-center { text-align: center; }
+              .total-row td { font-weight: bold; background: #f9fafb; }
+              .row { display: flex; flex-wrap: wrap; }
+              .col-7 { width: 58.3333%; }
+              .col-5 { width: 41.6666%; }
+              .col-12 { width: 100%; }
+              .border { border: 2px solid #059669; }
+              .footer-row { display: flex; border-bottom: 1px solid #059669; font-size: 11px; }
+              .footer-row:last-child { border-bottom: 0; }
+              .footer-label { width: 65%; font-weight: bold; padding: 4px 8px; background: #f9fafb; }
+              .footer-value { width: 35%; text-align: right; padding: 4px 8px; font-weight: bold; }
+              .fw-bold { font-weight: bold; }
+              .fw-extrabold { font-weight: 800; }
+              .text-end { text-align: right; }
+              .text-center { text-align: center; }
+              .fst-italic { font-style: italic; }
+              .text-capitalize { text-transform: capitalize; }
+            </style>
+          </head>
+          <body onload="window.print();window.close()">
+            <div class="invoice-print-area">${printContents}</div>
+          </body>
+        </html>
+      `);
+      popupWin!.document.close();
+    }
   }
 }

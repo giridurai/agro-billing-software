@@ -40,7 +40,8 @@
 }
 
 .header-text {
-  color: #b00; /* Red as in image */
+  color: #b00;
+  /* Red as in image */
   font-weight: 900;
   font-size: 24px;
   letter-spacing: 1px;
@@ -191,7 +192,7 @@
     background: #fff !important;
     width: 210mm !important;
   }
-  
+
   body * {
     visibility: hidden;
     -webkit-print-color-adjust: exact !important;
@@ -200,9 +201,9 @@
   }
 
   /* Full Screen Modal Override */
-  #viewInvoiceModal, 
-  #viewInvoiceModal .modal-dialog, 
-  #viewInvoiceModal .modal-content, 
+  #viewInvoiceModal,
+  #viewInvoiceModal .modal-dialog,
+  #viewInvoiceModal .modal-content,
   #viewInvoiceModal .modal-body {
     visibility: visible !important;
     display: block !important;
@@ -218,7 +219,13 @@
     overflow: visible !important;
   }
 
-  .modal-header, .modal-footer, .no-print, .btn-close, .navbar, app-sidebar, .sidebar {
+  .modal-header,
+  .modal-footer,
+  .no-print,
+  .btn-close,
+  .navbar,
+  app-sidebar,
+  .sidebar {
     display: none !important;
   }
 
@@ -235,15 +242,39 @@
     position: relative !important;
   }
 
-  .print-header { border-bottom: 2px solid #0a58ca !important; }
-  .invoice-grid { border-bottom: 2px solid #0a58ca !important; }
-  .invoice-table { border: 1px solid #0a58ca !important; }
-  .invoice-table th, .invoice-table td { border: 1px solid #0a58ca !important; }
+  .print-header {
+    border-bottom: 2px solid #0a58ca !important;
+  }
+
+  .invoice-grid {
+    border-bottom: 2px solid #0a58ca !important;
+  }
+
+  .invoice-table {
+    border: 1px solid #0a58ca !important;
+  }
+
+  .invoice-table th,
+  .invoice-table td {
+    border: 1px solid #0a58ca !important;
+  }
 
   /* Color Preservation */
-  .header-text { color: #b00 !important; }
-  .text-danger { color: #dc3545 !important; }
-  .text-primary, .label-cell, .footer-label { color: #0a58ca !important; }
-  [style*="background"] { -webkit-print-color-adjust: exact !important; }
-}
+  .header-text {
+    color: #b00 !important;
+  }
 
+  .text-danger {
+    color: #dc3545 !important;
+  }
+
+  .text-primary,
+  .label-cell,
+  .footer-label {
+    color: #0a58ca !important;
+  }
+
+  [style*="background"] {
+    -webkit-print-color-adjust: exact !important;
+  }
+}

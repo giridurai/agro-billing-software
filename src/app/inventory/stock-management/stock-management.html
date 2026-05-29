@@ -1,0 +1,308 @@
+<div class="container-fluid py-4 px-3">
+  <!-- Barcode Compliance Header Banner -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4"
+    style="background: linear-gradient(135deg, #0b4528 0%, #157347 100%); color: #fff;">
+    <div class="card-body p-4">
+      <div class="row align-items-center g-3">
+        <div class="col-md-9">
+          <span
+            class="badge bg-success-subtle text-success border border-success fs-9 rounded-pill px-3 py-1 mb-2 fw-semibold text-uppercase">
+            <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Barcode Compliance Enabled
+          </span>
+          <h4 class="mb-1 fw-extrabold text-white">Interactive Barcode Stock Inward System</h4>
+          <p class="mb-0 opacity-75 fs-7">
+            Simulate actual warehouse hardware scanners or use physical USB barcode readers to immediately index
+            products.
+          </p>
+        </div>
+        <div class="col-md-3 text-md-end">
+          <button
+            class="btn btn-light d-inline-flex align-items-center fw-bold text-success px-4 py-2 border-0 shadow-sm btn-sm"
+            (click)="testScannerSound()">
+            <i class="mdi mdi-volume-high me-2 fs-5"></i> Test Scanner Sound
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column: Current Warehouse Stock Inventory (8 cols) -->
+    <div [class]="showForm ? 'col-lg-8' : 'col-lg-12'">
+      <div class="crm-card border-0 shadow-sm rounded-4">
+        <div class="crm-card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="mb-0 fw-bold text-main">Current Warehouse Stock Inventory</h6>
+            <span class="text-muted fs-8">Live balance count tracked by product serial codes.</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <div class="stylish-search w-100" style="max-width: 240px">
+              <i class="mdi mdi-magnify"></i>
+              <input type="text" class="form-control ps-5 form-control-sm" placeholder="Filter warehouse stock..."
+                [(ngModel)]="searchText" />
+            </div>
+            <button *ngIf="!showForm" class="btn btn-success btn-sm fw-bold px-3 py-2 d-inline-flex align-items-center shadow-sm text-white" (click)="openAddForm()">
+              <i class="mdi mdi-plus-box-outline me-2"></i> Stock Inward / Adjust
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>PRODUCT DETAILS</th>
+                  <th>ACTIVE BATCH</th>
+                  <th>CATEGORY</th>
+                  <th>BARCODE</th>
+                  <th class="text-center">IN STOCK QTY</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of filteredInventory">
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div
+                        class="company-avatar me-3 bg-success-subtle text-success rounded d-flex align-items-center justify-content-center"
+                        style="width: 36px; height: 36px;">
+                        <i class="mdi mdi-sprout fs-5"></i>
+                      </div>
+                      <div>
+                        <div class="fw-bold text-main fs-7">{{ item.mockName }}</div>
+                        <span class="text-muted fs-8">Brand: {{ item.brand }} | HSN: {{ item.hsnCode }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <code class="text-primary fw-semibold fs-7">{{ item.activeBatch }}</code>
+                  </td>
+                  <td>
+                    <span class="text-muted fs-7">{{ item.mockCategory }}</span>
+                  </td>
+                  <td>
+                    <code class="text-muted fs-8">{{ item.barcode }}</code>
+                  </td>
+                  <td class="text-center">
+                    <span class="fw-bold fs-6" [ngClass]="item.stockQuantity < 30 ? 'text-danger' : 'text-success'">
+                      {{ item.stockQuantity }}
+                    </span>
+                    <small class="text-muted fs-8 ms-1">{{ item.unit }}</small>
+                  </td>
+                  <td>
+                    <span class="badge rounded-pill fs-8 px-2 py-1 fw-bold"
+                      [ngClass]="item.stockQuantity >= 30 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
+                      {{ item.stockQuantity >= 30 ? 'Adequate' : 'Low Level' }}
+                    </span>
+                  </td>
+                </tr>
+                <tr *ngIf="filteredInventory.length === 0">
+                  <td colspan="6" class="text-center py-5 text-muted">
+                    No matching inventory products found.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Interactive Stock Inward / Adjust Pane (4 cols) -->
+    <div class="col-lg-4" *ngIf="showForm">
+      <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+          <h6 class="mb-0 fw-bold text-main">Stock Inward / Adjust</h6>
+          <div class="d-flex align-items-center gap-2">
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn"
+                [ngClass]="isBarcodeMode ? 'btn-success text-white' : 'btn-outline-success'"
+                (click)="isBarcodeMode = true">
+                <i class="mdi mdi-barcode me-1"></i> Barcode
+              </button>
+              <button type="button" class="btn"
+                [ngClass]="!isBarcodeMode ? 'btn-success text-white' : 'btn-outline-success'"
+                (click)="isBarcodeMode = false">
+                <i class="mdi mdi-keyboard-outline me-1"></i> Manual
+              </button>
+            </div>
+            <button type="button" class="btn-close ms-2" (click)="cancelAdjustment()"></button>
+          </div>
+        </div>
+
+        <div class="card-body p-3">
+          <!-- A. BARCODE SCAN MODE -->
+          <div *ngIf="isBarcodeMode">
+            <!-- Simulated Camera Barcode Scanner Viewport -->
+            <div
+              class="barcode-scanner-box rounded-3 text-center mb-4 p-4 position-relative d-flex flex-column align-items-center justify-content-center"
+              style="background-color: #0b1e14; height: 160px; border: 2px dashed #157347;">
+
+              <!-- Scan Box guidelines -->
+              <div class="position-absolute border border-success opacity-50"
+                style="top: 15px; left: 15px; right: 15px; bottom: 15px; border-radius: 4px;"></div>
+
+              <div *ngIf="decodedSuccess" class="text-center animate__animated animate__pulse animate__infinite">
+                <i class="mdi mdi-qrcode-scan text-success fs-1 mb-1"></i>
+                <div class="fw-bold text-success fs-7 text-uppercase tracking-wider">DECODED: SUCCESSFUL!</div>
+              </div>
+
+              <div *ngIf="!decodedSuccess" class="text-center opacity-75">
+                <i class="mdi mdi-barcode-scan text-muted fs-1 mb-1"></i>
+                <div class="text-muted fs-8 text-uppercase tracking-wider">Waiting for scanned product...</div>
+              </div>
+            </div>
+
+            <!-- Scan Input (USB Emulator) -->
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label class="fs-8 fw-bold text-muted">Scan Input (USB Wand Emulator)</label>
+                <span class="badge bg-light text-success fs-9 border border-success-subtle">Listens to hardware Enter
+                  key</span>
+              </div>
+              <div class="input-group">
+                <span class="input-group-text bg-light text-muted border-end-0"><i class="mdi mdi-barcode"></i></span>
+                <input type="text" class="form-control form-control-sm border-start-0 ps-1"
+                  placeholder="Scan product barcode code..." [(ngModel)]="scannedBarcode"
+                  (keyup.enter)="onBarcodeScanned()" />
+                <button class="btn btn-success text-white btn-sm fw-bold px-3" type="button"
+                  (click)="onBarcodeScanned()">Apply</button>
+              </div>
+            </div>
+
+            <!-- SIMULATED BAGS / CLICK TAGS TO SCAN -->
+            <div class="mb-4 bg-light p-3 rounded-3">
+              <label class="fs-9 fw-bold text-muted text-uppercase mb-2 d-block">SIMULATED BAGS / CLICK TAGS TO
+                SCAN:</label>
+              <div class="d-grid gap-2">
+                <button type="button"
+                  class="btn btn-white btn-sm text-start border border-light-subtle shadow-sm p-2 rounded-2"
+                  *ngFor="let item of inventory" (click)="simulateBarcodeClick(item.barcode)">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <span class="fw-bold text-main fs-8 d-block">{{ item.brand }}</span>
+                      <code class="text-muted fs-9">{{ item.barcode }}</code>
+                    </div>
+                    <span class="badge bg-success-subtle text-success fs-9">Scan</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Active Decoded Form -->
+            <div class="card border border-success-subtle bg-success-subtle bg-opacity-10 p-3 rounded-3"
+              *ngIf="scannedProduct">
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+                  style="width: 28px; height: 28px;">
+                  <i class="mdi mdi-check"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0 fw-bold text-main fs-8">{{ scannedProduct.mockName }}</h6>
+                  <small class="text-muted fs-9">Current stock balance: {{ scannedProduct.stockQuantity }} {{
+                    scannedProduct.unit }}</small>
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label fs-9 fw-bold text-muted mb-1">Inward Qty Bags *</label>
+                  <input type="number" class="form-control form-control-sm" [(ngModel)]="inwardQty" />
+                </div>
+                <div class="col-6">
+                  <label class="form-label fs-9 fw-bold text-muted mb-1">Batch Assignment *</label>
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="inwardBatch" />
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label fs-9 fw-bold text-muted mb-1">Mfg Date</label>
+                  <input type="date" class="form-control form-control-sm" [(ngModel)]="inwardMfg" />
+                </div>
+                <div class="col-6">
+                  <label class="form-label fs-9 fw-bold text-muted mb-1">Expiry Date</label>
+                  <input type="date" class="form-control form-control-sm" [(ngModel)]="inwardExpiry" />
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-success text-white btn-sm w-100 fw-bold py-2 shadow-sm"
+                (click)="submitBarcodeInward()">
+                <i class="mdi mdi-checkbox-marked-circle-outline me-1"></i> Register Barcode Inward
+              </button>
+            </div>
+          </div>
+
+          <!-- B. MANUAL ADJUSTMENT MODE -->
+          <div *ngIf="!isBarcodeMode">
+            <form #adjustForm="ngForm" (ngSubmit)="submitAdjustment(adjustForm)">
+              <div class="mb-3">
+                <label class="form-label fw-bold text-muted fs-8 mb-1">Select Product To Adjust *</label>
+                <select class="form-select form-select-sm" [(ngModel)]="selectedProductName" name="selectedProductName"
+                  required>
+                  <option value="">Choose product...</option>
+                  <option *ngFor="let item of inventory" [value]="item.name">{{ item.mockName }}</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold text-muted fs-8 mb-1">Adjustment Direction *</label>
+                <select class="form-select form-select-sm" [(ngModel)]="direction" name="direction" required>
+                  <option value="Inward">Inward Adjustment (+)</option>
+                  <option value="Outward">Outward Adjustment (-)</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold text-muted fs-8 mb-1">Adjustment Qty *</label>
+                <input type="number" class="form-control form-control-sm" [(ngModel)]="quantity" name="quantity" min="1"
+                  required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-bold text-muted fs-8 mb-1">Adjustment Reason *</label>
+                <select class="form-select form-select-sm" [(ngModel)]="reason" name="reason" required>
+                  <option *ngFor="let r of reasonsList" [value]="r">{{ r }}</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-success text-white btn-sm w-100 fw-bold py-2 shadow-sm"
+                [disabled]="!adjustForm.valid || !selectedProductName">
+                Apply Stock Adjustment
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-time Inward / Correction Logs -->
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+          <h6 class="mb-0 fw-bold text-main">Inward / Correction Logs</h6>
+          <span class="text-muted fs-9">Real-time journal</span>
+        </div>
+        <div class="card-body p-0" style="max-height: 280px; overflow-y: auto;">
+          <div class="list-group list-group-flush">
+            <div class="list-group-item p-3 border-bottom" *ngFor="let h of adjustmentHistory">
+              <div class="d-flex w-100 justify-content-between align-items-center mb-1">
+                <h6 class="mb-0 fs-8 fw-bold text-main">{{ getMockProductName(h.product) }}</h6>
+                <span class="badge rounded-pill fs-8 fw-bold px-2 py-0.5"
+                  [ngClass]="h.type === 'Inward' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'">
+                  {{ h.type === 'Inward' ? '+' : '-' }}{{ h.quantity }} Units
+                </span>
+              </div>
+              <p class="mb-1 text-muted fs-9">{{ h.notes }}</p>
+              <small class="text-muted fs-9 opacity-75">
+                <i class="mdi mdi-clock-outline me-1"></i> {{ h.date }}
+              </small>
+            </div>
+            <div *ngIf="adjustmentHistory.length === 0" class="p-4 text-center text-muted fs-8">
+              No stock corrections registered.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

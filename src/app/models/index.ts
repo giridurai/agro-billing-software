@@ -8,6 +8,9 @@ export interface User {
   gender: string;
   role: string;
   password?: string;
+  username?: string;
+  status?: string;
+  isOwner?: boolean;
 }
 
 export interface InvoiceItem {
@@ -98,6 +101,9 @@ export interface Company {
   industryType?: string;
   shippingAddress?: string;
   billingAddress?: string;
+  aadhaar?: string;
+  creditBalance?: number;
+  maxCreditLimit?: number;
 }
 
 export interface Contact {
@@ -139,6 +145,9 @@ export interface PurchaseInvoiceItem {
   cgst: number;
   sgst: number;
   amount: number;
+  batchNo?: string;
+  expiryDate?: string;
+  mfgDate?: string;
 }
 
 export interface PurchaseInvoice {

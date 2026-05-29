@@ -2,10 +2,16 @@
   <!-- Top Navbar -->
   <nav class="navbar fixed-top d-flex align-items-center justify-content-between">
     <div class="nav-left h-100 d-flex align-items-center">
-      <div class="sidebar-brand">
-        <h3 class="logo-text mb-0 d-flex align-items-center">
-          PUVILINK<span class="text-success ms-1 animate-pulse" style="font-size: 0.7em; font-weight: 800;">AGRO</span>
-        </h3>
+      <div class="sidebar-brand d-flex align-items-center justify-content-start px-3">
+        <div class="bg-success rounded-3 d-flex align-items-center justify-content-center me-2"
+          style="width: 32px; height: 32px;">
+          <i class="mdi mdi-leaf text-white fs-5 animate-pulse"></i>
+        </div>
+        <div>
+          <h5 class="mb-0 fw-bold text-dark fs-7" style="line-height: 1.1;">Krishi-Bill Pro</h5>
+          <span class="fs-9 text-success fw-semibold"
+            style="letter-spacing: 0.05em; font-size: 0.62rem; display: block;">Agro-Fertilizer ERP</span>
+        </div>
       </div>
       <div class="d-flex align-items-center border-start ps-4 ms-2" style="height: 40px;">
         <h4 class="page-title mb-0 fw-bold">{{ currentPageTitle }}</h4>
@@ -16,7 +22,7 @@
       <!-- Global Search -->
       <div class="stylish-search d-none d-md-flex me-2">
         <i class="mdi mdi-magnify"></i>
-        <input type="text" class="form-control" placeholder="Search Agro...">
+        <input type="text" class="form-control" placeholder="Global search (Ctrl+K)...">
       </div>
 
       <!-- Quick Actions -->
@@ -26,7 +32,8 @@
           <a class="dash-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
             title="Notifications" (click)="notificationService.markAllAsRead()">
             <i class="mdi mdi-bell-outline"></i>
-            <span *ngIf="notificationService.getUnreadCount() > 0" class="position-absolute top-25 start-75 translate-middle badge rounded-pill bg-danger shadow-sm"
+            <span *ngIf="notificationService.getUnreadCount() > 0"
+              class="position-absolute top-25 start-75 translate-middle badge rounded-pill bg-danger shadow-sm"
               style="padding: 3px 5px; font-size: 0.55rem;">{{ notificationService.getUnreadCount() }}</span>
           </a>
           <div class="dropdown-menu dropdown-menu-end p-0 border-0 shadow-lg"
@@ -39,10 +46,11 @@
               <!-- Dynamic Notifications -->
               <ng-container *ngIf="(notifications$ | async) as notifications; else loading">
                 <div *ngIf="notifications.length === 0" class="p-5 text-center">
-                   <i class="mdi mdi-bell-off-outline fs-1 text-muted opacity-25"></i>
-                   <p class="mb-0 fs-8 text-muted mt-2">No recent activity found.</p>
+                  <i class="mdi mdi-bell-off-outline fs-1 text-muted opacity-25"></i>
+                  <p class="mb-0 fs-8 text-muted mt-2">No recent activity found.</p>
                 </div>
-                <a *ngFor="let note of notifications" href="#" class="list-group-item list-group-item-action p-3 border-bottom-0" [class.bg-light]="!note.read">
+                <a *ngFor="let note of notifications" href="#"
+                  class="list-group-item list-group-item-action p-3 border-bottom-0" [class.bg-light]="!note.read">
                   <div class="d-flex w-100 justify-content-between align-items-center mb-1">
                     <h6 class="mb-0 fs-7 fw-bold text-dark">{{ note.title }}</h6>
                     <small class="text-muted" style="font-size: 0.6rem;">{{ note.time | date:'shortTime' }}</small>
@@ -57,7 +65,8 @@
               </ng-template>
             </div>
             <div class="p-2 border-top text-center bg-white d-flex justify-content-between px-3">
-              <a (click)="notificationService.clearAll()" class="text-muted fs-8 text-decoration-none cursor-pointer" role="button">Clear All</a>
+              <a (click)="notificationService.clearAll()" class="text-muted fs-8 text-decoration-none cursor-pointer"
+                role="button">Clear All</a>
               <a href="#" class="text-primary fs-8 fw-bold text-decoration-none">View All</a>
             </div>
           </div>
@@ -232,7 +241,23 @@
     <app-sidebar />
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main-content position-relative">
+      <!-- Routing Loader Spinner -->
+      <div *ngIf="isLoading"
+        class="position-absolute top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex align-items-center justify-content-center"
+        style="z-index: 9999; min-height: 80vh; backdrop-filter: blur(2px);">
+        <div class="circular-dots-loader">
+          <div class="dot1"></div>
+          <div class="dot2"></div>
+          <div class="dot3"></div>
+          <div class="dot4"></div>
+          <div class="dot5"></div>
+          <div class="dot6"></div>
+          <div class="dot7"></div>
+          <div class="dot8"></div>
+        </div>
+      </div>
+
       <div class="content-container">
         <router-outlet />
       </div>

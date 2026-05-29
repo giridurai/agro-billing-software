@@ -6,8 +6,6 @@ import { Supplier } from '../models';
 import { ApiService } from '../services/api.service';
 import { NotificationService } from '../services/notification.service';
 
-declare var bootstrap: any;
-
 @Component({
   selector: 'app-suppliers',
   standalone: true,
@@ -16,51 +14,61 @@ declare var bootstrap: any;
 })
 export class SuppliersComponent implements OnInit {
   suppliers: Supplier[] = [];
-  selectedSupplier: Supplier | null = null;
   searchText: string = '';
-  supplierData: Supplier = this.resetSupplier();
+  showForm: boolean = false;
+  selectedSupplier: Supplier | null = null;
+  supplierData: Supplier = this.resetSupplierData();
 
   constructor(
     private apiService: ApiService,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadSuppliers();
   }
 
   loadSuppliers() {
     this.apiService.getSuppliers().subscribe({
       next: (data) => (this.suppliers = data),
-      error: (err) => console.error('Failed to load suppliers:', err)
+      error: (err) => console.error('Failed to load suppliers:', err),
     });
+  }
+
+  private resetSupplierData(): Supplier {
+    return {
+      id: 0,
+      supplierName: '',
+      contactNumber: '',
+      address: '',
+      gstNumber: '',
+    };
   }
 
   get filteredSuppliers() {
     return this.suppliers.filter(
       (s) =>
         s.supplierName.toLowerCase().includes(this.searchText.toLowerCase()) ||
-        (s.gstNumber && s.gstNumber.toLowerCase().includes(this.searchText.toLowerCase()))
+        s.gstNumber.toLowerCase().includes(this.searchText.toLowerCase())
     );
   }
 
-  openSupplierModal() {
+  openAddForm() {
     this.selectedSupplier = null;
-    this.supplierData = this.resetSupplier();
-    const modalEl = document.getElementById('supplierModal');
-    if (modalEl) new bootstrap.Modal(modalEl).show();
+    this.supplierData = this.resetSupplierData();
+    this.showForm = true;
   }
 
   editSupplier(supplier: Supplier) {
     this.selectedSupplier = supplier;
     this.supplierData = { ...supplier };
-    const modalEl = document.getElementById('supplierModal');
-    if (modalEl) new bootstrap.Modal(modalEl).show();
+    this.showForm = true;
   }
 
-  closeSupplierModal() {
-    const modalEl = document.getElementById('supplierModal');
-    if (modalEl) bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+  clearForm() {
+    this.showForm = false;
+    this.selectedSupplier = null;
+    this.supplierData = this.resetSupplierData();
   }
 
   saveSupplier(form: any) {
@@ -69,10 +77,15 @@ export class SuppliersComponent implements OnInit {
         this.apiService.updateSupplier(this.supplierData).subscribe({
           next: () => {
             this.loadSuppliers();
-            Swal.fire('Updated!', `${this.supplierData.supplierName} updated.`, 'success');
-            this.closeSupplierModal();
+            this.notificationService.addNotification(
+              'Supplier Updated',
+              `Supplier "${this.supplierData.supplierName}" information has been updated.`,
+              'system'
+            );
+            Swal.fire('Updated!', 'Supplier details updated.', 'success');
+            this.clearForm();
           },
-          error: () => Swal.fire('Error', 'Update failed', 'error')
+          error: (err) => Swal.fire('Error', 'Failed to update supplier.', 'error'),
         });
       } else {
         const newSupplier = { ...this.supplierData };
@@ -82,13 +95,13 @@ export class SuppliersComponent implements OnInit {
             this.loadSuppliers();
             this.notificationService.addNotification(
               'Supplier Registered',
-              `${this.supplierData.supplierName} has been added to suppliers directory.`,
+              `Supplier "${this.supplierData.supplierName}" added to the directory.`,
               'system'
             );
-            Swal.fire('Added!', `${this.supplierData.supplierName} added.`, 'success');
-            this.closeSupplierModal();
+            Swal.fire('Registered!', 'New wholesale supplier registered.', 'success');
+            this.clearForm();
           },
-          error: () => Swal.fire('Error', 'Addition failed', 'error')
+          error: (err) => Swal.fire('Error', 'Failed to add supplier.', 'error'),
         });
       }
     }
@@ -96,10 +109,11 @@ export class SuppliersComponent implements OnInit {
 
   deleteSupplier(id: number) {
     Swal.fire({
-      title: 'Are you sure?',
-      text: 'Remove this supplier from database?',
+      title: 'Remove this supplier?',
+      text: 'This will remove the supplier record from your vendor directory.',
       icon: 'warning',
-      showCancelButton: true
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete',
     }).then((result) => {
       if (result.isConfirmed) {
         this.apiService.deleteSupplier(id).subscribe({
@@ -107,24 +121,14 @@ export class SuppliersComponent implements OnInit {
             this.loadSuppliers();
             this.notificationService.addNotification(
               'Supplier Removed',
-              'A supplier record has been deleted.',
+              'A wholesale supplier has been removed.',
               'system'
             );
-            Swal.fire('Deleted!', 'Supplier removed.', 'success');
+            Swal.fire('Removed!', 'Supplier record deleted.', 'success');
           },
-          error: () => Swal.fire('Error', 'Deletion failed', 'error')
+          error: (err) => Swal.fire('Error', 'Failed to delete supplier.', 'error'),
         });
       }
     });
-  }
-
-  private resetSupplier(): Supplier {
-    return {
-      id: 0,
-      supplierName: '',
-      contactNumber: '',
-      address: '',
-      gstNumber: ''
-    };
   }
 }

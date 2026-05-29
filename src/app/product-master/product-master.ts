@@ -10,13 +10,13 @@ import Swal from 'sweetalert2';
 declare var bootstrap: any;
 
 @Component({
-  selector: 'app-iteam-master',
+  selector: 'app-product-master',
   standalone: true,
   imports: [FormsModule, CommonModule],
-  templateUrl: './iteam-master.html',
-  styleUrl: './iteam-master.css',
+  templateUrl: './product-master.html',
+  styleUrl: './product-master.css',
 })
-export class IteamMaster implements OnInit {
+export class ProductMasterComponent implements OnInit {
   items: Item[] = [];
   selectedItem: Item | null = null;
   itemData: Item = this.resetItemData();
@@ -28,7 +28,7 @@ export class IteamMaster implements OnInit {
   constructor(
     private apiService: ApiService,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadItems();
@@ -55,6 +55,15 @@ export class IteamMaster implements OnInit {
       unit: 'Bag (50kg)',
       stockQuantity: 100
     };
+  }
+
+  get filteredItems(): Item[] {
+    return this.items.filter(
+      (item) =>
+        item.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
+        (item.hsnCode || '').toLowerCase().includes(this.searchText.toLowerCase()) ||
+        (item.category || '').toLowerCase().includes(this.searchText.toLowerCase())
+    );
   }
 
   printItem(): void {
@@ -85,52 +94,52 @@ export class IteamMaster implements OnInit {
   viewItem(item: Item): void {
     this.selectedItem = item;
     const modal = document.getElementById('viewItemModal');
-    if (modal) (window as any).bootstrap.Modal.getOrCreateInstance(modal).show();
+    if (modal) bootstrap.Modal.getOrCreateInstance(modal).show();
   }
 
   openItemModal(): void {
     this.selectedItem = null;
     this.itemData = this.resetItemData();
     const modal = document.getElementById('itemModal');
-    if (modal) (window as any).bootstrap.Modal.getOrCreateInstance(modal).show();
+    if (modal) bootstrap.Modal.getOrCreateInstance(modal).show();
   }
 
   closeItemModal(): void {
     const modal = document.getElementById('itemModal');
-    if (modal) (window as any).bootstrap.Modal.getOrCreateInstance(modal).hide();
+    if (modal) bootstrap.Modal.getOrCreateInstance(modal).hide();
   }
 
   saveItem(form: any): void {
     if (form.valid) {
       if (this.selectedItem) {
         this.apiService.updateItem(this.itemData).subscribe({
-            next: () => {
-                this.loadItems();
-                this.notificationService.addNotification(
-                  'Product Catalog Updated', 
-                  `Product "${this.itemData.name}" has been modified in the catalog.`,
-                  'system'
-                );
-                Swal.fire('Updated!', 'Product details modified.', 'success');
-                this.closeItemModal();
-            },
-            error: () => Swal.fire('Error', 'Update failed', 'error')
+          next: () => {
+            this.loadItems();
+            this.notificationService.addNotification(
+              'Product Catalog Updated',
+              `Product "${this.itemData.name}" has been modified in the catalog.`,
+              'system'
+            );
+            Swal.fire('Updated!', 'Product details modified.', 'success');
+            this.closeItemModal();
+          },
+          error: () => Swal.fire('Error', 'Update failed', 'error')
         });
       } else {
         const newItem = { ...this.itemData };
         delete (newItem as any).id;
         this.apiService.addItem(newItem).subscribe({
-            next: () => {
-                this.loadItems();
-                this.notificationService.addNotification(
-                  'New Product Added', 
-                  `Product "${this.itemData.name}" added to the catalog.`,
-                  'system'
-                );
-                Swal.fire('Added!', 'Product added to catalog.', 'success');
-                this.closeItemModal();
-            },
-            error: () => Swal.fire('Error', 'Addition failed', 'error')
+          next: () => {
+            this.loadItems();
+            this.notificationService.addNotification(
+              'New Product Added',
+              `Product "${this.itemData.name}" added to the catalog.`,
+              'system'
+            );
+            Swal.fire('Added!', 'Product added to catalog.', 'success');
+            this.closeItemModal();
+          },
+          error: () => Swal.fire('Error', 'Addition failed', 'error')
         });
       }
     }
@@ -140,29 +149,29 @@ export class IteamMaster implements OnInit {
     this.selectedItem = item;
     this.itemData = { ...item };
     const modal = document.getElementById('itemModal');
-    if (modal) (window as any).bootstrap.Modal.getOrCreateInstance(modal).show();
+    if (modal) bootstrap.Modal.getOrCreateInstance(modal).show();
   }
 
   deleteItem(id: number): void {
     Swal.fire({
-        title: 'Remove this product?',
-        icon: 'warning',
-        showCancelButton: true
+      title: 'Remove this product?',
+      icon: 'warning',
+      showCancelButton: true
     }).then((result) => {
-        if (result.isConfirmed) {
-            this.apiService.deleteItem(id).subscribe({
-                next: () => {
-                    this.loadItems();
-                    this.notificationService.addNotification(
-                      'Product Removed', 
-                      'A product has been removed from the catalog.',
-                      'system'
-                    );
-                    Swal.fire('Removed!', 'Product removed from catalog.', 'success');
-                },
-                error: () => Swal.fire('Error', 'Deletion failed', 'error')
-            });
-        }
+      if (result.isConfirmed) {
+        this.apiService.deleteItem(id).subscribe({
+          next: () => {
+            this.loadItems();
+            this.notificationService.addNotification(
+              'Product Removed',
+              'A product has been removed from the catalog.',
+              'system'
+            );
+            Swal.fire('Removed!', 'Product removed from catalog.', 'success');
+          },
+          error: () => Swal.fire('Error', 'Deletion failed', 'error')
+        });
+      }
     });
   }
 }

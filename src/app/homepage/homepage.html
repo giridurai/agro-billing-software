@@ -1,42 +1,42 @@
 <div class="hp-wrapper">
 
   <!-- ═══ HERO BANNER ═══ -->
-  <div class="hp-hero" style="background: linear-gradient(135deg, #1e3a8a 0%, #15803d 100%)">
+  <div class="hp-hero" style="background: linear-gradient(135deg, #15803d 0%, #166534 100%)">
     <div class="hp-hero-bg-shapes">
-      <div class="shape shape-1" style="background: rgba(22, 163, 74, 0.2)"></div>
+      <div class="shape shape-1" style="background: rgba(22, 163, 74, 0.25)"></div>
       <div class="shape shape-2"></div>
       <div class="shape shape-3"></div>
     </div>
     <div class="hp-hero-content">
       <div class="hp-hero-left">
         <div class="hp-greeting-badge anim-fade-up" style="animation-delay:0.05s">
-          <span class="pulse-dot"></span> Puvilink Agro Live
+          <span class="pulse-dot"></span> Krishi-Bill Pro Live
         </div>
         <h1 class="hp-hero-title anim-fade-up" style="animation-delay:0.12s">
-          Welcome back,<br><span class="hp-hero-name">Agro Administrator</span>
+          Welcome back,<br><span class="hp-hero-name">Shree Balaji Agro</span>
         </h1>
         <p class="hp-hero-sub anim-fade-up" style="animation-delay:0.2s">
-          Monitor your agricultural inventories, process customer invoices, and review supplier purchases in real-time.
+          Manage agro-billing terminals, farmer credit lines, and direct GSTR-1 compliance in real-time.
         </p>
         <div class="hp-hero-actions anim-fade-up" style="animation-delay:0.28s">
           <button class="hp-btn-solid" routerLink="/invoice" style="background-color: #22c55e;">
-            <i class="mdi mdi-plus-circle-outline me-2"></i> New Sales Invoice
+            <i class="mdi mdi-plus-circle-outline me-2"></i> + New Sale
           </button>
           <button class="hp-btn-ghost" routerLink="/reports">
-            <i class="mdi mdi-download-outline me-2"></i> Go to Reports
+            <i class="mdi mdi-download-outline me-2"></i> Compliance Reports
           </button>
         </div>
       </div>
       <div class="hp-hero-right anim-fade-up" style="animation-delay:0.18s">
         <div class="hp-hero-badge-group">
           <div class="hp-mini-badge green">
-            <i class="mdi mdi-trending-up"></i> <span>Billing Online</span>
+            <i class="mdi mdi-trending-up"></i> <span>GSTR-1 Compliant</span>
           </div>
           <div class="hp-mini-badge blue">
-            <i class="mdi mdi-shield-check-outline"></i> <span>Offline Mock Mode</span>
+            <i class="mdi mdi-shield-check-outline"></i> <span>Secure In-Memory DB</span>
           </div>
           <div class="hp-mini-badge amber">
-            <i class="mdi mdi-clock-fast"></i> <span>Stable Storage</span>
+            <i class="mdi mdi-clock-fast"></i> <span>Shree Balaji Agro Admin</span>
           </div>
         </div>
       </div>
@@ -46,54 +46,54 @@
   <!-- ═══ STAT CARDS ═══ -->
   <div class="hp-stats-row">
 
-    <!-- Total Sales -->
+    <!-- Today's Sales -->
     <div class="hp-stat-card anim-fade-up" style="animation-delay:0.1s" routerLink="/invoice">
       <div class="hp-stat-icon" style="background:linear-gradient(135deg,#059669,#10b981)">
         <i class="mdi mdi-cash-register"></i>
       </div>
       <div class="hp-stat-body">
-        <span class="hp-stat-label">Total Sales</span>
-        <h2 class="hp-stat-value" id="sales-count">₹0</h2>
-        <div class="hp-stat-trend up"><i class="mdi mdi-trending-up me-1"></i>Active Invoices</div>
+        <span class="hp-stat-label">Today's Sales</span>
+        <h2 class="hp-stat-value" id="today-sales-count">₹0</h2>
+        <div class="hp-stat-trend up"><i class="mdi mdi-check-circle-outline me-1"></i>Live Billings</div>
       </div>
       <div class="hp-stat-bg-icon"><i class="mdi mdi-cash-register"></i></div>
     </div>
 
-    <!-- Total Purchase -->
-    <div class="hp-stat-card anim-fade-up" style="animation-delay:0.18s" routerLink="/purchase-invoice">
-      <div class="hp-stat-icon" style="background:linear-gradient(135deg,#d97706,#f59e0b)">
-        <i class="mdi mdi-cart-arrow-down"></i>
+    <!-- Outstanding Receivables -->
+    <div class="hp-stat-card anim-fade-up" style="animation-delay:0.18s" routerLink="/company">
+      <div class="hp-stat-icon" style="background:linear-gradient(135deg,#e11d48,#f43f5e)">
+        <i class="mdi mdi-book-open-outline"></i>
       </div>
       <div class="hp-stat-body">
-        <span class="hp-stat-label">Total Purchases</span>
-        <h2 class="hp-stat-value" id="purchase-count">₹0</h2>
-        <div class="hp-stat-trend up"><i class="mdi mdi-trending-up me-1"></i>Suppliers Billed</div>
+        <span class="hp-stat-label">Outstanding Receivables</span>
+        <h2 class="hp-stat-value" id="outstanding-count">₹0</h2>
+        <div class="hp-stat-trend down" style="color: #f43f5e"><i class="mdi mdi-alert-circle-outline me-1"></i>Farmer Book Debts</div>
       </div>
-      <div class="hp-stat-bg-icon"><i class="mdi mdi-truck-delivery"></i></div>
+      <div class="hp-stat-bg-icon"><i class="mdi mdi-wallet-outline"></i></div>
     </div>
 
-    <!-- Total Customers -->
+    <!-- Active Farmers/Customers -->
     <div class="hp-stat-card anim-fade-up" style="animation-delay:0.26s" routerLink="/company">
       <div class="hp-stat-icon" style="background:linear-gradient(135deg,#2563eb,#3b82f6)">
         <i class="mdi mdi-account-group-outline"></i>
       </div>
       <div class="hp-stat-body">
-        <span class="hp-stat-label">Total Customers</span>
+        <span class="hp-stat-label">Active Farmers/Customers</span>
         <h2 class="hp-stat-value" id="customer-count">0</h2>
-        <div class="hp-stat-trend up"><i class="mdi mdi-trending-up me-1"></i>Registered</div>
+        <div class="hp-stat-trend up"><i class="mdi mdi-trending-up me-1"></i>Registered Accounts</div>
       </div>
       <div class="hp-stat-bg-icon"><i class="mdi mdi-account-multiple"></i></div>
     </div>
 
-    <!-- Total Products -->
-    <div class="hp-stat-card anim-fade-up" style="animation-delay:0.34s" routerLink="/iteam">
-      <div class="hp-stat-icon" style="background:linear-gradient(135deg,#16a34a,#22c55e)">
+    <!-- Active Products Inventory -->
+    <div class="hp-stat-card anim-fade-up" style="animation-delay:0.34s" routerLink="/stock-management">
+      <div class="hp-stat-icon" style="background:linear-gradient(135deg,#d97706,#f59e0b)">
         <i class="mdi mdi-sprout"></i>
       </div>
       <div class="hp-stat-body">
-        <span class="hp-stat-label">Total Products</span>
+        <span class="hp-stat-label">Active Products Inventory</span>
         <h2 class="hp-stat-value" id="product-count">0</h2>
-        <div class="hp-stat-trend up"><i class="mdi mdi-trending-up me-1"></i>Cataloged</div>
+        <div class="hp-stat-trend up"><i class="mdi mdi-check-decagram-outline me-1"></i>Stock Items</div>
       </div>
       <div class="hp-stat-bg-icon"><i class="mdi mdi-package-variant-closed"></i></div>
     </div>
@@ -111,7 +111,7 @@
           <p class="hp-panel-sub">Seasonally adjusted billing analytics</p>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <span class="hp-growth-chip" style="background: #dcfce7; color: #16a34a;"><i class="mdi mdi-arrow-top-right me-1"></i>+18.4%</span>
+          <span class="hp-growth-chip" style="background: #dcfce7; color: #16a34a;"><i class="mdi mdi-arrow-top-right me-1"></i>+24.8%</span>
         </div>
       </div>
 
@@ -143,19 +143,19 @@
 
       <!-- Recent Sales Invoices -->
       <div class="hp-section-title mt-4">
-        <h3 class="hp-panel-title">Recent Sales Invoices</h3>
-        <a routerLink="/invoice" class="hp-link-btn text-success">View All Invoices</a>
+        <h3 class="hp-panel-title">Recent Sales Transactions</h3>
+        <a routerLink="/invoice" class="hp-link-btn text-success fw-bold">View All Bills</a>
       </div>
       
       <div class="table-responsive">
         <table class="table table-sm align-middle fs-7">
           <thead class="text-muted table-light">
             <tr>
-              <th>Invoice No</th>
+              <th>Invoice ID</th>
               <th>Customer</th>
-              <th>Due Date</th>
-              <th>Total Amount</th>
-              <th>Status</th>
+              <th>Date</th>
+              <th>Total</th>
+              <th>Payment Method</th>
             </tr>
           </thead>
           <tbody>
@@ -165,99 +165,108 @@
               <td>{{ s.dueDate }}</td>
               <td><span class="fw-bold text-success">{{ s.amount | currency: 'INR' }}</span></td>
               <td>
-                <span class="badge-crm" [class.badge-crm-success]="s.status === 'Paid'" [class.badge-crm-warning]="s.status !== 'Paid'">
-                  {{ s.status }}
+                <span class="badge bg-success-subtle text-success fs-8">
+                  {{ s.id === 1 ? 'UPI' : 'Cash Sale' }}
                 </span>
               </td>
             </tr>
             <tr *ngIf="recentSales.length === 0">
-              <td colspan="5" class="text-center py-3 text-muted">No invoices logged.</td>
+              <td colspan="5" class="text-center py-3 text-muted">No transactions logged.</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- RIGHT: Quick Actions + Stock Indicators -->
+    <!-- RIGHT: Quick Actions + Live Stock Levels -->
     <div class="hp-side-col">
 
       <!-- Quick Actions -->
       <div class="hp-panel anim-fade-up" style="animation-delay:0.25s">
         <div class="hp-panel-header">
-          <h3 class="hp-panel-title">Quick Actions</h3>
+          <h3 class="hp-panel-title">Quick Billing Terminals</h3>
         </div>
         <div class="d-grid gap-2 mt-1">
-          <button class="hp-action-btn primary" routerLink="/quotation" style="background: #16a34a; border-color: #16a34a;">
+          <button class="hp-action-btn primary" routerLink="/invoice" style="background: #15803d; border-color: #15803d;">
             <span class="d-flex align-items-center gap-2 text-white">
-              <i class="mdi mdi-file-document-edit-outline"></i> Create Quotation
+              <i class="mdi mdi-cash-register text-white"></i> Quick Sales Terminal
             </span>
             <i class="mdi mdi-chevron-right text-white"></i>
           </button>
-          <button class="hp-action-btn outline-primary" routerLink="/invoice" style="color: #16a34a; border-color: #16a34a;">
+          <button class="hp-action-btn outline-primary" routerLink="/quotation" style="color: #15803d; border-color: #15803d;">
             <span class="d-flex align-items-center gap-2">
-              <i class="mdi mdi-receipt-outline"></i> Sales Invoice
+              <i class="mdi mdi-file-document-edit-outline"></i> Create Crop Quotation
             </span>
             <i class="mdi mdi-chevron-right"></i>
           </button>
           <button class="hp-action-btn outline-secondary" routerLink="/purchase-invoice">
             <span class="d-flex align-items-center gap-2">
-              <i class="mdi mdi-cart-outline"></i> Record Purchase
+              <i class="mdi mdi-briefcase-download-outline"></i> Record Purchase Bill
             </span>
             <i class="mdi mdi-chevron-right"></i>
           </button>
           <button class="hp-action-btn outline-secondary" routerLink="/company">
             <span class="d-flex align-items-center gap-2">
-              <i class="mdi mdi-account-plus-outline"></i> Add Customer
+              <i class="mdi mdi-account-plus-outline"></i> Add Farmer Customer
             </span>
             <i class="mdi mdi-chevron-right"></i>
           </button>
         </div>
       </div>
 
-      <!-- Critical Inventory Stocks -->
+      <!-- Live Stock Levels -->
       <div class="hp-panel anim-fade-up" style="animation-delay:0.32s">
         <div class="hp-panel-header">
-          <h3 class="hp-panel-title">Critical Stocks</h3>
+          <h3 class="hp-panel-title">Live Stock Levels</h3>
         </div>
         <div class="hp-progress-list">
           <div class="hp-progress-item">
             <div class="d-flex justify-content-between mb-1">
-              <span class="fs-7 fw-medium">Premium NPK Fertilizer</span>
-              <span class="fs-8 text-success fw-bold">180 Bags (75%)</span>
+              <span class="fs-7 fw-medium text-main">Premium NPK Fertilizer</span>
+              <span class="fs-8 text-success fw-bold">180 Bags (Adequate)</span>
             </div>
             <div class="hp-progress-track">
-              <div class="hp-progress-bar" style="width:75%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div>
+              <div class="hp-progress-bar" style="width:75%;background:linear-gradient(90deg,#15803d,#22c55e)"></div>
             </div>
           </div>
           <div class="hp-progress-item">
             <div class="d-flex justify-content-between mb-1">
-              <span class="fs-7 fw-medium">Hybrid Paddy Seeds</span>
-              <span class="fs-8 text-success fw-bold">240 Bags (95%)</span>
+              <span class="fs-7 fw-medium text-main">Hybrid Paddy Seeds</span>
+              <span class="fs-8 text-success fw-bold">240 Bags (Adequate)</span>
             </div>
             <div class="hp-progress-track">
-              <div class="hp-progress-bar" style="width:95%;background:linear-gradient(90deg,#16a34a,#4ade80)"></div>
+              <div class="hp-progress-bar" style="width:95%;background:linear-gradient(90deg,#15803d,#4ade80)"></div>
             </div>
           </div>
           <div class="hp-progress-item">
             <div class="d-flex justify-content-between mb-1">
-              <span class="fs-7 fw-medium">Bio Pesticide (Liquid)</span>
-              <span class="fs-8 text-warning fw-bold">95 Bottles (38%)</span>
+              <span class="fs-7 fw-medium text-main">Bio Pesticide (Liquid)</span>
+              <span class="fs-8 text-warning fw-bold">95 Bottles (Normal)</span>
             </div>
             <div class="hp-progress-track">
-              <div class="hp-progress-bar" style="width:38%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div>
+              <div class="hp-progress-bar" style="width:45%;background:linear-gradient(90deg,#d97706,#f59e0b)"></div>
+            </div>
+          </div>
+          <div class="hp-progress-item">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="fs-7 fw-medium text-main">Glyphosate Herbicide</span>
+              <span class="fs-8 text-danger fw-bold">8 Bottles (Low Stock)</span>
+            </div>
+            <div class="hp-progress-track">
+              <div class="hp-progress-bar" style="width:8%;background:linear-gradient(90deg,#ef4444,#f87171)"></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Score Card -->
-      <div class="hp-score-card anim-fade-up" style="animation-delay:0.4s" style="background: linear-gradient(135deg, #15803d 0%, #166534 100%)">
-        <div class="hp-score-ring" style="border-color: rgba(255,255,255,0.2)">
-          <span class="hp-score-val" style="color: #fff">95%</span>
-          <div class="hp-ring-pulse" style="background: rgba(255,255,255,0.1)"></div>
+      <!-- Fulfillment Score Card -->
+      <div class="hp-score-card anim-fade-up" style="animation-delay:0.4s; background: linear-gradient(135deg, #15803d 0%, #166534 100%)">
+        <div class="hp-score-ring" style="border-color: rgba(255,255,255,0.25)">
+          <span class="hp-score-val" style="color: #fff">98%</span>
+          <div class="hp-ring-pulse" style="background: rgba(255,255,255,0.15)"></div>
         </div>
         <h5 class="hp-score-title text-white">Season Fulfillment</h5>
-        <p class="hp-score-sub text-white-50">Excellent! Stock distribution fulfillment rate is operating at 95% efficacy this cropping cycle.</p>
+        <p class="hp-score-sub text-white-50">Excellent! Stock distribution and seeding order fulfillment rates are operating at 98% efficiency.</p>
         <button class="hp-btn-solid-sm" routerLink="/reports" style="background: #fff; color: #15803d; border: 0;">Fulfillment Analytics</button>
       </div>
 

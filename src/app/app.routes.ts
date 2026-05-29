@@ -2,24 +2,20 @@ import { Routes } from '@angular/router';
 import { Dashboard } from './dashboard/dashboard';
 import { CompanyComponent } from './company/company';
 import { InvoiceComponent } from './invoice/invoice';
-import { EnquiryComponent } from './enquiry/enquiry';
 import { Homepage } from './homepage/homepage';
-import { ContactComponent } from './contact/contact';
 import { LoginComponent } from './login/login';
 import { UserComponent } from './user/user';
 import { QuotationComponent } from './quotation/quotation';
-import { IteamMaster } from './iteam-master/iteam-master';
+import { ProductMasterComponent } from './product-master/product-master';
 import { MainLayoutComponent } from './layout/main-layout';
 import { SettingsComponent } from './settings/settings';
 
-// New Agro Billing Modules
+// Agro Billing Modules
 import { SuppliersComponent } from './suppliers/suppliers';
 import { PurchaseInvoiceComponent } from './purchase-invoice/purchase-invoice';
 import { ReturnsComponent } from './returns/returns';
-import { StockInwardComponent } from './inventory/stock-inward/stock-inward';
-import { StockOutwardComponent } from './inventory/stock-outward/stock-outward';
-import { WarehouseComponent } from './inventory/warehouse/warehouse';
 import { ReportsComponent } from './reports/reports';
+import { StockManagementComponent } from './inventory/stock-management/stock-management';
 
 export const routes: Routes = [
   {
@@ -48,10 +44,6 @@ export const routes: Routes = [
         component: InvoiceComponent,
       },
       {
-        path: 'enquiry',
-        component: EnquiryComponent,
-      },
-      {
         path: 'quotation',
         component: QuotationComponent,
       },
@@ -60,22 +52,17 @@ export const routes: Routes = [
         component: Homepage,
       },
       {
-        path: 'contact',
-        component: ContactComponent,
-      },
-      {
         path: 'User',
         component: UserComponent,
       },
       {
-        path: 'iteam',
-        component: IteamMaster,
+        path: 'product-master',
+        component: ProductMasterComponent,
       },
       {
         path: 'settings',
         component: SettingsComponent,
       },
-      // New Routes
       {
         path: 'suppliers',
         component: SuppliersComponent,
@@ -89,16 +76,8 @@ export const routes: Routes = [
         component: ReturnsComponent,
       },
       {
-        path: 'stock-inward',
-        component: StockInwardComponent,
-      },
-      {
-        path: 'stock-outward',
-        component: StockOutwardComponent,
-      },
-      {
-        path: 'warehouse',
-        component: WarehouseComponent,
+        path: 'stock-management',
+        component: StockManagementComponent,
       },
       {
         path: 'reports',

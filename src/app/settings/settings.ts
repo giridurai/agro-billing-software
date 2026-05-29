@@ -1,77 +1,96 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 import { ThemeService } from './theme.service';
+
+export interface SystemSettings {
+  firmName: string;
+  gstin: string;
+  fertilizerLicense: string;
+  phone: string;
+  email: string;
+  address: string;
+  financialYear: string;
+  roundingMode: string;
+  invoicePrefix: string;
+  invoiceNextIndex: number;
+  quotationPrefix: string;
+  quotationNextIndex: number;
+  bankName: string;
+  bankAccount: string;
+  bankIfsc: string;
+  bankBranch: string;
+}
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './settings.html',
   styleUrls: ['./settings.css']
 })
-export class SettingsComponent {
+export class SettingsComponent implements OnInit {
+  settings: SystemSettings = this.getDefaultSettings();
+
   constructor(public themeService: ThemeService) { }
 
-  settingsCards = [
-    {
-      title: 'Company Settings',
-      description: 'Manage company profile, business details, and official logo.',
-      icon: 'mdi-office-building-outline',
-      color: 'primary'
-    },
-    {
-      title: 'User & Role Management',
-      description: 'Add new users, assign roles, and manage access permissions.',
-      icon: 'mdi-account-group-outline',
-      color: 'success'
-    },
-    {
-      title: 'Invoice Settings',
-      description: 'Configure invoice formats, tax rates, and payment terms.',
-      icon: 'mdi-cash-register',
-      color: 'warning'
-    },
-    {
-      title: 'Quotation Settings',
-      description: 'Setup quotation templates, terms, and default notes.',
-      icon: 'mdi-file-document-edit-outline',
-      color: 'info'
-    },
-    {
-      title: 'Theme & Appearance',
-      description: 'Customize colors, typography, and UI preferences.',
-      icon: 'mdi-palette-outline',
-      color: 'primary'
-    },
-    {
-      title: 'Notification Settings',
-      description: 'Configure email alerts, push notifications, and webhooks.',
-      icon: 'mdi-bell-ring-outline',
-      color: 'danger'
-    },
-    {
-      title: 'Security Settings',
-      description: 'Manage passwords, two-factor authentication, and logs.',
-      icon: 'mdi-shield-check-outline',
-      color: 'success'
-    },
-    {
-      title: 'Backup & Restore',
-      description: 'Schedule automated database backups and export data.',
-      icon: 'mdi-cloud-upload-outline',
-      color: 'info'
-    },
-    {
-      title: 'Report Settings',
-      description: 'Define default report layouts and scheduled exports.',
-      icon: 'mdi-chart-bar',
-      color: 'warning'
-    },
-    {
-      title: 'API & Integrations',
-      description: 'Manage API keys and third-party application connections.',
-      icon: 'mdi-api',
-      color: 'danger'
+  ngOnInit() {
+    this.loadSettings();
+  }
+
+  getDefaultSettings(): SystemSettings {
+    return {
+      firmName: 'Shree Balaji Agro',
+      gstin: '37ABCFG1234F1Z9',
+      fertilizerLicense: 'AP-FERT-2026-992',
+      phone: '+91 94401 12233',
+      email: 'contact@balajiagro.com',
+      address: 'Guntur Market Yard, Andhra Pradesh, 522001',
+      financialYear: 'F.Y. 2026 - 2027',
+      roundingMode: 'Auto Nearest ₹1 (Standard)',
+      invoicePrefix: 'INV-26-',
+      invoiceNextIndex: 3,
+      quotationPrefix: 'QUO-26-',
+      quotationNextIndex: 2,
+      bankName: 'State Bank of India',
+      bankAccount: '38921104112',
+      bankIfsc: 'SBIN0001224',
+      bankBranch: 'Guntur Yard'
+    };
+  }
+
+  loadSettings() {
+    const data = localStorage.getItem('system_settings');
+    if (data) {
+      try {
+        this.settings = JSON.parse(data);
+      } catch (e) {
+        this.settings = this.getDefaultSettings();
+      }
+    } else {
+      this.settings = this.getDefaultSettings();
+      localStorage.setItem('system_settings', JSON.stringify(this.settings));
     }
-  ];
+  }
+
+  applyConfigurations() {
+    localStorage.setItem('system_settings', JSON.stringify(this.settings));
+    Swal.fire({
+      title: 'Success!',
+      text: 'Configurations applied successfully.',
+      icon: 'success',
+      confirmButtonColor: '#10b981'
+    });
+  }
+
+  discardChanges() {
+    this.loadSettings();
+    Swal.fire({
+      title: 'Discarded',
+      text: 'Changes discarded to last saved configurations.',
+      icon: 'info',
+      confirmButtonColor: '#6c757d'
+    });
+  }
 }

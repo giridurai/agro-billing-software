@@ -1,7 +1,7 @@
 <div class="container-fluid py-4 px-3">
   <!-- Product Master Table Card -->
-  <div class="crm-card">
-    <div class="crm-card-header">
+  <div class="crm-card border-0 shadow-sm rounded-4">
+    <div class="crm-card-header bg-white py-3 border-bottom">
       <div class="row align-items-center g-3">
         <div class="col-md-auto">
           <h6 class="mb-0 fw-bold text-main">Agro Products Catalog</h6>
@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="col-md-auto">
-          <button class="btn btn-primary d-flex align-items-center shadow-sm btn-sm fw-bold px-3 py-2"
+          <button class="btn btn-primary d-flex align-items-center shadow-sm btn-sm fw-bold px-3 py-2 text-white"
             (click)="openItemModal()">
             <i class="mdi mdi-plus-box me-2"></i> ADD NEW PRODUCT
           </button>
@@ -37,7 +37,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let item of items; let i = index">
+            <tr *ngFor="let item of filteredItems; let i = index">
               <td>
                 <div class="d-flex align-items-center">
                   <div
@@ -46,8 +46,9 @@
                     <i class="mdi mdi-sprout fs-6"></i>
                   </div>
                   <div>
-                    <h6 class="mb-0 fw-semibold fs-7">{{ item.name }}</h6>
-                    <span class="text-muted fs-8">{{ item.description | slice:0:50 }}{{ (item.description || '').length > 50 ? '...' : '' }}</span>
+                    <h6 class="mb-0 fw-semibold fs-7 text-main">{{ item.name }}</h6>
+                    <span class="text-muted fs-8">{{ item.description | slice:0:50 }}{{ (item.description || '').length
+                      > 50 ? '...' : '' }}</span>
                   </div>
                 </div>
               </td>
@@ -64,7 +65,9 @@
                 <div class="fw-bold fs-7 text-main">{{ item.rate | currency : 'INR' }}</div>
               </td>
               <td>
-                <span class="badge-crm" [class.badge-crm-success]="(item.stockQuantity || 0) > 50" [class.badge-crm-warning]="(item.stockQuantity || 0) <= 50 && (item.stockQuantity || 0) > 10" [class.badge-crm-danger]="(item.stockQuantity || 0) <= 10">
+                <span class="badge-crm" [class.badge-crm-success]="(item.stockQuantity || 0) > 50"
+                  [class.badge-crm-warning]="(item.stockQuantity || 0) <= 50 && (item.stockQuantity || 0) > 10"
+                  [class.badge-crm-danger]="(item.stockQuantity || 0) <= 10">
                   {{ item.stockQuantity || 0 }}
                 </span>
               </td>
@@ -76,7 +79,7 @@
               </td>
               <td class="text-end pe-4">
                 <div class="dropdown">
-                  <button class="btn-action-dot no-caret" type="button" data-bs-toggle="dropdown">
+                  <button class="btn-action-dot no-caret animate-icon" type="button" data-bs-toggle="dropdown">
                     <i class="mdi mdi-dots-vertical"></i>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end shadow border-0">
@@ -99,7 +102,7 @@
                 </div>
               </td>
             </tr>
-            <tr *ngIf="items.length === 0">
+            <tr *ngIf="filteredItems.length === 0">
               <td colspan="8" class="text-center py-5 text-muted">
                 <i class="mdi mdi-layers-off-outline fs-1 d-block mb-2 opacity-25"></i>
                 No products found in catalog.
@@ -136,7 +139,7 @@
               <input type="text" class="form-control" [(ngModel)]="itemData.hsnCode" name="hsnCode"
                 placeholder="Ex: 3101" required />
             </div>
-            
+
             <div class="col-md-6">
               <label class="form-label fw-semibold text-muted fs-7">Category</label>
               <select class="form-select" [(ngModel)]="itemData.category" name="category" required>
@@ -156,7 +159,8 @@
             </div>
             <div class="col-md-4">
               <label class="form-label fw-semibold text-muted fs-7">Stock Quantity Available</label>
-              <input type="number" class="form-control" [(ngModel)]="itemData.stockQuantity" name="stockQuantity" required />
+              <input type="number" class="form-control" [(ngModel)]="itemData.stockQuantity" name="stockQuantity"
+                required />
             </div>
             <div class="col-md-4">
               <label class="form-label fw-semibold text-muted fs-7">Discount (%)</label>
@@ -181,7 +185,7 @@
 
           <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
             <button type="button" class="btn btn-light px-4" (click)="closeItemModal()">Discard</button>
-            <button type="submit" class="btn btn-primary px-5 shadow-sm">
+            <button type="submit" class="btn btn-primary px-5 shadow-sm text-white">
               {{ selectedItem ? 'Apply Product Changes' : 'Add to Catalog' }}
             </button>
           </div>
@@ -196,7 +200,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content border-0 shadow">
       <div class="modal-header bg-primary text-white py-3">
-        <h5 class="modal-title fw-bold"><i class="mdi mdi-sprout me-2"></i> Product Details</h5>
+        <h5 class="modal-title fw-bold text-white"><i class="mdi mdi-sprout me-2"></i> Product Details</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body p-4 bg-light">
@@ -213,7 +217,8 @@
 
           <div class="p-3 bg-light rounded-3 mb-4">
             <label class="text-muted fs-8 fw-bold text-uppercase mb-1 d-block">Description</label>
-            <p class="text-main fs-7 mb-0">{{ selectedItem?.description || 'No additional specifications provided.' }}</p>
+            <p class="text-main fs-7 mb-0">{{ selectedItem?.description || 'No additional specifications provided.' }}
+            </p>
           </div>
 
           <div class="row g-3">
@@ -238,7 +243,8 @@
             <div class="col-6">
               <div class="p-3 border rounded-3 bg-white">
                 <label class="text-muted fs-8 fw-bold text-uppercase mb-1">Current Stock</label>
-                <h5 class="fw-bold text-main mb-0 fs-7">{{ selectedItem?.stockQuantity || 0 }} {{ selectedItem?.unit }}</h5>
+                <h5 class="fw-bold text-main mb-0 fs-7">{{ selectedItem?.stockQuantity || 0 }} {{ selectedItem?.unit }}
+                </h5>
               </div>
             </div>
             <div class="col-4">
@@ -264,7 +270,7 @@
       </div>
       <div class="modal-footer bg-white border-top py-3">
         <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success px-4" (click)="printItem()">
+        <button type="button" class="btn btn-success text-white px-4" (click)="printItem()">
           <i class="mdi mdi-printer me-2"></i> Print Label
         </button>
       </div>

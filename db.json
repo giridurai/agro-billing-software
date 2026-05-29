@@ -1,19 +1,559 @@
 {
-  "posts": [
+  "users": [
     {
       "id": 1,
-      "title": "json-server",
-      "author": "typicode"
+      "firstName": "Ramesh Patil",
+      "lastName": "(Owner)",
+      "joiningDate": "2025-01-01",
+      "email": "crm@crm.com",
+      "phoneNumber": "+91 9848011111",
+      "gender": "Male",
+      "role": "Admin",
+      "username": "admin_ramesh",
+      "status": "Active",
+      "isOwner": true
+    },
+    {
+      "id": 2,
+      "firstName": "Suresh Rao",
+      "lastName": "(Sales)",
+      "joiningDate": "2025-02-15",
+      "email": "suresh@puvilink.com",
+      "phoneNumber": "+91 8891002222",
+      "gender": "Male",
+      "role": "Sales Executive",
+      "username": "suresh_sales",
+      "status": "Active",
+      "isOwner": false
+    },
+    {
+      "id": 3,
+      "firstName": "Anil Kumar",
+      "lastName": "(Billing Counter)",
+      "joiningDate": "2025-03-10",
+      "email": "anil@puvilink.com",
+      "phoneNumber": "+91 7702113333",
+      "gender": "Male",
+      "role": "Billing",
+      "username": "anil_billing",
+      "status": "Active",
+      "isOwner": false
+    },
+    {
+      "id": 4,
+      "firstName": "CA Verma",
+      "lastName": "(Audits)",
+      "joiningDate": "2025-04-01",
+      "email": "verma@puvilink.com",
+      "phoneNumber": "+91 9440155555",
+      "gender": "Male",
+      "role": "Auditor",
+      "username": "verma_auditor",
+      "status": "Active",
+      "isOwner": false
     }
   ],
-  "comments": [
+  "invoices": [
     {
       "id": 1,
-      "body": "some comment",
-      "postId": 1
+      "invoiceNo": "INV-2026-0001",
+      "orderNo": "ORD-2026-001",
+      "customerName": "Rajesh Kumar (Farmer)",
+      "customerGSTIN": "Not Applicable",
+      "billingAddress": "Anantapur Rural, AP",
+      "status": "Paid",
+      "dueDate": "2026-05-28",
+      "amount": 17955,
+      "balanceDue": 0,
+      "vehicleNo": "AP-02-TZ-1234",
+      "items": [
+        {
+          "name": "Premium NPK Fertilizer 19-19-19",
+          "quantity": 15,
+          "rate": 1200,
+          "cgst": 2.5,
+          "sgst": 2.5,
+          "discount": 5,
+          "amount": 17955,
+          "hsnCode": "3105"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "invoiceNo": "INV-26-4001",
+      "orderNo": "ORD-26-8356",
+      "customerName": "Annapurna Farmers Cooperative",
+      "customerGSTIN": "Not Applicable",
+      "billingAddress": "Guntur Market, AP",
+      "status": "Paid",
+      "dueDate": "2026-06-10",
+      "amount": 279300,
+      "balanceDue": 0,
+      "vehicleNo": "AP-07-TR-9988",
+      "items": [
+        {
+          "name": "Premium NPK Fertilizer 19-19-19",
+          "quantity": 150,
+          "rate": 1200,
+          "cgst": 9,
+          "sgst": 9,
+          "discount": 5,
+          "amount": 202350,
+          "hsnCode": "3105"
+        },
+        {
+          "name": "Hybrid Paddy Seeds - PR126",
+          "quantity": 50,
+          "rate": 1650,
+          "cgst": 0,
+          "sgst": 0,
+          "discount": 2,
+          "amount": 76950,
+          "hsnCode": "1209"
+        }
+      ]
     }
   ],
-  "profile": {
-    "name": "typicode"
-  }
+  "companies": [
+    {
+      "id": 1,
+      "companyName": "Rajesh Kumar (Farmer)",
+      "pan": "",
+      "gst": "Not Applicable",
+      "contactNumber": "9848011223",
+      "email": "rajesh@farmer.org",
+      "contactPerson": "Rajesh Kumar",
+      "status": "Active",
+      "industryType": "Farmer",
+      "billingAddress": "Anantapur Rural, AP",
+      "shippingAddress": "Anantapur Rural, AP",
+      "aadhaar": "4512-9981-0023",
+      "creditBalance": 12000,
+      "maxCreditLimit": 30000
+    },
+    {
+      "id": 2,
+      "companyName": "Balaji Agro Traders",
+      "pan": "ABCFG1234F",
+      "gst": "37ABCFG1234F1Z9",
+      "contactNumber": "8891002233",
+      "email": "balaji@traders.com",
+      "contactPerson": "Balaji Prasad",
+      "status": "Active",
+      "industryType": "Dealer",
+      "billingAddress": "Guntur Market Yard, AP",
+      "shippingAddress": "Guntur Market Yard, AP",
+      "aadhaar": "No Aadhaar Verification",
+      "creditBalance": 45000,
+      "maxCreditLimit": 150000
+    },
+    {
+      "id": 3,
+      "companyName": "Srinivas Reddy (Farmer)",
+      "pan": "",
+      "gst": "Not Applicable",
+      "contactNumber": "7702114455",
+      "email": "srinivas@farmer.org",
+      "contactPerson": "Srinivas Reddy",
+      "status": "Active",
+      "industryType": "Farmer",
+      "billingAddress": "Tadipatri, AP",
+      "shippingAddress": "Tadipatri, AP",
+      "aadhaar": "8912-7744-1122",
+      "creditBalance": 0,
+      "maxCreditLimit": 25000
+    },
+    {
+      "id": 4,
+      "companyName": "Naidu Agro Inputs",
+      "pan": "AHKPR5512B",
+      "gst": "37AHKPR5512B1ZX",
+      "contactNumber": "9440112233",
+      "email": "naidu@agroinputs.com",
+      "contactPerson": "Naidu Swamy",
+      "status": "Active",
+      "industryType": "Dealer",
+      "billingAddress": "Vijayawada Road, AP",
+      "shippingAddress": "Vijayawada Road, AP",
+      "aadhaar": "No Aadhaar Verification",
+      "creditBalance": 125400,
+      "maxCreditLimit": 200000
+    },
+    {
+      "companyName": "zxas",
+      "pan": "",
+      "gst": "27ABCDE1234F1Z5",
+      "contactNumber": "9876543210",
+      "email": "",
+      "contactPerson": "",
+      "aadhaar": "zzz",
+      "creditBalance": 8,
+      "maxCreditLimit": 25000,
+      "status": "Active",
+      "industryType": "Farmer",
+      "billingAddress": "xxx",
+      "shippingAddress": "",
+      "id": 5
+    },
+    {
+      "companyName": "Softlogic Systems",
+      "pan": "",
+      "gst": "232323",
+      "contactNumber": "9876543210",
+      "email": "",
+      "contactPerson": "",
+      "aadhaar": "231323",
+      "creditBalance": 5000,
+      "maxCreditLimit": 25000,
+      "status": "Active",
+      "industryType": "Farmer",
+      "billingAddress": "palliplayam",
+      "shippingAddress": "",
+      "id": 6
+    }
+  ],
+  "contacts": [
+    {
+      "id": 1,
+      "contactName": "Somanna Gowda",
+      "contact": "9900887766",
+      "email": "somanna@farmers.org",
+      "designation": "Chairman",
+      "department": "Management",
+      "linkedCompany": "Annapurna Farmers Cooperative"
+    },
+    {
+      "id": 2,
+      "contactName": "Venkatesh Prasad",
+      "contact": "8877665544",
+      "email": "venky.prasad@agro.com",
+      "designation": "Proprietor",
+      "department": "Sales",
+      "linkedCompany": "Balaji Agro Agencies"
+    }
+  ],
+  "quotations": [
+    {
+      "id": 1,
+      "quotationNo": "QT-2026-001",
+      "referenceNo": "REF-ANP-992",
+      "companyName": "Annapurna Farmers Cooperative",
+      "contact": "Somanna Gowda",
+      "quotationDate": "2026-05-10",
+      "expiryDate": "2026-06-10",
+      "termsconditions": "Goods once sold will not be taken back. Payment due upon delivery.",
+      "status": "Approved",
+      "amount": 279300,
+      "iteams": [
+        {
+          "name": "Premium NPK Fertilizer 19-19-19",
+          "quantity": 150,
+          "rate": 1200,
+          "cgst": 9,
+          "sgst": 9,
+          "discount": 5,
+          "amount": 202350,
+          "hsnCode": "3105"
+        },
+        {
+          "name": "Hybrid Paddy Seeds - PR126",
+          "quantity": 50,
+          "rate": 1650,
+          "cgst": 0,
+          "sgst": 0,
+          "discount": 2,
+          "amount": 76950,
+          "hsnCode": "1209"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "quotationNo": "QT-2026-002",
+      "referenceNo": "REF-BLJ-105",
+      "companyName": "Balaji Agro Agencies",
+      "contact": "Venkatesh Prasad",
+      "quotationDate": "2026-05-20",
+      "expiryDate": "2026-06-20",
+      "termsconditions": "Special distributor discount applied. Valid for 30 days.",
+      "status": "Pending",
+      "amount": 80920,
+      "iteams": [
+        {
+          "name": "Neem-based Bio Pesticide (Liquid)",
+          "quantity": 100,
+          "rate": 450,
+          "cgst": 6,
+          "sgst": 6,
+          "discount": 10,
+          "amount": 45360,
+          "hsnCode": "3808"
+        },
+        {
+          "name": "Glyphosate Herbicide 41% SL",
+          "quantity": 50,
+          "rate": 680,
+          "cgst": 9,
+          "sgst": 9,
+          "discount": 8,
+          "amount": 35560,
+          "hsnCode": "3808"
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": 1,
+      "name": "Premium NPK Fertilizer 19-19-19",
+      "description": "Water soluble fertilizer for balanced crop growth",
+      "rate": 1200,
+      "cgst": 9,
+      "sgst": 9,
+      "hsnCode": "3102",
+      "discount": 5,
+      "category": "Fertilizers",
+      "unit": "Bags",
+      "stockQuantity": 190
+    },
+    {
+      "id": 2,
+      "name": "Hybrid Paddy Seeds - PR126",
+      "description": "Short duration, high-yielding hybrid paddy seeds",
+      "rate": 1650,
+      "cgst": 0,
+      "sgst": 0,
+      "hsnCode": "1209",
+      "discount": 2,
+      "category": "Seeds",
+      "unit": "Bag (25kg)",
+      "stockQuantity": 250
+    },
+    {
+      "id": 3,
+      "name": "Neem-based Bio Pesticide (Liquid)",
+      "description": "Concentrated organic neem oil insect repellent",
+      "rate": 450,
+      "cgst": 6,
+      "sgst": 6,
+      "hsnCode": "3808",
+      "discount": 10,
+      "category": "Pesticides",
+      "unit": "Bottle (1L)",
+      "stockQuantity": 95
+    },
+    {
+      "id": 4,
+      "name": "Organic Compost Booster",
+      "description": "Microbial compost accelerant for soil enrichment",
+      "rate": 350,
+      "cgst": 2.5,
+      "sgst": 2.5,
+      "hsnCode": "3101",
+      "discount": 0,
+      "category": "Bio-Organics",
+      "unit": "Bag (40kg)",
+      "stockQuantity": 120
+    },
+    {
+      "id": 5,
+      "name": "Glyphosate Herbicide 41% SL",
+      "description": "Systemic post-emergence weed control solution",
+      "rate": 680,
+      "cgst": 9,
+      "sgst": 9,
+      "hsnCode": "3808",
+      "discount": 8,
+      "category": "Pesticides",
+      "unit": "Canister (5L)",
+      "stockQuantity": 60
+    },
+    {
+      "name": "giri durai",
+      "description": "23",
+      "hsnCode": "68029100",
+      "rate": 1222,
+      "cgst": 5,
+      "sgst": 52,
+      "discount": 10,
+      "category": "Fertilizers",
+      "unit": "Bottle (1L)",
+      "stockQuantity": 100,
+      "id": 6
+    }
+  ],
+  "suppliers": [
+    {
+      "id": 3,
+      "supplierName": "Tata Rallis India Ltd",
+      "contactNumber": "022-66652222",
+      "address": "Mumbai, Maharashtra (Contact: Manoj Deshmukh)",
+      "gstNumber": "27AAACR1234M1Z4"
+    },
+    {
+      "id": 1,
+      "supplierName": "IFFCO Fertilizer Corp Ltd",
+      "contactNumber": "1800-103-1967",
+      "address": "New Delhi HQ, India (Contact: Amit Sharma)",
+      "gstNumber": "07AAACI0468G1Z1"
+    },
+    {
+      "id": 2,
+      "supplierName": "Coromandel International Ltd",
+      "contactNumber": "040-27842034",
+      "address": "Secunderabad, Telangana (Contact: R. K. Prasad)",
+      "gstNumber": "36AAACC0925G2Z3"
+    }
+  ],
+  "purchaseInvoices": [
+    {
+      "id": 2,
+      "invoiceNo": "PUR-2026-102",
+      "supplierName": "Syngenta Seeds India Ltd",
+      "invoiceDate": "2026-05-15",
+      "dueDate": "2026-06-15",
+      "amount": 210000,
+      "status": "Pending",
+      "items": [
+        {
+          "name": "Hybrid Paddy Seeds - PR126",
+          "quantity": 150,
+          "rate": 1400,
+          "cgst": 0,
+          "sgst": 0,
+          "amount": 210000
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "invoiceNo": "PUR-2026-101",
+      "supplierName": "IFFCO Fertilizer Corporation",
+      "invoiceDate": "2026-05-01",
+      "dueDate": "2026-05-31",
+      "amount": 472000,
+      "status": "Paid",
+      "items": [
+        {
+          "name": "Premium NPK Fertilizer 19-19-19",
+          "quantity": 400,
+          "rate": 1000,
+          "cgst": 9,
+          "sgst": 9,
+          "amount": 472000
+        }
+      ]
+    },
+    {
+      "invoiceNo": "PUR-2026-584",
+      "supplierName": "Tata Rallis India Ltd",
+      "invoiceDate": "2026-05-28",
+      "dueDate": "2026-06-27",
+      "amount": 14396.9,
+      "status": "Paid",
+      "items": [
+        {
+          "name": "giri durai",
+          "quantity": 10,
+          "rate": 917,
+          "cgst": 5,
+          "sgst": 52,
+          "amount": 14396.9,
+          "batchNo": "BATCH-2516",
+          "expiryDate": "2028-05-27",
+          "mfgDate": "2026-05-28"
+        }
+      ],
+      "id": 3
+    }
+  ],
+  "returns": [
+    {
+      "id": 1,
+      "returnNumber": "RET-001",
+      "product": "Premium NPK Fertilizer 19-19-19",
+      "quantity": 10,
+      "reason": "Damaged packaging during transit",
+      "date": "2026-05-12"
+    },
+    {
+      "id": 2,
+      "returnNumber": "RET-002",
+      "product": "Neem-based Bio Pesticide (Liquid)",
+      "quantity": 5,
+      "reason": "Expired stock delivered",
+      "date": "2026-05-22"
+    }
+  ],
+  "stockRecords": [
+    {
+      "id": 1,
+      "product": "Premium NPK Fertilizer 19-19-19",
+      "quantity": 400,
+      "date": "2025-05-01",
+      "type": "Inward",
+      "notes": "Procured from IFFCO"
+    },
+    {
+      "id": 2,
+      "product": "Premium NPK Fertilizer 19-19-19",
+      "quantity": 150,
+      "date": "2026-05-10",
+      "type": "Outward",
+      "notes": "Sold to Annapurna Coop"
+    },
+    {
+      "id": 3,
+      "product": "Hybrid Paddy Seeds - PR126",
+      "quantity": 150,
+      "date": "2026-05-15",
+      "type": "Inward",
+      "notes": "Procured from Syngenta"
+    },
+    {
+      "id": 4,
+      "product": "Hybrid Paddy Seeds - PR126",
+      "quantity": 50,
+      "date": "2026-05-20",
+      "type": "Outward",
+      "notes": "Sold to Annapurna Coop"
+    },
+    {
+      "id": 5,
+      "product": "Hybrid Paddy Seeds - PR126",
+      "quantity": 10,
+      "date": "2026-05-28",
+      "type": "Inward",
+      "notes": "Manual Stock Correction: Expired stock disposal"
+    },
+    {
+      "id": 6,
+      "product": "Premium NPK Fertilizer 19-19-19",
+      "quantity": 10,
+      "date": "2026-05-28",
+      "type": "Inward",
+      "notes": "Consignment PO inward: BATCH-2026B"
+    }
+  ],
+  "warehouses": [
+    {
+      "id": 1,
+      "warehouseName": "Main Seed Cold Storage",
+      "location": "Section A, Mandya Hub",
+      "capacity": 2500
+    },
+    {
+      "id": 2,
+      "warehouseName": "Fertilizer Bulk Godown",
+      "location": "Plot 12, APMC Industrial Area",
+      "capacity": 8000
+    },
+    {
+      "id": 3,
+      "warehouseName": "Pesticide & Chemical Yard",
+      "location": "Secure Wing, APMC Compound",
+      "capacity": 1500
+    }
+  ]
 }

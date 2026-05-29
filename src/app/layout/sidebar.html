@@ -1,9 +1,17 @@
 <!-- Premium Sidebar -->
 <nav class="sidebar fixed-top-side transition-all">
   <div class="nav-container pt-3">
+    <!-- FY Indicator -->
+    <div
+      class="px-4 py-2 mb-3 border-bottom border-light border-opacity-10 d-flex align-items-center justify-content-between">
+      <span class="text-muted fs-8 fw-semibold" style="letter-spacing: 0.05em; color: #8a99ad !important;">F.Y. 2026 -
+        27</span>
+      <span class="badge bg-success text-white fs-9 px-2 py-1 fw-bold" style="border-radius: 4px;">ACTIVE</span>
+    </div>
+
     <ul class="nav flex-column mb-auto">
       <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-2 opacity-50">
-        Dashboard
+        MAIN MENU
       </div>
 
       <li class="nav-item">
@@ -14,30 +22,7 @@
       </li>
 
       <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-2 opacity-50">
-        Masters
-      </div>
-
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/iteam" routerLinkActive="active">
-          <i class="mdi mdi-sprout menu-icon"></i>
-          <span>Products</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/company" routerLinkActive="active">
-          <i class="mdi mdi-account-group-outline menu-icon"></i>
-          <span>Customers</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/suppliers" routerLinkActive="active">
-          <i class="mdi mdi-truck-delivery menu-icon"></i>
-          <span>Suppliers</span>
-        </a>
-      </li>
-
-      <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-2 opacity-50">
-        Transactions
+        TRANSACTIONS
       </div>
 
       <li class="nav-item">
@@ -49,71 +34,86 @@
       <li class="nav-item">
         <a class="nav-link" routerLink="/invoice" routerLinkActive="active">
           <i class="mdi mdi-cash-register menu-icon"></i>
-          <span>Sales Invoice</span>
+          <span>Invoices (Sales)</span>
         </a>
       </li>
       <li class="nav-item">
         <a class="nav-link" routerLink="/purchase-invoice" routerLinkActive="active">
-          <i class="mdi mdi-briefcase-download menu-icon"></i>
-          <span>Purchase Invoice</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/returns" routerLinkActive="active">
-          <i class="mdi mdi-keyboard-return menu-icon"></i>
-          <span>Returns</span>
+          <i class="mdi mdi-briefcase-download-outline menu-icon"></i>
+          <span>Purchase Bills</span>
         </a>
       </li>
 
       <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-2 opacity-50">
-        Inventory
+        INVENTORY
       </div>
 
       <li class="nav-item">
-        <a class="nav-link" routerLink="/stock-inward" routerLinkActive="active">
-          <i class="mdi mdi-arrow-down-bold-circle-outline menu-icon"></i>
-          <span>Stock Inward</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/stock-outward" routerLinkActive="active">
-          <i class="mdi mdi-arrow-up-bold-circle-outline menu-icon"></i>
-          <span>Stock Outward</span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/warehouse" routerLinkActive="active">
+        <a class="nav-link" routerLink="/stock-management" routerLinkActive="active">
           <i class="mdi mdi-warehouse menu-icon"></i>
-          <span>Warehouse</span>
+          <span>Stock Management</span>
         </a>
       </li>
 
       <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-2 opacity-50">
-        Reports & Settings
+        MASTER DATA
+      </div>
+
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/company" routerLinkActive="active">
+          <i class="mdi mdi-account-group-outline menu-icon"></i>
+          <span>Customer Master</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/suppliers" routerLinkActive="active">
+          <i class="mdi mdi-handshake-outline menu-icon"></i>
+          <span>Vendor Master</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/product-master" routerLinkActive="active">
+          <i class="mdi mdi-beaker-outline menu-icon"></i>
+          <span>Product Master</span>
+        </a>
+      </li>
+
+      <div class="sidebar-header fs-8 text-uppercase fw-bold text-muted ps-4 my-2 opacity-50">
+        CONFIGURATIONS & ADMIN
       </div>
 
       <li class="nav-item">
         <a class="nav-link" routerLink="/reports" routerLinkActive="active">
-          <i class="mdi mdi-chart-bar-stacked menu-icon"></i>
+          <i class="mdi mdi-chart-pie menu-icon"></i>
           <span>Reports</span>
         </a>
       </li>
+
       <li class="nav-item">
         <a class="nav-link" routerLink="/settings" routerLinkActive="active">
           <i class="mdi mdi-cog-outline menu-icon"></i>
-          <span>Settings</span>
+          <span>System Settings</span>
         </a>
       </li>
+
       <li class="nav-item">
         <a class="nav-link" routerLink="/User" routerLinkActive="active">
-          <i class="mdi mdi-shield-account-outline menu-icon"></i>
-          <span>User Controls</span>
+          <i class="mdi mdi-account-cog-outline menu-icon"></i>
+          <span>User Management</span>
         </a>
       </li>
     </ul>
   </div>
 
-  <div class="sidebar-footer p-3 border-top border-light opacity-50 mt-auto">
-    <p class="mb-0 fs-8 text-white px-3">Puvilink Agro</p>
+  <!-- User Profile Footer -->
+  <div class="sidebar-footer p-3 border-top mt-auto d-flex align-items-center gap-2">
+    <div class="rounded-circle bg-success-subtle text-success d-flex align-items-center justify-content-center"
+      style="width: 32px; height: 32px;">
+      <i class="mdi mdi-account fs-5"></i>
+    </div>
+    <div>
+      <h6 class="mb-0 fs-8 text-dark fw-bold">Puvilink Agro</h6>
+      <span class="fs-9 text-muted d-block" style="font-size: 0.65rem;">Administrator</span>
+    </div>
   </div>
 </nav>

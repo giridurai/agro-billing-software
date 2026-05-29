@@ -13,27 +13,28 @@
   --navbar-height: 64px;
 
   /* Brand Colors */
-  --color-primary: #1d4ed8;
-  --color-primary-hover: #1e40af;
-  --color-primary-light: #eff6ff;
-  --color-accent: #3b82f6;
+  --color-primary: #059669;
+  /* Emerald Green */
+  --color-primary-hover: #047857;
+  --color-primary-light: #e6f4ea;
+  --color-accent: #10b981;
 
   /* Surface Colors */
-  --color-bg-base: #f0f4f8;
+  --color-bg-base: #f3f4f6;
   --color-bg-page: #f8fafc;
   --color-surface: #ffffff;
-  --color-sidebar-bg: #0a0238;
-  /* A clear, deep blue */
-  --color-sidebar-accent: #ffffff;
-  --color-sidebar-hover: rgba(255, 255, 255, 0.08);
-  /* Deep Navy — NOT pure black */
+  --color-sidebar-bg: #f3f4f6;
+  /* Light gray background */
+  --color-sidebar-accent: #0f172a;
+  --color-sidebar-hover: #e2e8f0;
+  /* Soft gray hover highlight */
   --color-navbar-bg: #ffffff;
 
   /* Text */
   --color-text-primary: #0f172a;
   --color-text-secondary: #475569;
-  --color-text-muted: #94a3b8;
-  --color-text-link: #0a58ca;
+  --color-text-muted: #8a99ad;
+  --color-text-link: #059669;
 
   /* Borders & Dividers */
   --color-border: #dde3ec;
@@ -62,16 +63,16 @@
   --color-bg-page: #020617;
   --color-surface: #1e293b;
   --color-navbar-bg: #1e293b;
-  
+
   --color-text-primary: #f1f5f9;
   --color-text-secondary: #94a3b8;
   --color-text-muted: #64748b;
-  
+
   --color-border: #334155;
   --color-border-soft: #1e293b;
-  
+
   --color-sidebar-bg: #020617;
-  
+
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
@@ -108,11 +109,11 @@ body {
   top: 0;
   left: 0;
   background: var(--color-sidebar-bg);
-  color: #fff;
+  color: #475569;
   z-index: 1050;
   display: flex;
   flex-direction: column;
-  border-right: none;
+  border-right: 1px solid var(--color-border);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
 }
 
@@ -134,7 +135,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.28);
+  color: #64748b;
   padding: 18px 20px 6px;
 }
 
@@ -142,12 +143,13 @@ body {
 .sidebar .nav-link {
   display: flex;
   align-items: center;
-  color: rgba(255, 255, 255, 0.58);
-  padding: 10px 12px;
+  color: #475569;
+  /* Muted grey-blue */
+  padding: 10px 14px;
   margin: 4px 16px;
   font-size: 0.84rem;
   font-weight: 500;
-  border-radius: var(--radius-md);
+  border-radius: 6px;
   text-decoration: none;
   transition: var(--transition);
   gap: 0;
@@ -162,8 +164,10 @@ body {
 
 .sidebar .nav-link.active {
   color: #fff;
-  background: var(--color-primary);
-  border-left: 3px solid #fff;
+  background: #0e60d3;
+  /* Soft dark highlight */
+  border-left: 3px solid #10b981;
+  /* Solid green left border */
   font-weight: 600;
   border-radius: 6px;
 }
@@ -180,9 +184,9 @@ body {
 /* Sidebar Footer */
 .sidebar-footer {
   padding: 14px 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid var(--color-border);
   font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.3);
+  color: #64748b;
 }
 
 /* ── NAVBAR ─────────────────────────────────────────────── */
@@ -211,8 +215,8 @@ body {
   align-items: center;
   justify-content: center;
   background: var(--color-sidebar-bg);
-  border-right: none;
-  border-bottom: none;
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
 
@@ -739,5 +743,127 @@ body {
   .content-container {
     padding: 0 !important;
     margin: 0 !important;
+  }
+}
+
+/* ── EXPORT BUTTONS ─────────────────────────────────────── */
+.btn-export-excel {
+  background-color: #e6f4ea !important;
+  color: #137333 !important;
+  border: none !important;
+  font-weight: 600;
+}
+
+.btn-export-excel:hover {
+  background-color: #d2ebd9 !important;
+  color: #137333 !important;
+}
+
+.btn-export-pdf {
+  background-color: #fdf2f2 !important;
+  color: #c5221f !important;
+  border: none !important;
+  font-weight: 600;
+}
+
+.btn-export-pdf:hover {
+  background-color: #fbe4e4 !important;
+  color: #c5221f !important;
+}
+
+/* ── PULSE ANIMATION UTILITY ────────────────────────────── */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .4;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ── CIRCULAR DOTS LOADER ───────────────────────────────── */
+.circular-dots-loader {
+  position: relative;
+  width: 50px;
+  height: 50px;
+}
+
+.circular-dots-loader div {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #198754;
+  /* success green */
+  border-radius: 50%;
+  animation: fadeDot 1.2s linear infinite;
+}
+
+/* Position dots in a circle */
+.circular-dots-loader .dot1 {
+  top: 0;
+  left: 21px;
+  animation-delay: 0s;
+}
+
+.circular-dots-loader .dot2 {
+  top: 6px;
+  left: 36px;
+  animation-delay: 0.15s;
+}
+
+.circular-dots-loader .dot3 {
+  top: 21px;
+  left: 42px;
+  animation-delay: 0.3s;
+}
+
+.circular-dots-loader .dot4 {
+  top: 36px;
+  left: 36px;
+  animation-delay: 0.45s;
+}
+
+.circular-dots-loader .dot5 {
+  top: 42px;
+  left: 21px;
+  animation-delay: 0.6s;
+}
+
+.circular-dots-loader .dot6 {
+  top: 36px;
+  left: 6px;
+  animation-delay: 0.75s;
+}
+
+.circular-dots-loader .dot7 {
+  top: 21px;
+  left: 0;
+  animation-delay: 0.9s;
+}
+
+.circular-dots-loader .dot8 {
+  top: 6px;
+  left: 6px;
+  animation-delay: 1.05s;
+}
+
+@keyframes fadeDot {
+
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.6);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
   }
 }

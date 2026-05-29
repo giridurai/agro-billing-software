@@ -1,21 +1,13 @@
 /* User component specific styles */
 .avatar-circle {
   font-weight: 700;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.stylish-search .input-group-text {
-  border-radius: 8px 0 0 8px;
-}
-
-.stylish-search .form-control {
-  border-radius: 0 8px 8px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* User Table Compact Styling */
 .table th,
 .table td {
-  padding: 10px 12px !important;
+  padding: 12px 14px !important;
   font-size: 0.8rem;
 }
 
@@ -25,4 +17,25 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+/* Custom Role Badge Colors - Premium HSL tones */
+.bg-admin-role {
+  background-color: #f3e8ff !important;
+  color: #7e22ce !important;
+}
+
+.bg-sales-role {
+  background-color: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+.bg-billing-role {
+  background-color: #fef3c7 !important;
+  color: #b45309 !important;
+}
+
+.bg-auditor-role {
+  background-color: #e0e7ff !important;
+  color: #4338ca !important;
 }

@@ -1,274 +1,163 @@
 <div class="container-fluid py-4 px-3">
-  <!-- Customers Table Card -->
-  <div class="crm-card">
-    <div class="crm-card-header">
-      <div class="row align-items-center g-3">
-        <div class="col-md-auto">
-          <h6 class="mb-0 fw-bold text-main">Customers Directory</h6>
-        </div>
-        <div class="col-md">
-          <div class="stylish-search float-end" style="max-width: 400px">
-            <i class="mdi mdi-magnify"></i>
-            <input
-              type="text"
-              class="form-control ps-5"
-              placeholder="Search by customer name or GSTIN..."
-              [(ngModel)]="searchText"
-              name="searchText"
-            />
-          </div>
-        </div>
-        <div class="col-md-auto">
-          <button
-            class="btn btn-primary d-flex align-items-center shadow-sm btn-sm fw-bold px-3 py-2"
-            (click)="openCompanyModal()"
-          >
-            <i class="mdi mdi-account-plus me-2"></i> ADD CUSTOMER
-          </button>
-        </div>
-      </div>
+  <!-- Title and Header -->
+  <div class="row mb-4 align-items-center g-3">
+    <div class="col-md-6">
+      <h4 class="mb-0 fw-bold text-main">Customer Master Database</h4>
+      <p class="text-muted mb-0 fs-7">Manage agro farmers, cooperatives, and distributor accounts</p>
     </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="crm-table">
-          <thead>
-            <tr>
-              <th>Customer Name</th>
-              <th>GSTIN / PAN</th>
-              <th>Contact Details</th>
-              <th>Sector / Type</th>
-              <th>Status</th>
-              <th class="text-end">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let company of companies; let i = index">
-              <td>
-                <div class="d-flex align-items-center">
-                  <div
-                    class="company-avatar me-3 bg-success-subtle text-success rounded d-flex align-items-center justify-content-center"
-                    style="width: 32px; height: 32px"
-                  >
-                    <i class="mdi mdi-account-box fs-6"></i>
-                  </div>
-                  <div>
-                    <div class="fw-semibold fs-7 text-main">{{ company.companyName }}</div>
-                    <span class="text-muted fs-8">ID: {{ company.id }} | Person: {{ company.contactPerson || 'N/A' }}</span>
-                  </div>
-                </div>
-              </td>
-              <td>
-                <div class="fs-7 text-main">
-                  GSTIN: <span class="fw-semibold">{{ company.gst || 'N/A' }}</span>
-                </div>
-                <div class="fs-8 text-muted">PAN: {{ company.pan || 'N/A' }}</div>
-              </td>
-              <td>
-                <div class="fs-7 text-main fw-medium">{{ company.contactNumber }}</div>
-                <div class="fs-8 text-muted">{{ company.email }}</div>
-              </td>
-              <td>
-                <span class="badge-crm badge-crm-secondary">{{
-                  company.industryType || 'Agriculture'
-                }}</span>
-              </td>
-              <td>
-                <span
-                  class="badge-crm"
-                  [ngClass]="{
-                    'badge-crm-success': company.status === 'Active',
-                    'badge-crm-danger': company.status === 'Inactive',
-                    'badge-crm-warning': company.status === 'Pending',
-                  }"
-                  >{{ company.status || 'Active' }}</span
-                >
-              </td>
-              <td class="text-end pe-4">
-                <div class="dropdown">
-                  <button class="btn-action-dot no-caret" type="button" data-bs-toggle="dropdown">
-                    <i class="mdi mdi-dots-vertical"></i>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                    <li>
-                      <a class="dropdown-item py-2" (click)="editCompany(company)">
-                        <i class="mdi mdi-pencil-outline me-2 text-warning"></i> Edit Customer
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item py-2 text-danger" (click)="deleteCompany(company.id)">
-                        <i class="mdi mdi-delete-outline me-2"></i> Remove Customer
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
-            <tr *ngIf="companies.length === 0">
-              <td colspan="6" class="text-center py-5 text-muted">
-                <i class="mdi mdi-account-off-outline fs-1 d-block mb-2 opacity-25"></i>
-                No customers registered yet.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="col-md-6 text-md-end" *ngIf="!showForm">
+      <button class="btn btn-success d-inline-flex align-items-center shadow-sm btn-sm fw-bold px-3 py-2 text-white"
+        (click)="openAddForm()">
+        <i class="mdi mdi-plus-box-outline me-2 fs-6"></i> ADD NEW CUSTOMER
+      </button>
     </div>
   </div>
-</div>
 
-<!-- Add/Edit Customer Modal -->
-<div id="companyModal" class="modal fade" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header border-bottom py-3">
-        <h5 class="modal-title fw-bold">
-          <i class="mdi mdi-account-circle me-2 text-success"></i>
-          {{ selectedCompany ? 'Modify Customer Profile' : 'New Customer Registration' }}
-        </h5>
-        <button type="button" class="btn-close" (click)="closeCompanyModal()"></button>
-      </div>
-      <div class="modal-body p-4">
-        <form #companyForm="ngForm" (ngSubmit)="saveCompany(companyForm)">
-          <div class="row g-4">
-            <div class="col-md-12">
-              <label class="form-label fw-semibold text-muted fs-7">Customer Name (Individual/Cooperative)</label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="companyData.companyName"
-                name="companyName"
-                placeholder="Enter Customer Name"
-                required
-              />
+  <div class="row g-4">
+    <!-- Left Column: Customer Table (Dynamic width) -->
+    <div [class]="showForm ? 'col-lg-8' : 'col-lg-12'">
+      <div class="crm-card border-0 shadow-sm rounded-4">
+        <div class="crm-card-header bg-white py-3 border-bottom">
+          <div class="row align-items-center g-3">
+            <div class="col-md-6">
+              <h6 class="mb-0 fw-bold text-main">Customer Registry</h6>
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">GST Number (GSTIN)</label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="companyData.gst"
-                name="gst"
-                placeholder="Ex: 29AAAFA1234Z1Z5"
-              />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">PAN Number</label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="companyData.pan"
-                name="pan"
-                placeholder="Ex: AAAFA1234Z"
-              />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">Mobile / Contact Number</label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="companyData.contactNumber"
-                name="contactNumber"
-                placeholder="Enter 10-digit Mobile Number"
-                required
-              />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">Email Address</label>
-              <input
-                type="email"
-                class="form-control"
-                [(ngModel)]="companyData.email"
-                name="email"
-                placeholder="customer@domain.com"
-              />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">Primary Contact Person (if Coop/Retailer)</label>
-              <input
-                type="text"
-                class="form-control"
-                [(ngModel)]="companyData.contactPerson"
-                name="contactPerson"
-                placeholder="Name of Contact Person"
-              />
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">Customer Category</label>
-              <select
-                class="form-select"
-                [(ngModel)]="companyData.industryType"
-                name="industryType"
-                required
-              >
-                <option value="Farmer">Farmer</option>
-                <option value="Cooperative">Cooperative Society</option>
-                <option value="Retailer">Agro Retailer</option>
-                <option value="Corporate Farm">Corporate Farm</option>
-                <option value="Wholesaler">Wholesaler</option>
-              </select>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">Billing Address</label>
-              <textarea
-                class="form-control"
-                [(ngModel)]="companyData.billingAddress"
-                name="billingAddress"
-                rows="2"
-                placeholder="Enter complete billing address"
-                required
-              ></textarea>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label fw-semibold text-muted fs-7">Shipping / Delivery Address</label>
-              <textarea
-                class="form-control"
-                [(ngModel)]="companyData.shippingAddress"
-                name="shippingAddress"
-                rows="2"
-                placeholder="Enter complete shipping address"
-                required
-              ></textarea>
-            </div>
-
-            <div class="col-md-12">
-              <label class="form-label fw-semibold text-muted fs-7">Customer Status</label>
-              <div class="d-flex gap-4">
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    name="status"
-                    value="Active"
-                    [(ngModel)]="companyData.status"
-                  />
-                  <label class="form-check-label fs-7">Active</label>
-                </div>
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    name="status"
-                    value="Inactive"
-                    [(ngModel)]="companyData.status"
-                  />
-                  <label class="form-check-label fs-7">Inactive</label>
-                </div>
+              <div class="stylish-search float-md-end w-100" style="max-width: 320px">
+                <i class="mdi mdi-magnify"></i>
+                <input type="text" class="form-control ps-5" placeholder="Search name, mobile or Aadhaar..."
+                  [(ngModel)]="searchText" name="searchText" />
               </div>
             </div>
           </div>
-
-          <div class="d-flex justify-content-end gap-2 mt-5 pt-3 border-top">
-            <button type="button" class="btn btn-light px-4" (click)="closeCompanyModal()">
-              Discard
-            </button>
-            <button type="submit" class="btn btn-primary px-5 shadow-sm">
-              {{ selectedCompany ? 'Apply Changes' : 'Register Customer' }}
-            </button>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>NAME</th>
+                  <th>MOBILE & AADHAAR</th>
+                  <th>GSTIN</th>
+                  <th>CREDIT BALANCE</th>
+                  <th class="text-end">ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let company of filteredCompanies; let i = index">
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div
+                        class="company-avatar me-3 bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                        style="width: 36px; height: 36px">
+                        <i class="mdi mdi-account fs-5"></i>
+                      </div>
+                      <div>
+                        <div class="fw-bold text-main fs-7">{{ company.companyName }}</div>
+                        <span class="text-muted fs-8">{{ company.billingAddress }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="fw-semibold text-main fs-7">{{ company.contactNumber }}</div>
+                    <div class="text-muted fs-8" *ngIf="company.aadhaar">Aadhaar: {{ company.aadhaar }}</div>
+                  </td>
+                  <td>
+                    <span class="badge-crm badge-crm-secondary">{{ company.gst || 'Not Applicable' }}</span>
+                  </td>
+                  <td>
+                    <div class="fw-bold text-main fs-7">{{ company.creditBalance | currency : 'INR' }}</div>
+                    <span class="text-muted fs-8">Limit: {{ company.maxCreditLimit | currency : 'INR' }}</span>
+                  </td>
+                  <td class="text-end pe-4">
+                    <button class="btn btn-outline-warning btn-sm border-0 p-1 me-1" (click)="editCompany(company)"
+                      title="Edit Customer">
+                      <i class="mdi mdi-pencil-outline fs-5"></i>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm border-0 p-1" (click)="deleteCompany(company.id)"
+                      title="Delete Customer">
+                      <i class="mdi mdi-delete-outline fs-5"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="filteredCompanies.length === 0">
+                  <td colspan="5" class="text-center py-5 text-muted">
+                    <i class="mdi mdi-account-off-outline fs-1 d-block mb-2 opacity-25"></i>
+                    No customers found matching search.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Registration Form (4 Columns wide on large screens) -->
+    <div class="col-lg-4" *ngIf="showForm">
+      <div class="card border-0 shadow-sm rounded-4 position-sticky" style="top: 90px;">
+        <div class="card-header bg-white py-3 border-bottom">
+          <h6 class="mb-0 fw-bold text-main">
+            <i class="mdi mdi-account-plus me-2 text-success"></i>
+            {{ selectedCompany ? 'Modify Customer Record' : 'Add New Customer' }}
+          </h6>
+        </div>
+        <div class="card-body p-4">
+          <form #companyForm="ngForm" (ngSubmit)="saveCompany(companyForm)">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label fw-semibold text-muted fs-8 mb-1">Customer / Farmer Name *</label>
+                <input type="text" class="form-control" [(ngModel)]="companyData.companyName" name="companyName"
+                  placeholder="Enter full name" required />
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold text-muted fs-8 mb-1">Mobile Number *</label>
+                <input type="text" class="form-control" [(ngModel)]="companyData.contactNumber" name="contactNumber"
+                  placeholder="Enter 10-digit number" required />
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold text-muted fs-8 mb-1">Aadhaar (ID Proof)</label>
+                <input type="text" class="form-control" [(ngModel)]="companyData.aadhaar" name="aadhaar"
+                  placeholder="e.g. 4512-9981-0023" />
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold text-muted fs-8 mb-1">GSTIN (Optional)</label>
+                <input type="text" class="form-control" [(ngModel)]="companyData.gst" name="gst"
+                  placeholder="e.g. 37ABCFG1234F1Z9" />
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold text-muted fs-8 mb-1">Billing Location / Address</label>
+                <textarea class="form-control" [(ngModel)]="companyData.billingAddress" name="billingAddress" rows="2"
+                  placeholder="Enter city/village name"></textarea>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold text-muted fs-8 mb-1">Outstanding Balance (₹)</label>
+                <input type="number" class="form-control" [(ngModel)]="companyData.creditBalance" name="creditBalance"
+                  placeholder="Outstanding dues" />
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold text-muted fs-8 mb-1">Max Credit Limit (₹)</label>
+                <input type="number" class="form-control" [(ngModel)]="companyData.maxCreditLimit" name="maxCreditLimit"
+                  placeholder="Credit ceiling limit" />
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+              <button type="button" class="btn btn-light px-3 btn-sm" (click)="clearForm()">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-success px-4 btn-sm shadow-sm text-white fw-bold">
+                {{ selectedCompany ? 'Update Record' : 'Save Record' }}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>

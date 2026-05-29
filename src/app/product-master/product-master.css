@@ -1,0 +1,11 @@
+/* Scoped styles for ProductMasterComponent */
+.item-icon {
+  flex-shrink: 0;
+}
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

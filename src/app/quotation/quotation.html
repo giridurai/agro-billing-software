@@ -1,7 +1,7 @@
 <div class="container-fluid py-4 px-3">
-  <!-- Quotation Table Card -->
-  <div class="crm-card">
-    <div class="crm-card-header">
+  <!-- 1. proposals hub list view -->
+  <div class="crm-card border-0 shadow-sm rounded-4" *ngIf="!showForm">
+    <div class="crm-card-header bg-white py-3 border-bottom">
       <div class="row align-items-center g-3">
         <div class="col-md-auto">
           <h6 class="mb-0 fw-bold text-main">Sales Proposals Hub</h6>
@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="col-md-auto">
-          <button class="btn btn-primary d-flex align-items-center shadow-sm btn-sm fw-bold px-3 py-2"
+          <button class="btn btn-success d-flex align-items-center shadow-sm btn-sm fw-bold px-3 py-2 text-white"
             (click)="openQuotationModal()">
             <i class="mdi mdi-file-plus me-2"></i> CREATE QUOTATION
           </button>
@@ -31,13 +31,13 @@
               <th>Reference ID</th>
               <th>Validity</th>
               <th>Status</th>
-              <th class="text-end">Actions</th>
+              <th class="text-end pe-4">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let quotation of quotations; let i = index">
+            <tr *ngFor="let quotation of filteredQuotations; let i = index">
               <td>
-                <div class="fw-bold text-primary fs-7">{{ quotation.quotationNo }}</div>
+                <div class="fw-bold text-success fs-7">{{ quotation.quotationNo }}</div>
                 <div class="text-muted fs-8">
                   Dated: {{ quotation.quotationDate | date: 'mediumDate' }}
                 </div>
@@ -86,7 +86,7 @@
                 </div>
               </td>
             </tr>
-            <tr *ngIf="quotations.length === 0">
+            <tr *ngIf="filteredQuotations.length === 0">
               <td colspan="6" class="text-center py-5 text-muted">
                 <i class="mdi mdi-file-search-outline fs-1 d-block mb-2 op-3"></i>
                 No formal quotations found matching your search.
@@ -97,185 +97,199 @@
       </div>
     </div>
   </div>
-</div>
 
-<!-- Add/Edit Quotation Modal Upgrade -->
-<div id="quotationModal" class="modal fade" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden">
-      <div class="modal-header bg-primary text-white border-bottom py-3">
-        <h5 class="modal-title fw-bold">
-          <i class="mdi mdi-file-document-edit-outline me-2"></i>
-          {{ selectedQuotation ? 'Refine Sales Proposal' : 'Draft New Quotation' }}
-        </h5>
-        <button type="button" class="btn-close btn-close-white" (click)="closeQuotationModal()"></button>
-      </div>
+  <!-- 2. interactive picture format quotation creator split screen -->
+  <div *ngIf="showForm">
+    <button class="btn btn-outline-secondary btn-sm mb-3 text-dark fw-semibold" (click)="closeQuotationModal()">
+      <i class="mdi mdi-arrow-left me-1"></i> Back to Proposals Hub
+    </button>
 
-      <div class="modal-body p-4 bg-light">
-        <form #quotationForm="ngForm" (ngSubmit)="saveQuotation(quotationForm)">
-          <!-- Top Info Section -->
-          <div class="row g-3 mb-4">
-            <div class="col-md-3">
-              <label class="form-label fs-7 fw-semibold text-muted">Quotation Ref #</label>
-              <input type="text" class="form-control" [(ngModel)]="quotationData.quotationNo" name="quotationNo"
-                required />
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fs-7 fw-semibold text-muted">Proposal Date</label>
-              <input type="date" class="form-control" [(ngModel)]="quotationData.quotationDate" name="quotationDate"
-                required />
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fs-7 fw-semibold text-muted">Validity Until</label>
-              <input type="date" class="form-control" [(ngModel)]="quotationData.expiryDate" name="expiryDate"
-                required />
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fs-7 fw-semibold text-muted">Proposal Status</label>
-              <select class="form-select" [(ngModel)]="quotationData.status" name="status" required>
-                <option value="Pending">Pending Review</option>
-                <option value="Approved">Approved / Won</option>
-                <option value="Rejected">Rejected</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fs-7 fw-semibold text-muted">Customer / Organization</label>
-              <input type="text" class="form-control mb-2" [(ngModel)]="quotationData.companyName" name="companyName"
-                placeholder="Client Name" required />
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fs-7 fw-semibold text-muted">Point of Contact</label>
-              <input type="text" class="form-control" [(ngModel)]="quotationData.contact" name="contact"
-                placeholder="POC Name" />
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fs-7 fw-semibold text-muted">Project Reference</label>
-              <input type="text" class="form-control" [(ngModel)]="quotationData.referenceNo" name="referenceNo"
-                placeholder="RE/PROJECT/001" />
-            </div>
+    <div class="row g-4">
+      <!-- Left Column: Generate Crop Quotation Form (8 cols) -->
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4">
+          <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold text-main d-flex align-items-center">
+              <i class="mdi mdi-file-document-outline text-success me-2 fs-4"></i>
+              Generate Crop Quotation
+            </h5>
+            <span class="badge bg-warning-subtle text-warning border border-warning fs-9 px-2 py-1 rounded">
+              Active Quote Generator
+            </span>
           </div>
 
-          <!-- Product Table (Exact Invoice Clone) -->
-          <div class="card border-0 shadow-sm mb-4">
-            <div class="card-header bg-white fw-bold">Line Items (Service & Products)</div>
-            <div class="card-body p-0">
+          <div class="card-body p-4">
+            <form #quotationForm="ngForm">
+              <div class="row g-3">
+                <div class="col-md-8">
+                  <label class="form-label fs-8 fw-semibold text-muted mb-1">Select Farmer Customer</label>
+                  <select class="form-select" [(ngModel)]="quotationData.companyName" name="companyName" required>
+                    <option value="">Choose farmer/customer...</option>
+                    <option *ngFor="let c of companies" [value]="c.companyName">{{ c.companyName }}</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label fs-8 fw-semibold text-muted mb-1">Validity Period</label>
+                  <input type="date" class="form-control" [(ngModel)]="quotationData.expiryDate" name="expiryDate"
+                    required />
+                </div>
+              </div>
+
+              <!-- INSERT LINE ITEM -->
+              <div class="card border-0 bg-light p-3 my-4 rounded-3">
+                <div class="fw-bold text-main fs-8 mb-2">INSERT LINE ITEM</div>
+                <div class="row g-2 align-items-end">
+                  <div class="col-md-6">
+                    <label class="form-label fs-9 fw-semibold text-muted mb-1">Choose Product</label>
+                    <select class="form-select form-select-sm" [(ngModel)]="selectedItemName" name="selectedItemName"
+                      (change)="onProductSelect()">
+                      <option value="">Choose product...</option>
+                      <option *ngFor="let p of items" [value]="p.name">{{ p.name }} (Sell price: ₹{{ p.rate }})</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label fs-9 fw-semibold text-muted mb-1">Rate (₹)</label>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="selectedItemRate"
+                      name="selectedItemRate" />
+                  </div>
+                  <div class="col-md-2">
+                    <label class="form-label fs-9 fw-semibold text-muted mb-1">Bags/Qty</label>
+                    <input type="number" class="form-control form-control-sm" [(ngModel)]="selectedItemQty"
+                      name="selectedItemQty" min="1" />
+                  </div>
+                  <div class="col-md-1">
+                    <button type="button"
+                      class="btn btn-success btn-sm w-100 fw-bold px-0 d-flex justify-content-center align-items-center text-white"
+                      style="height: 31px" (click)="addFormLine()">
+                      <i class="mdi mdi-plus fs-6 me-1"></i> Add Line
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Table below -->
               <div class="table-responsive">
-                <table class="table align-middle mb-0">
-                  <thead class="bg-light fs-8 text-uppercase">
+                <table class="crm-table mt-2">
+                  <thead>
                     <tr>
-                      <th class="ps-3">Description</th>
-                      <th class="text-center" style="width: 100px">HSN</th>
-                      <th class="text-center" style="width: 80px">Qty</th>
-                      <th class="text-center" style="width: 100px">Rate</th>
-                      <th class="text-center" style="width: 110px">Tax (%)</th>
-                      <th class="text-center" style="width: 80px">Disc</th>
-                      <th class="text-center" style="width: 100px">Taxable</th>
-                      <th class="text-end pe-3">Subtotal</th>
-                      <th class="text-center">#</th>
+                      <th>ITEM NAME</th>
+                      <th class="text-center" style="width: 110px">UNITPRICE</th>
+                      <th class="text-center" style="width: 80px">QTY</th>
+                      <th class="text-center" style="width: 80px">GST %</th>
+                      <th class="text-center" style="width: 100px">TAX (₹)</th>
+                      <th class="text-center" style="width: 110px">TOTAL</th>
+                      <th class="text-end" style="width: 50px">DELETE</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr *ngFor="let item of quotationData.iteams; let i = index">
-                      <td class="ps-3">
-                        <select class="form-select fs-7" [(ngModel)]="item.name" name="itemName{{ i }}"
-                          (change)="onItemNameChange(item)" required>
-                          <option value="">Select Item...</option>
-                          <option *ngFor="let it of items" [value]="it.name">{{ it.name }}</option>
-                        </select>
-                      </td>
                       <td>
-                        <input type="text" class="form-control fs-7 text-center" [(ngModel)]="item.hsnCode"
-                          name="itemHSN{{ i }}" readonly />
+                        <span class="fw-bold text-main fs-7">{{ item.name }}</span>
+                        <small class="text-muted d-block fs-9">HSN: {{ item.hsnCode }}</small>
                       </td>
-                      <td>
-                        <input type="number" class="form-control fs-7 text-center px-1" [(ngModel)]="item.quantity"
-                          name="itemQty{{ i }}" (ngModelChange)="recalculateItem(item)" required />
-                      </td>
-                      <td>
-                        <input type="number" class="form-control fs-7 text-center px-1" [(ngModel)]="item.rate"
-                          name="itemRate{{ i }}" (ngModelChange)="recalculateItem(item)" />
-                      </td>
-                      <td>
-                        <div class="d-flex gap-1 justify-content-center">
-                          <input type="number" class="form-control fs-8 text-center px-1" style="width: 45px"
-                            [(ngModel)]="item.cgst" name="itemC{{ i }}" placeholder="C"
-                            (ngModelChange)="recalculateItem(item)" />
-                          <input type="number" class="form-control fs-8 text-center px-1" style="width: 45px"
-                            [(ngModel)]="item.sgst" name="itemS{{ i }}" placeholder="S"
-                            (ngModelChange)="recalculateItem(item)" />
-                        </div>
-                      </td>
-                      <td>
-                        <input type="number" class="form-control fs-7 text-center px-1" [(ngModel)]="item.discount"
-                          name="itemDisc{{ i }}" (ngModelChange)="recalculateItem(item)" />
-                      </td>
-                      <td class="text-center fw-bold fs-7">
-                        {{
-                        item.quantity * item.rate - (item.discount || 0)
-                        | currency: 'INR' : 'symbol-narrow' : '1.1-1'
-                        }}
-                      </td>
-                      <td class="text-end pe-3 fw-bold fs-7">
-                        {{ item.amount | currency: 'INR' : 'symbol-narrow' : '1.2-2' }}
-                      </td>
+                      <td class="text-center fs-7">{{ item.rate | currency:'INR':'symbol-narrow' }}</td>
                       <td class="text-center">
-                        <button type="button" class="btn btn-link text-danger p-0" (click)="removeItem(i)">
-                          <i class="mdi mdi-close-circle fs-5"></i>
+                        <input type="number" class="form-control form-control-sm text-center mx-auto"
+                          style="width: 60px; height: 28px" [(ngModel)]="item.quantity" name="qty{{i}}"
+                          (ngModelChange)="recalculateItem(item)" min="1" />
+                      </td>
+                      <td class="text-center fs-8">{{ (item.cgst + item.sgst) }}%</td>
+                      <td class="text-center fs-7">{{ getItemTax(item) | currency:'INR':'symbol-narrow' }}</td>
+                      <td class="text-center fw-bold fs-7">{{ item.amount | currency:'INR':'symbol-narrow' }}</td>
+                      <td class="text-end pe-3">
+                        <button type="button" class="btn btn-link text-danger p-0 border-0" (click)="removeItem(i)">
+                          <i class="mdi mdi-delete-outline fs-5"></i>
                         </button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="quotationData.iteams.length === 0">
+                      <td colspan="7" class="text-center py-4 text-muted fs-8">
+                        No crop line items added yet. Choose a product and click "+ Add Line" above.
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-            </div>
-            <div class="card-footer bg-white border-top-0 pt-0">
-              <button type="button" class="btn btn-sm btn-outline-primary" (click)="addItem()">
-                <i class="mdi mdi-plus me-1"></i> Add Proposal Row
-              </button>
-            </div>
-          </div>
 
-          <!-- Bottom Summary Section -->
-          <div class="row g-4">
-            <div class="col-md-6">
-              <label class="form-label fs-7 fw-semibold text-muted">Terms & Engagement Conditions</label>
-              <textarea class="form-control fs-7" [(ngModel)]="quotationData.termsconditions" name="termsConditions"
-                rows="5" placeholder="Special delivery or payment instructions..."></textarea>
-            </div>
-            <div class="col-md-6">
-              <div class="card border-0 bg-white shadow-sm p-3">
-                <div class="d-flex justify-content-between mb-2 fs-7">
-                  <span class="text-muted">Estimated Taxable Value:</span>
-                  <span class="fw-bold">{{ getTotalBeforeTax() | currency: 'INR' }}</span>
+              <!-- Notes and Calculations -->
+              <div class="row mt-4 pt-3 border-top g-3">
+                <div class="col-md-6 text-muted fs-9 italic pt-2">
+                  Quotations act as crop advice sheets. Inventory values are not altered until transformed to sales
+                  bills.
                 </div>
-                <div class="d-flex justify-content-between mb-2 fs-7">
-                  <span class="text-muted text-uppercase small">CGST Est.:</span>
-                  <span class="text-primary">+ {{ getTotalCGST() | currency: 'INR' }}</span>
+                <div class="col-md-6 text-end">
+                  <div class="d-flex justify-content-between fs-8 mb-1">
+                    <span class="text-muted">Subtotal:</span>
+                    <span class="fw-bold text-main">₹{{ getFormSubtotal() | number: '1.2-2' }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between fs-8 mb-2">
+                    <span class="text-muted">Total GST Tax:</span>
+                    <span class="fw-semibold text-main">₹{{ getFormTax() | number: '1.2-2' }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                    <span class="fw-bold text-main fs-7">Estimated Total:</span>
+                    <span class="fw-extrabold text-success fs-5">₹{{ getFormTotal() | number: '1.2-2' }}</span>
+                  </div>
                 </div>
-                <div class="d-flex justify-content-between mb-3 fs-7">
-                  <span class="text-muted text-uppercase small">SGST Est.:</span>
-                  <span class="text-primary">+ {{ getTotalSGST() | currency: 'INR' }}</span>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                <button type="button" class="btn btn-light btn-sm px-4" (click)="resetForm()">
+                  Reset Form
+                </button>
+                <button type="button" class="btn btn-success text-white btn-sm px-4 fw-bold shadow-sm"
+                  (click)="saveQuotation(quotationForm)">
+                  Save Quotation Draft
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Pending Quotes Directory (4 cols) -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4">
+          <div class="card-header bg-white py-3 border-bottom">
+            <h5 class="mb-0 fw-bold text-main">Pending Quotes Directory</h5>
+          </div>
+          <div class="card-body p-3">
+            <div style="max-height: 520px; overflow-y: auto;">
+              <div class="card border border-light-subtle shadow-sm mb-3 rounded-3" *ngFor="let q of quotations">
+                <div class="card-body p-3">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0 fw-bold text-success">{{ q.quotationNo }}</h6>
+                    <span
+                      class="badge bg-warning-subtle text-warning border border-warning fs-9 rounded px-2 py-0.5">Active
+                      quote</span>
+                  </div>
+                  <div class="text-muted fs-9 mb-2">Date: {{ q.quotationDate }}</div>
+                  <div class="fw-bold text-main fs-7 mb-1">To: {{ q.companyName }}</div>
+                  <div class="text-muted fs-9 mb-3">Validity: {{ q.expiryDate || 'No date set' }}</div>
+                  <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                    <div class="fw-bold text-main fs-6">{{ q.amount | currency:'INR':'symbol-narrow' }}</div>
+                    <div class="d-flex align-items-center gap-3">
+                      <button type="button"
+                        class="btn btn-link text-danger p-0 border-0 fs-8 fw-semibold text-decoration-none"
+                        (click)="deleteQuotation(q.id)">
+                        Delete
+                      </button>
+                      <button type="button"
+                        class="btn btn-success btn-xs px-2 py-1 text-white fw-bold d-inline-flex align-items-center text-decoration-none"
+                        style="font-size: 0.75rem; border-radius: 4px;" (click)="convertInvoice(q)">
+                        Convert to Invoice &rarr;
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <hr class="mt-0 opacity-10" />
-                <div
-                  class="d-flex justify-content-between align-items-center p-3 bg-primary rounded text-white shadow-sm">
-                  <h6 class="mb-0 fw-bold">PROPOSAL TOTAL (INR)</h6>
-                  <h4 class="mb-0 fw-extrabold">{{ getGrandTotal() | currency: 'INR' }}</h4>
-                </div>
+              </div>
+              <div *ngIf="quotations.length === 0" class="text-center py-5 text-muted fs-8">
+                No active quotation drafts.
               </div>
             </div>
           </div>
-
-          <!-- Modal Action Footer -->
-          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-            <button type="button" class="btn btn-light px-4" (click)="closeQuotationModal()">
-              Discard Draft
-            </button>
-            <button type="submit" class="btn btn-primary px-5 fw-bold shadow-sm">
-              {{ selectedQuotation ? 'Update Proposal' : 'Issue Quotation' }}
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
@@ -308,45 +322,46 @@
               <div style="
                   width: 50px;
                   height: 50px;
-                  border: 2px solid #0a58ca;
+                  border: 2px solid #059669;
                   padding: 2px;
                   text-align: center;
-                  color: #0a58ca;
+                  color: #059669;
                   font-weight: 900;
                   font-size: 24px;
                   display: flex;
                   align-items: center;
                   justify-content: center;
+                  border-radius: 8px;
                 ">
-                RS
+                BA
               </div>
               <div style="
                   font-size: 8px;
-                  color: #b00;
+                  color: #059669;
                   font-style: italic;
                   font-weight: bold;
                   margin-top: 2px;
                   line-height: 1;
                 ">
-                Exclusive Granite Show Room
+                Agro-Fertilizer Dealer Agency
               </div>
             </div>
 
             <div class="print-company-center">
-              <div class="header-text">ROCK STONES</div>
+              <div class="header-text" style="color: #059669; font-weight: 800; font-size: 20px;">Puvilink AGRO</div>
               <div class="company-info">
-                NO.32/3, P.H. ROAD, SIVABOOTHAM, VANAGARAM, CHENNAI - 600 095.
+                Plot No. 42, Market Yard Road, Guntur, Andhra Pradesh - 522001.
               </div>
-              <div class="gst-text">GSTIN : 33TNSPS5270N1ZN</div>
+              <div class="gst-text">GSTIN : 37AAAFK8920K1ZX</div>
             </div>
 
             <div class="print-contact-right">
-              <div>Tell : 98404-51450</div>
-              <div>Mob : 98400-51450</div>
+              <div>Tell : 0863-2234567</div>
+              <div>Mob : 94401-23456</div>
               <div class="mt-1" style="font-size: 7px; color: #555">
-                Email: rockstonesgranite@gmail.com
+                Email: contact@shreebalajiagro.com
               </div>
-              <div style="font-size: 7px; color: #555">Web: www.rockstonegranites.com</div>
+              <div style="font-size: 7px; color: #555">Web: www.shreebalajiagro.com</div>
             </div>
           </div>
 
@@ -373,23 +388,23 @@
               </div>
               <div class="grid-row">
                 <div class="label-cell">State :</div>
-                <div class="value-cell">Tamil Nadu</div>
+                <div class="value-cell">Andhra Pradesh</div>
               </div>
               <div class="grid-row border-bottom-0">
                 <div class="label-cell">State Code :</div>
-                <div class="value-cell">33</div>
+                <div class="value-cell">37</div>
               </div>
             </div>
 
             <div class="grid-col-right" style="display: flex; flex-direction: column">
-              <div style="flex: 1; padding: 5px; border-bottom: 2px solid #0a58ca">
-                <div style="font-weight: bold; color: #0a58ca; font-size: 11px; margin-bottom: 4px">
+              <div style="flex: 1; padding: 5px; border-bottom: 2px solid #059669">
+                <div style="font-weight: bold; color: #059669; font-size: 11px; margin-bottom: 4px">
                   To
                 </div>
                 <div style="padding-left: 10px">
                   <div class="fw-bold fs-7">{{ selectedQuotation?.companyName }}</div>
                   <div class="fs-8 mt-1 text-muted">POC: {{ selectedQuotation?.contact }}</div>
-                  <div class="fs-8 text-primary fw-medium mt-1">
+                  <div class="fs-8 text-success fw-medium mt-1">
                     Ref: {{ selectedQuotation?.referenceNo }}
                   </div>
                 </div>
@@ -436,8 +451,8 @@
 
           <!-- Footer Totals & Terms -->
           <div class="row g-0 border" style="border-top: 0">
-            <div class="col-7 border-right" style="border-right: 2px solid #0a58ca; padding: 8px">
-              <div style="color: #0a58ca; font-weight: bold; font-size: 11px; margin-bottom: 4px">
+            <div class="col-7 border-right" style="border-right: 2px solid #059669; padding: 8px">
+              <div style="color: #059669; font-weight: bold; font-size: 11px; margin-bottom: 4px">
                 Terms & Conditions :
               </div>
               <div style="font-size: 9px; line-height: 1.4; white-space: pre-line" class="text-muted">
@@ -447,9 +462,9 @@
                 }}
               </div>
 
-              <div class="mt-4 p-2 bg-light border border-primary-subtle rounded d-inline-block">
+              <div class="mt-4 p-2 bg-light border border-success-subtle rounded d-inline-block">
                 <span class="fs-8 fw-bold text-main">Total in Words:</span>
-                <span class="ms-2 fs-8 fw-semibold text-primary italic">{{ getGrandTotal() | rupeeToWords }} Only</span>
+                <span class="ms-2 fs-8 fw-semibold text-success italic">{{ getGrandTotal() | rupeeToWords }} Only</span>
               </div>
             </div>
 
@@ -466,11 +481,11 @@
                 <div class="footer-label">Estimate : SGST (Approx)</div>
                 <div class="footer-value">{{ getTotalSGST() | number: '1.2-2' }}</div>
               </div>
-              <div class="footer-row" style="background: #e7f1ff; border-top: 2px solid #0a58ca">
-                <div class="footer-label" style="font-size: 12px; color: #0a58ca">
+              <div class="footer-row" style="background: #e6f4ea; border-top: 2px solid #059669">
+                <div class="footer-label" style="font-size: 12px; color: #059669">
                   TOTAL PROPOSAL VALUE
                 </div>
-                <div class="footer-value fw-bold fs-6 text-primary">
+                <div class="footer-value fw-bold fs-6 text-success">
                   ₹ {{ getGrandTotal() | number: '1.2-2' }}
                 </div>
               </div>
@@ -478,7 +493,7 @@
           </div>
 
           <!-- Bottom Declaration Section -->
-          <div class="row g-0 border" style="border-top: 2px solid #0a58ca; border: 2px solid #0a58ca; border-top: 0">
+          <div class="row g-0 border" style="border-top: 2px solid #059669; border: 2px solid #059669; border-top: 0">
             <div class="col-12 p-3 text-end" style="position: relative; min-height: 140px">
               <div class="text-center small" style="font-size: 10px; width: 100%; margin-bottom: 15px">
                 Certified that the proposal details given above are for formal approval
@@ -486,8 +501,8 @@
 
               <div class="mt-2 pe-4">
                 <span class="fw-bold" style="font-size: 12px; color: #000">For</span>
-                <span class="ms-1 fw-extrabold" style="font-size: 18px; color: #b00; letter-spacing: 0.5px">ROCK
-                  STONES</span>
+                <span class="ms-1 fw-extrabold" style="font-size: 18px; color: #059669; letter-spacing: 0.5px">Puvilink
+                  AGRO</span>
               </div>
 
               <div style="
@@ -497,7 +512,7 @@
                   width: 220px;
                   text-align: center;
                 ">
-                <div style="border-top: 1.5px solid #0a58ca; margin-bottom: 3px"></div>
+                <div style="border-top: 1.5px solid #059669; margin-bottom: 3px"></div>
                 <span class="fw-bold" style="font-size: 11px; color: #000">Authorised Signatory</span>
               </div>
             </div>
